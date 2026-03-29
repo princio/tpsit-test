@@ -43,7 +43,7 @@ function flattenQuestions(questions) {
   return flat
 }
 
-export default function TestSheet({ test }) {
+export default function TestSheet({ test, onPagesCount }) {
   const measurePageRef = useRef(null)
   const headerRef = useRef(null)
   const [pages, setPages] = useState(null)
@@ -53,8 +53,12 @@ export default function TestSheet({ test }) {
   useLayoutEffect(() => {
     if (!measurePageRef.current || !headerRef.current) return
 
-    // Altezza utile = altezza reale del .page (include padding CSS)
-    const pageHeight = measurePageRef.current.getBoundingClientRect().height
+    // Altezza interna disponibile = altezza del .page meno padding top+bottom
+    const pageEl = measurePageRef.current
+    const style = getComputedStyle(pageEl)
+    const paddingTop = parseFloat(style.paddingTop)
+    const paddingBottom = parseFloat(style.paddingBottom)
+    const pageHeight = pageEl.getBoundingClientRect().height - paddingTop - paddingBottom - 10
     const headerHeight = headerRef.current.getBoundingClientRect().height
 
     const questionEls = measurePageRef.current.querySelectorAll('[data-q-index]')
@@ -78,13 +82,14 @@ export default function TestSheet({ test }) {
     if (currentPage.length > 0) pages.push(currentPage)
 
     setPages(pages)
+    onPagesCount?.(pages.length)
   }, [test])
 
   // Measure pass: una singola .page invisibile, stesse dimensioni reali
   if (!pages) {
     return (
       <div className="pages-container" style={{ visibility: 'hidden', pointerEvents: 'none' }}>
-        <div className="page" ref={measurePageRef}>
+        <div className="page" style={{ height: '297mm', overflow: 'hidden' }} ref={measurePageRef}>
           <div ref={headerRef}>
             <Header test={test} />
           </div>

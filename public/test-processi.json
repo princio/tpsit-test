@@ -109,6 +109,26 @@
         { "kind": "code", "language": "c", "value": "int a[5];" }
       ],
       "answer": 8
+    },
+    {
+      "type": "filler",
+      "text": "Lo spazio di indirizzamento del processo è composto da una parte _________ e una _________. La parte _________ è suddivisa in __________ e ____________.",
+      "answer": ["statica", "dinamica", "dinamica", "stack", "heap"]
+    },
+    {
+      "type": "trueFalse",
+      "text": "Lo spazio di indirizzamento è l'insieme totale delle posizioni di memoria a cui un processo può fare riferimento",
+      "answer": true
+    },
+    {
+      "type": "trueFalse",
+      "text": "La memoria `heap` utilizzata da un processo è una porzione di memoria contigua.",
+      "answer": false
+    },
+    {
+      "type": "trueFalse",
+      "text": "La memoria `heap` ha dimensione limitata.",
+      "answer": false
     }
   ]
 }
