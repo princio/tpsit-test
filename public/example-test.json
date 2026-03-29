@@ -1,0 +1,84 @@
+{
+  "title": "Verifica TPSIT - Reti e Protocolli",
+  "subtitle": "Classe 5A - A.S. 2025/2026",
+  "instructions": "Rispondi a tutte le domande. Non sono ammessi appunti o dispositivi elettronici.",
+  "questions": [
+    {
+      "type": "trueFalse",
+      "text": "Il protocollo TCP è un protocollo connection-oriented che garantisce la consegna affidabile dei dati.",
+      "answer": true
+    },
+    {
+      "type": "trueFalse",
+      "text": "Il protocollo UDP utilizza un meccanismo di three-way handshake per stabilire la connessione.",
+      "answer": false
+    },
+    {
+      "type": "multipleChoice",
+      "text": "Quale tra i seguenti protocolli opera a livello di trasporto del modello OSI?",
+      "options": ["HTTP", "TCP", "ARP", "Ethernet"],
+      "answer": 1
+    },
+    {
+      "type": "multipleChoice",
+      "content": [
+        { "kind": "text", "value": "Cosa rappresenta il seguente diagramma?" },
+        { "kind": "mermaid", "value": "sequenceDiagram\n    participant C as Client\n    participant S as Server\n    C->>S: SYN\n    S->>C: SYN-ACK\n    C->>S: ACK" }
+      ],
+      "options": [
+        "Una connessione UDP",
+        "Il three-way handshake TCP",
+        "La chiusura di una connessione TCP",
+        "Un protocollo di routing"
+      ],
+      "answer": 1
+    },
+    {
+      "type": "trueFalse",
+      "content": [
+        { "kind": "text", "value": "Il seguente codice Python crea correttamente un socket TCP:" },
+        { "kind": "code", "language": "python", "value": "import socket\ns = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)\ns.connect(('localhost', 8080))" }
+      ],
+      "answer": false
+    },
+    {
+      "type": "filler",
+      "content": [
+        { "kind": "text", "value": "Completa il codice Python per creare un server TCP che ascolta sulla porta 8080:" },
+        { "kind": "code", "language": "python", "value": "import socket\n\nserver = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\nserver.bind(('0.0.0.0', ____))\nserver.____(____)  # max 5 connessioni in coda\n\nwhile True:\n    client, addr = server.____\n    print(f'Connessione da {addr}')" }
+      ]
+    },
+    {
+      "type": "multipleChoice",
+      "content": [
+        { "kind": "text", "value": "Quale architettura è rappresentata dal seguente schema?" },
+        { "kind": "mermaid", "value": "graph TD\n    A[Client 1] -->|richiesta| S[Server]\n    B[Client 2] -->|richiesta| S\n    C[Client 3] -->|richiesta| S\n    S -->|risposta| A\n    S -->|risposta| B\n    S -->|risposta| C" }
+      ],
+      "options": [
+        "Peer-to-peer",
+        "Client-Server",
+        "Mesh network",
+        "Ring topology"
+      ],
+      "answer": 1
+    },
+    {
+      "type": "filler",
+      "text": "Il modello OSI è composto da ____ livelli, mentre il modello TCP/IP è composto da ____ livelli."
+    },
+    {
+      "type": "multipleChoice",
+      "content": [
+        { "kind": "text", "value": "Qual è l'output del seguente codice JavaScript?" },
+        { "kind": "code", "language": "javascript", "value": "const http = require('http');\nconst server = http.createServer((req, res) => {\n  res.writeHead(200, {'Content-Type': 'text/plain'});\n  res.end('Hello World');\n});\nconsole.log(typeof server);" }
+      ],
+      "options": ["function", "object", "undefined", "string"],
+      "answer": 1
+    },
+    {
+      "type": "trueFalse",
+      "text": "Un indirizzo IP di classe C ha i primi 3 ottetti riservati alla parte di rete.",
+      "answer": true
+    }
+  ]
+}

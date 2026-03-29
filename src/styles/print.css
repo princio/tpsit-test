@@ -1,0 +1,112 @@
+@media print {
+  /* Hide non-printable elements */
+  .no-print {
+    display: none !important;
+  }
+
+  /* Page setup */
+  @page {
+    size: A4;
+    margin: 1.5cm;
+  }
+
+  body {
+    background: #fff;
+    font-size: 11pt;
+    color: #000;
+  }
+
+  .pages-container {
+    gap: 0;
+    padding: 0;
+  }
+
+  .page {
+    width: 210mm;
+    min-height: 0;
+    padding: 10mm 15mm;
+    box-shadow: none;
+    page-break-after: always;
+    break-after: page;
+  }
+
+  .page:last-child {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  .page-number {
+    display: none;
+  }
+
+  /* Remove screen-only styling from test sheet */
+  .test-sheet {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  /* Prevent questions from splitting across pages */
+  .question-block {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Keep code blocks together */
+  pre {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Keep diagrams together */
+  .mermaid-container {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Keep images together */
+  .content-image {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Ensure images fit */
+  img {
+    max-width: 100% !important;
+  }
+
+  /* Code block print styling */
+  .code-block {
+    background: #f5f5f5 !important;
+    border: 1px solid #ccc !important;
+    font-size: 9pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Question block: lighter border for print */
+  .question-block {
+    border: 1px solid #ccc;
+  }
+
+  /* Instructions */
+  .test-instructions {
+    background: #f5f5f5 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Type badge */
+  .question-type-badge {
+    background: #eee !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Avoid orphan headers */
+  .test-header {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+}

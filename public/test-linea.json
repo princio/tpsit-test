@@ -1,0 +1,688 @@
+{
+  "title": "Verifica — La linea di esecuzione e i Thread",
+  "subtitle": "Generato da big-picture/linea/",
+  "instructions": "Per le domande V/F segna Vero o Falso. Per le domande a scelta multipla segna una sola risposta. Per le domande di completamento riempi gli spazi vuoti.",
+  "questions": [
+    {
+      "concept": "Definizione di linea di esecuzione",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "La linea di esecuzione è la prossima linea di codice che verrà eseguita.",
+          "false": "La linea di esecuzione è la linea di codice che è stata appena eseguita."
+        },
+        {
+          "type": "trueFalse",
+          "true": "La linea di esecuzione indica quale istruzione il programma eseguirà come prossima.",
+          "false": "La linea di esecuzione indica quale istruzione il programma ha già completato."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Cosa indica la 'linea di esecuzione'?",
+          "options": [
+            "La linea di codice appena eseguita",
+            "La prossima linea di codice che verrà eseguita",
+            "L'ultima linea del programma",
+            "La linea con più istruzioni"
+          ],
+          "answer": 1
+        },
+        {
+          "type": "filler",
+          "text": "La linea di esecuzione è la ____ linea di codice che verrà ____."
+        }
+      ]
+    },
+    {
+      "concept": "Prerequisito per comprendere i thread",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "Per capire i thread dobbiamo aver ben chiaro il concetto di linea di esecuzione.",
+          "false": "Per capire i thread non è necessario conoscere il concetto di linea di esecuzione."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Qual è il prerequisito fondamentale per comprendere i thread?",
+          "options": [
+            "Conoscere il linguaggio C",
+            "Aver chiaro il concetto di linea di esecuzione",
+            "Saper usare i socket",
+            "Conoscere il protocollo HTTP"
+          ],
+          "answer": 1
+        },
+        {
+          "type": "filler",
+          "text": "Per capire i ____ dobbiamo aver ben chiaro la linea di ____."
+        }
+      ]
+    },
+    {
+      "concept": "Convenzione di notazione e semantica dell'evidenziazione",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "La linea evidenziata sarà la prossima linea ad essere eseguita.",
+          "false": "La linea evidenziata è la linea che è stata appena eseguita."
+        },
+        {
+          "type": "trueFalse",
+          "true": "La linea evidenziata non è stata ancora eseguita.",
+          "false": "La linea evidenziata è già stata eseguita."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Cosa significa quando una linea è evidenziata nelle dispense?",
+          "options": [
+            "La linea è stata appena eseguita",
+            "La linea contiene un errore",
+            "La linea sarà la prossima ad essere eseguita",
+            "La linea non verrà mai eseguita"
+          ],
+          "answer": 2
+        },
+        {
+          "type": "filler",
+          "text": "La linea evidenziata sarà la ____ linea ad essere eseguita; non è stata ____ eseguita."
+        }
+      ]
+    },
+    {
+      "concept": "Unicità della linea di esecuzione",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "In un singolo thread, solo una linea di esecuzione può essere evidenziata alla volta.",
+          "false": "In un singolo thread, più linee di esecuzione possono essere evidenziate contemporaneamente."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Quante linee di esecuzione possono essere evidenziate contemporaneamente in un singolo thread?",
+          "options": [
+            "Dipende dal numero di istruzioni",
+            "Due",
+            "Una sola",
+            "Tutte le linee del programma"
+          ],
+          "answer": 2
+        },
+        {
+          "type": "filler",
+          "text": "Solo ____ linea può essere evidenziata alla ____."
+        }
+      ]
+    },
+    {
+      "concept": "Comportamento delle linee vuote",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "Le linee vuote vengono ignorate durante l'esecuzione.",
+          "false": "Le linee vuote vengono eseguite come le altre linee di codice."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Come vengono trattate le linee vuote durante l'esecuzione?",
+          "options": [
+            "Vengono eseguite normalmente",
+            "Causano un errore",
+            "Vengono ignorate",
+            "Vengono convertite in commenti"
+          ],
+          "answer": 2
+        },
+        {
+          "type": "filler",
+          "text": "Le linee ____ vengono ____ durante l'esecuzione."
+        }
+      ]
+    },
+    {
+      "concept": "Punto di partenza dell'esecuzione",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "Il programma parte dalla linea #1.",
+          "false": "Il programma parte dall'ultima linea del codice."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Da quale linea parte l'esecuzione di un programma?",
+          "options": [
+            "Dalla funzione main()",
+            "Dalla prima linea non vuota",
+            "Dalla linea #1",
+            "Dall'ultima linea"
+          ],
+          "answer": 2
+        },
+        {
+          "type": "filler",
+          "text": "Il programma ____ dalla linea ____."
+        }
+      ]
+    },
+    {
+      "concept": "Avanzamento sequenziale",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "Dopo l'esecuzione di una linea, la linea di esecuzione avanza alla linea successiva (in assenza di salti).",
+          "false": "Dopo l'esecuzione di una linea, la linea di esecuzione salta a una posizione casuale nel codice."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "In assenza di condizioni o loop, come si comporta la linea di esecuzione?",
+          "options": [
+            "Salta a una linea casuale",
+            "Avanza sequenzialmente alla linea successiva",
+            "Resta ferma sulla stessa linea",
+            "Torna all'inizio del programma"
+          ],
+          "answer": 1
+        },
+        {
+          "type": "filler",
+          "text": "La linea di esecuzione ____ alla linea successiva in modo ____."
+        }
+      ]
+    },
+    {
+      "concept": "Salto condizionale (if/else)",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "In presenza di un costrutto if/else, la linea di esecuzione può saltare alcune linee.",
+          "false": "In presenza di un costrutto if/else, la linea di esecuzione esegue sempre entrambi i rami."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Cosa succede alla linea di esecuzione quando incontra un if/else?",
+          "options": [
+            "Esegue entrambi i rami",
+            "Salta al ramo che soddisfa la condizione, ignorando l'altro",
+            "Si blocca in attesa dell'utente",
+            "Torna alla linea #1"
+          ],
+          "answer": 1
+        },
+        {
+          "type": "filler",
+          "text": "In un costrutto if/else, la linea di esecuzione ____ le linee del ramo non ____."
+        }
+      ]
+    },
+    {
+      "concept": "Determinismo della sequenza dato un input",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "La sequenza delle linee di esecuzione è CERTA dato un determinato input.",
+          "false": "La sequenza delle linee di esecuzione è casuale anche con lo stesso input."
+        },
+        {
+          "type": "trueFalse",
+          "true": "Dato lo stesso input, un programma single-thread produrrà sempre la stessa sequenza di esecuzione.",
+          "false": "Dato lo stesso input, un programma single-thread può produrre sequenze di esecuzione diverse."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Dato lo stesso input, la sequenza delle linee di esecuzione di un programma single-thread è:",
+          "options": [
+            "Casuale",
+            "Certa e prevedibile",
+            "Dipende dal sistema operativo",
+            "Impossibile da determinare"
+          ],
+          "answer": 1
+        },
+        {
+          "type": "filler",
+          "text": "La sequenza delle linee di esecuzione è ____ dato un determinato ____."
+        }
+      ]
+    },
+    {
+      "concept": "Prevedibilità con input noto",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "Se è noto l'input, sappiamo con certezza quale sarà la sequenza della linea di esecuzione.",
+          "false": "Anche conoscendo l'input, non possiamo sapere quale sarà la sequenza della linea di esecuzione."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Quando è possibile conoscere con certezza la sequenza della linea di esecuzione?",
+          "options": [
+            "Mai, è sempre casuale",
+            "Solo nei programmi senza funzioni",
+            "Quando l'input è noto",
+            "Solo nei programmi senza loop"
+          ],
+          "answer": 2
+        },
+        {
+          "type": "filler",
+          "text": "Se è noto l'____, sappiamo con ____ quale sarà la sequenza della linea di esecuzione."
+        }
+      ]
+    },
+    {
+      "concept": "Flusso sequenziale top-down",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "In un codice senza loop, la prossima linea di esecuzione sarà sempre sotto quella attuale.",
+          "false": "In un codice senza loop, la prossima linea di esecuzione può trovarsi sopra quella attuale."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "In uno script senza loop, la linea di esecuzione si muove:",
+          "options": [
+            "Solo verso il basso (top-down)",
+            "In modo casuale",
+            "Solo verso l'alto",
+            "Alternando alto e basso"
+          ],
+          "answer": 0
+        },
+        {
+          "type": "filler",
+          "text": "In assenza di loop, la prossima linea sarà sicuramente ____ quella attuale, seguendo un flusso ____."
+        }
+      ]
+    },
+    {
+      "concept": "Eccezione al flusso top-down: i loop",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "Nei loop, la linea di esecuzione può tornare a una linea precedente (verso l'alto).",
+          "false": "Nei loop, la linea di esecuzione procede sempre verso il basso senza mai tornare indietro."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Quale costrutto rappresenta un'eccezione al flusso sequenziale top-down?",
+          "options": [
+            "if/else",
+            "I loop (while, for)",
+            "Le funzioni print()",
+            "L'assegnazione di variabili"
+          ],
+          "answer": 1
+        },
+        {
+          "type": "filler",
+          "text": "Il flusso top-down non è sempre vero, ad esempio nei ____ la linea di esecuzione può tornare ____."
+        }
+      ]
+    },
+    {
+      "concept": "Ingresso nel ciclo while (condizione vera)",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "Si entra nel corpo del ciclo while solo quando la condizione è vera.",
+          "false": "Si entra nel corpo del ciclo while anche quando la condizione è falsa."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Quando si entra nel corpo di un ciclo while?",
+          "options": [
+            "Sempre, almeno una volta",
+            "Solo quando la condizione è falsa",
+            "Solo quando la condizione è vera",
+            "Solo se il programma è in modalità debug"
+          ],
+          "answer": 2
+        },
+        {
+          "type": "filler",
+          "text": "Si ____ nel while quando la ____ è vera."
+        }
+      ]
+    },
+    {
+      "concept": "Ritorno all'inizio del loop (salto all'indietro)",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "In un ciclo while, alla fine del corpo la linea di esecuzione torna alla condizione del while.",
+          "false": "In un ciclo while, alla fine del corpo la linea di esecuzione avanza alla linea successiva dopo il while."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Cosa succede alla linea di esecuzione alla fine del corpo di un while?",
+          "options": [
+            "Il programma termina",
+            "Avanza alla linea successiva dopo il while",
+            "Torna alla linea della condizione del while",
+            "Salta all'inizio del programma"
+          ],
+          "answer": 2
+        },
+        {
+          "type": "filler",
+          "text": "Alla fine del corpo del while, la linea di esecuzione ____ alla linea della condizione, ovvero torna ____."
+        }
+      ]
+    },
+    {
+      "concept": "Determinismo assoluto in single-thread",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "Noto l'input, la sequenza della linea di esecuzione è SEMPRE prevedibile al 100% in un programma single-thread.",
+          "false": "Anche con input noto, la sequenza della linea di esecuzione non è mai prevedibile al 100%."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "In un programma single-thread con input noto, la prevedibilità della sequenza di esecuzione è:",
+          "options": [
+            "Impossibile da determinare",
+            "Prevedibile solo in parte",
+            "Sempre prevedibile al 100%",
+            "Prevedibile solo senza loop"
+          ],
+          "answer": 2
+        },
+        {
+          "type": "filler",
+          "text": "Noto l'input, la sequenza della linea di esecuzione è ____ prevedibile al ____."
+        }
+      ]
+    },
+    {
+      "concept": "Esistenza del main-thread in ogni processo",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "Ogni processo ha almeno un thread, detto main-thread.",
+          "false": "Un processo può esistere senza alcun thread."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Qual è il numero minimo di thread in un processo?",
+          "options": [
+            "Zero, un processo può non avere thread",
+            "Uno, il main-thread",
+            "Due, main-thread e un thread di sistema",
+            "Dipende dal sistema operativo"
+          ],
+          "answer": 1
+        },
+        {
+          "type": "filler",
+          "text": "Ogni ____ ha almeno un thread, detto ____."
+        }
+      ]
+    },
+    {
+      "concept": "Creazione di un thread aggiuntivo",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "Quando si crea un nuovo thread, il main-thread continua ad esistere e ad eseguire il proprio codice.",
+          "false": "Quando si crea un nuovo thread, il main-thread cessa di esistere."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Quando uno script crea un nuovo thread, cosa succede al main-thread?",
+          "options": [
+            "Il main-thread viene sostituito dal nuovo thread",
+            "Il main-thread si blocca fino alla fine del nuovo thread",
+            "Il main-thread continua ad esistere e ad eseguire il proprio codice",
+            "Il main-thread viene duplicato"
+          ],
+          "answer": 2
+        },
+        {
+          "type": "filler",
+          "text": "Lo script crea un ____ oltre il sempre-presente ____."
+        }
+      ]
+    },
+    {
+      "concept": "Istante di creazione del thread (t1.start)",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "Un nuovo thread inizia ad eseguire codice nel momento in cui viene chiamato t1.start().",
+          "false": "Un nuovo thread inizia ad eseguire codice nel momento in cui viene creato l'oggetto Thread()."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "In quale momento un thread inizia la propria esecuzione?",
+          "options": [
+            "Quando viene creato l'oggetto Thread()",
+            "Quando viene chiamato t1.start()",
+            "Quando il main-thread termina",
+            "Quando viene importata la libreria threading"
+          ],
+          "answer": 1
+        },
+        {
+          "type": "filler",
+          "text": "Il nuovo thread viene ____ quando si chiama il metodo ____."
+        }
+      ]
+    },
+    {
+      "concept": "Ciclo di esecuzione del main-thread e del thread secondario",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "Il main-thread e il thread secondario eseguono ciascuno il proprio ciclo di istruzioni in modo indipendente.",
+          "false": "Il main-thread e il thread secondario eseguono le stesse istruzioni nello stesso ordine."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Nell'esempio con due thread, cosa esegue il main-thread?",
+          "options": [
+            "La funzione thread_1()",
+            "Il ciclo while True con print e sleep nel corpo principale",
+            "Nessuna istruzione, attende il thread secondario",
+            "Solo l'istruzione t1.start()"
+          ],
+          "answer": 1
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Quale codice esegue il thread-1 nell'esempio?",
+          "options": [
+            "Lo stesso ciclo while del main-thread",
+            "Il ciclo while True dentro la funzione thread_1()",
+            "L'istruzione t1.start() in loop",
+            "Nessun codice, attende istruzioni dal main-thread"
+          ],
+          "answer": 1
+        },
+        {
+          "type": "filler",
+          "text": "Il main-thread eseguirà ____ la sequenza del proprio ciclo, mentre il thread-1 eseguirà la funzione ____."
+        }
+      ]
+    },
+    {
+      "concept": "Moltiplicazione delle linee di esecuzione",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "Quando si crea un thread aggiuntivo, le linee di esecuzione diventano 2: una per ogni thread.",
+          "false": "Quando si crea un thread aggiuntivo, resta comunque una sola linea di esecuzione condivisa."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Con un main-thread e un thread aggiuntivo, quante linee di esecuzione ci sono?",
+          "options": [
+            "Una sola, condivisa tra i thread",
+            "Due, una per ogni thread",
+            "Tre, una per ogni thread più una di sistema",
+            "Dipende dal numero di istruzioni"
+          ],
+          "answer": 1
+        },
+        {
+          "type": "filler",
+          "text": "Le linee di esecuzione sono diventate ____, una per ogni ____."
+        }
+      ]
+    },
+    {
+      "concept": "Differenza tra definizione e esecuzione di una funzione",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "Le linee di definizione di una funzione (def ...) non vengono eseguite ma vengono lette dall'interprete Python.",
+          "false": "Le linee di definizione di una funzione (def ...) vengono eseguite come le altre linee di codice."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Cosa succede quando l'interprete Python incontra le linee di definizione di una funzione (def ...)?",
+          "options": [
+            "Le esegue immediatamente",
+            "Le ignora completamente",
+            "Le legge e le registra, ma non le esegue",
+            "Genera un errore se la funzione non viene mai chiamata"
+          ],
+          "answer": 2
+        },
+        {
+          "type": "filler",
+          "text": "Le linee di definizione della funzione non vengono ____ ma vengono ____ dall'interprete Python."
+        }
+      ]
+    },
+    {
+      "concept": "Concorrenza: una linea di esecuzione per thread",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "Con più thread, si hanno più linee di esecuzione contemporaneamente, una per ciascun thread.",
+          "false": "Con più thread, si ha comunque una sola linea di esecuzione che passa da un thread all'altro."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "In un programma multi-thread, le linee di esecuzione sono:",
+          "options": [
+            "Una sola, eseguita a turni da ciascun thread",
+            "Multiple e contemporanee, una per ciascun thread",
+            "Multiple ma sequenziali, una dopo l'altra",
+            "Zero, i thread non hanno linee di esecuzione"
+          ],
+          "answer": 1
+        },
+        {
+          "type": "filler",
+          "text": "Con più thread si hanno più linee di esecuzione ____, una per ciascun ____."
+        }
+      ]
+    },
+    {
+      "concept": "Non-determinismo nel multi-threading",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "Quando si hanno più thread, diventa IMPOSSIBILE prevedere la prossima linea di esecuzione.",
+          "false": "Quando si hanno più thread, la prossima linea di esecuzione è comunque prevedibile con certezza."
+        },
+        {
+          "type": "trueFalse",
+          "true": "Con due thread attivi, non possiamo prevedere quale delle due linee sarà eseguita per prima.",
+          "false": "Con due thread attivi, la linea del main-thread viene sempre eseguita per prima."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "In un programma multi-thread, la prossima linea di esecuzione è:",
+          "options": [
+            "Sempre prevedibile, come in single-thread",
+            "Prevedibile solo con input noto",
+            "Impossibile da prevedere",
+            "Prevedibile solo se i thread sono sincronizzati"
+          ],
+          "answer": 2
+        },
+        {
+          "type": "filler",
+          "text": "Quando si hanno più thread, diventa ____ prevedere la ____ linea di esecuzione."
+        }
+      ]
+    },
+    {
+      "concept": "Scheduling delegato alla libreria di threading",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "La scelta di quale thread eseguire dipende dalla libreria di threading, non dal programmatore.",
+          "false": "È il programmatore a decidere quale thread verrà eseguito per prossimo."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Chi decide quale thread viene eseguito per prossimo?",
+          "options": [
+            "Il programmatore, tramite istruzioni esplicite",
+            "La libreria di threading",
+            "Il thread stesso",
+            "L'utente del programma"
+          ],
+          "answer": 1
+        },
+        {
+          "type": "filler",
+          "text": "La scelta di quale thread eseguire ____ dalla libreria di ____."
+        }
+      ]
+    },
+    {
+      "concept": "Garanzia di esecuzione per tutti i thread",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "La libreria di threading garantisce che ciascun thread avrà modo di eseguirsi.",
+          "false": "La libreria di threading potrebbe non eseguire mai alcuni thread creati."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Cosa garantisce la libreria di threading riguardo ai thread creati?",
+          "options": [
+            "Che vengano eseguiti in ordine di creazione",
+            "Che ciascun thread avrà modo di eseguirsi",
+            "Che il main-thread venga eseguito per primo",
+            "Che tutti i thread terminino nello stesso momento"
+          ],
+          "answer": 1
+        },
+        {
+          "type": "filler",
+          "text": "La libreria ____ a ciascun thread di ____."
+        }
+      ]
+    },
+    {
+      "concept": "Imprevedibilità dello scheduling",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "La libreria di threading non permette di prevedere quale sarà la prossima linea di esecuzione.",
+          "false": "La libreria di threading permette di prevedere l'ordine di esecuzione dei thread."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Cosa NON permette la libreria di threading?",
+          "options": [
+            "Creare nuovi thread",
+            "Prevedere quale sarà la prossima linea di esecuzione",
+            "Eseguire funzioni in un thread separato",
+            "Terminare un thread"
+          ],
+          "answer": 1
+        },
+        {
+          "type": "filler",
+          "text": "La libreria di threading non ____ di prevedere quale sarà la prossima linea di esecuzione ad essere ____."
+        }
+      ]
+    }
+  ]
+}

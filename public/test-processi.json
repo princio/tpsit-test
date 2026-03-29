@@ -1,0 +1,114 @@
+{
+  "title": "Verifica TPSIT - Processi e Memoria",
+  "subtitle": "Classe 5A - A.S. 2025/2026",
+  "instructions": "Rispondi a tutte le domande. Non sono ammessi appunti o dispositivi elettronici.",
+  "questions": [
+    {
+      "type": "trueFalse",
+      "text": "Il programma utilizza la CPU.",
+      "answer": false
+    },
+    {
+      "type": "trueFalse",
+      "text": "Il programma può evolvere.",
+      "answer": false
+    },
+    {
+      "type": "trueFalse",
+      "text": "Il processo viene caricato in RAM perché nell'HDD non potrebbe essere dinamico.",
+      "answer": false
+    },
+    {
+      "type": "filler",
+      "text": "Il processo è meglio caricarlo in RAM perché l'HDD è molto più ________ della ________.",
+      "answer": ["lento", "CPU"]
+    },
+    {
+      "type": "trueFalse",
+      "text": "Il processo può accedere direttamente al proprio PCB.",
+      "answer": false
+    },
+    {
+      "type": "trueFalse",
+      "text": "Il processo può accedere direttamente al proprio PCB solo tramite il Sistema Operativo.",
+      "answer": true
+    },
+    {
+      "type": "filler",
+      "text": "Il processo è un'entità in _____________.",
+      "answer": "evoluzione"
+    },
+    {
+      "type": "trueFalse",
+      "text": "Ogni processo ha il suo spazio di indirizzamento.",
+      "answer": true
+    },
+    {
+      "type": "trueFalse",
+      "text": "Ogni processo può accedere al suo spazio di indirizzamento soltanto.",
+      "answer": true
+    },
+    {
+      "type": "trueFalse",
+      "text": "Ogni processo può accedere allo spazio di indirizzamento di qualsiasi altro processo.",
+      "answer": false
+    },
+    {
+      "type": "multipleChoice",
+      "content": [
+        { "kind": "text", "value": "In quale area di memoria viene salvata la seguente dichiarazione?" },
+        { "kind": "code", "language": "c", "value": "int a[5];" }
+      ],
+      "options": ["stack", "heap", "data segment", "code segment"],
+      "answer": "stack"
+    },
+    {
+      "type": "filler",
+      "text": "La memoria `stack` in italiano significa ___________.  La memoria `heap` in italiano significa ___________.",
+      "answer": ["pila", "mucchio"]
+    },
+    {
+      "type": "trueFalse",
+      "text": "Accedere al contenuto di una variabile nella memoria `stack` è molto più lento che accedere ad una variabile nella memoria `heap`.",
+      "answer": false
+    },
+    {
+      "type": "trueFalse",
+      "text": "Accedere al contenuto di una variabile nella memoria `heap` è molto più lento che accedere ad una variabile nella memoria `stack`.",
+      "answer": false
+    },
+    {
+      "type": "trueFalse",
+      "text": "Accedere al contenuto di una variabile nella memoria `heap` è veloce tanto quanto accedere ad una variabile nella memoria `stack`.",
+      "answer": true
+    },
+    {
+      "type": "filler",
+      "text": "La memoria dello `stack` è molto più veloce della memoria `heap` per la fase di __________________ di una variabile.",
+      "answer": "allocazione"
+    },
+    {
+      "type": "trueFalse",
+      "text": "La memoria `stack` è una memoria contigua associata ad un processo in grandezza fissa.",
+      "answer": true
+    },
+    {
+      "type": "filler",
+      "text": "Scrivere nel codice `int a;` significa _______ la variabile `a`.",
+      "answer": "allocare"
+    },
+    {
+      "type": "trueFalse",
+      "text": "L'allocazione di una variabile significa dargli un posto nella RAM, stabilito dall'indirizzo, e porzione di RAM grande quanto le sue dimensioni.",
+      "answer": true
+    },
+    {
+      "type": "filler",
+      "content": [
+        { "kind": "text", "value": "Se la dimensione di `int` è 8 byte, quanto spazio occupa la variabile `a`? _______" },
+        { "kind": "code", "language": "c", "value": "int a[5];" }
+      ],
+      "answer": 8
+    }
+  ]
+}
