@@ -27,10 +27,12 @@
     width: 210mm;
     height: 297mm;
     min-height: 0;
-    padding: 10mm 15mm;
+    padding-top: 10mm;
+    padding-left: 15mm;
+    padding-right: 15mm;
+    /* paddingBottom set via inline style */
     box-sizing: border-box;
     box-shadow: none !important;
-    overflow: hidden;
     page-break-after: always;
     break-after: page;
   }

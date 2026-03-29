@@ -1,31 +1,29 @@
-import { useRef, useState, useLayoutEffect } from 'react'
+import { useRef, useState, useLayoutEffect, useCallback } from 'react'
 import QuestionBlock from './QuestionBlock'
 
 function Header({ test }) {
   return (
-    <>
-      <header className="test-header">
-        <div className="header-title">
-          <h1>{test.title}</h1>
+    <header className="test-header">
+      <div className="header-title">
+        <h1>{test.title}</h1>
+      </div>
+      <div className="header-fields">
+        <div className="header-field-nome">
+          <span className="field-label">Nome</span>
         </div>
-        <div className="header-fields">
-          <div className="header-field-nome">
-            <span className="field-label">Nome</span>
+        <div className="header-field-bottom">
+          <div className="header-field-data">
+            <span className="field-label">Data</span>
           </div>
-          <div className="header-field-bottom">
-            <div className="header-field-data">
-              <span className="field-label">Data</span>
-            </div>
-            <div className="header-field-classe">
-              <span className="field-label">Classe</span>
-            </div>
+          <div className="header-field-classe">
+            <span className="field-label">Classe</span>
           </div>
         </div>
-        <div className="header-voto">
-          <span className="field-label">Voto</span>
-        </div>
-      </header>
-    </>
+      </div>
+      <div className="header-voto">
+        <span className="field-label">Voto</span>
+      </div>
+    </header>
   )
 }
 
@@ -43,62 +41,114 @@ function flattenQuestions(questions) {
   return flat
 }
 
-export default function TestSheet({ test, onPagesCount }) {
-  const measurePageRef = useRef(null)
+export default function TestSheet({ test, fontSize = 13, gap = 8, marginBottom = 10, fontFamily = 'Georgia, "Times New Roman", serif', onPagesCount }) {
+  const measureRef = useRef(null)
+  const contentRef = useRef(null)
   const headerRef = useRef(null)
+  const pagesRef = useRef(null)
   const [pages, setPages] = useState(null)
+  const [debugInfo, setDebugInfo] = useState(null)
 
   const flatQuestions = flattenQuestions(test.questions)
 
+  // Reset pages synchronously when layout params change → forces measure pass
   useLayoutEffect(() => {
-    if (!measurePageRef.current || !headerRef.current) return
+    setPages(null)
+  }, [test, fontSize, gap, marginBottom, fontFamily])
 
-    // Altezza interna disponibile = altezza del .page meno padding top+bottom
-    const pageEl = measurePageRef.current
-    const style = getComputedStyle(pageEl)
-    const paddingTop = parseFloat(style.paddingTop)
-    const paddingBottom = parseFloat(style.paddingBottom)
-    const pageHeight = pageEl.getBoundingClientRect().height - paddingTop - paddingBottom - 10
+  // Phase 1: Measure individual question heights and do initial pagination
+  useLayoutEffect(() => {
+    if (pages !== null) return
+    if (!measureRef.current || !contentRef.current || !headerRef.current) return
+
+    const availableHeight = contentRef.current.getBoundingClientRect().height
+
+    const headerCs = getComputedStyle(headerRef.current)
     const headerHeight = headerRef.current.getBoundingClientRect().height
+      + parseFloat(headerCs.marginBottom)
 
-    const questionEls = measurePageRef.current.querySelectorAll('[data-q-index]')
-    const gap = parseFloat(getComputedStyle(measurePageRef.current.querySelector('.questions-list')).gap) || 8
+    const questionEls = contentRef.current.querySelectorAll('[data-q-index]')
 
-    const pages = []
+    const result = []
     let currentPage = []
     let usedHeight = headerHeight
 
     questionEls.forEach((el, i) => {
-      const h = el.getBoundingClientRect().height + gap
-      if (usedHeight + h > pageHeight && currentPage.length > 0) {
-        pages.push(currentPage)
+      const qHeight = el.getBoundingClientRect().height
+      const totalH = currentPage.length > 0 ? qHeight + gap : qHeight
+
+      if (usedHeight + totalH > availableHeight && currentPage.length > 0) {
+        result.push(currentPage)
         currentPage = [i]
-        usedHeight = h
+        usedHeight = qHeight
       } else {
         currentPage.push(i)
-        usedHeight += h
+        usedHeight += totalH
       }
     })
-    if (currentPage.length > 0) pages.push(currentPage)
+    if (currentPage.length > 0) result.push(currentPage)
 
-    setPages(pages)
-    onPagesCount?.(pages.length)
-  }, [test])
+    setPages(result)
+    setDebugInfo({
+      availableHeight: Math.round(availableHeight),
+      headerHeight: Math.round(headerHeight),
+    })
+    onPagesCount?.(result.length)
+  }, [pages])
 
-  // Measure pass: una singola .page invisibile, stesse dimensioni reali
+  // Phase 2: After render, verify each page-content doesn't overflow.
+  // If it does, move last question to next page.
+  const verifyAndFix = useCallback(() => {
+    if (!pagesRef.current || !pages) return
+    const contentEls = pagesRef.current.querySelectorAll('.page-content')
+    let fixed = false
+
+    const newPages = pages.map(p => [...p])
+
+    for (let i = 0; i < contentEls.length; i++) {
+      const el = contentEls[i]
+      if (el.scrollHeight > el.clientHeight + 1) {
+        // Overflow: move last question to next page
+        if (newPages[i].length <= 1) continue // can't move the only question
+        const moved = newPages[i].pop()
+        if (i + 1 < newPages.length) {
+          newPages[i + 1].unshift(moved)
+        } else {
+          newPages.push([moved])
+        }
+        fixed = true
+      }
+    }
+
+    if (fixed) {
+      setPages(newPages)
+      onPagesCount?.(newPages.length)
+    }
+  }, [pages, onPagesCount])
+
+  useLayoutEffect(() => {
+    if (pages) verifyAndFix()
+  }, [pages, verifyAndFix])
+
+  const pageStyle = { fontSize: `${fontSize}px`, fontFamily }
+  const contentStyle = { height: `calc(297mm - 10mm - ${marginBottom}mm)`, overflow: 'visible' }
+
+  // Measure pass
   if (!pages) {
     return (
-      <div className="pages-container" style={{ visibility: 'hidden', pointerEvents: 'none' }}>
-        <div className="page" style={{ height: '297mm', overflow: 'hidden' }} ref={measurePageRef}>
-          <div ref={headerRef}>
-            <Header test={test} />
-          </div>
-          <div className="questions-list">
-            {flatQuestions.map(({ question, index }, i) => (
-              <div key={i} data-q-index={i}>
-                <QuestionBlock question={question} index={index} />
-              </div>
-            ))}
+      <div className="pages-container" style={{ visibility: 'hidden', pointerEvents: 'none', position: 'fixed', top: 0, left: 0 }}>
+        <div className="page" style={{ ...pageStyle, height: '297mm' }} ref={measureRef}>
+          <div ref={contentRef} style={contentStyle}>
+            <div ref={headerRef}>
+              <Header test={test} />
+            </div>
+            <div className="questions-list" style={{ gap: `${gap}px` }}>
+              {flatQuestions.map(({ question, index }, i) => (
+                <div key={i} data-q-index={i}>
+                  <QuestionBlock question={question} index={index} />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -106,17 +156,26 @@ export default function TestSheet({ test, onPagesCount }) {
   }
 
   return (
-    <div className="pages-container">
+    <div className="pages-container" ref={pagesRef}>
       {pages.map((pageIndices, pageNum) => (
-        <div key={pageNum} className="page">
-          {pageNum === 0 && <Header test={test} />}
-          <div className="questions-list">
-            {pageIndices.map(i => {
-              const { question, index } = flatQuestions[i]
-              return <QuestionBlock key={i} question={question} index={index} />
-            })}
+        <div key={pageNum} className="page" style={pageStyle}>
+          <div className="page-content" style={contentStyle}>
+            {pageNum === 0 && <Header test={test} />}
+            <div className="questions-list" style={{ gap: `${gap}px` }}>
+              {pageIndices.map(i => {
+                const { question, index } = flatQuestions[i]
+                return <QuestionBlock key={i} question={question} index={index} />
+              })}
+            </div>
           </div>
-          <div className="page-number no-print">{pageNum + 1} / {pages.length}</div>
+          <div className="page-number no-print">
+            {pageNum + 1} / {pages.length} — {pageIndices.length} domande
+            {debugInfo && pageNum === 0 && (
+              <span style={{ marginLeft: '1rem', fontSize: '0.6rem', color: '#888' }}>
+                contenuto: {debugInfo.availableHeight}px | header: {debugInfo.headerHeight}px
+              </span>
+            )}
+          </div>
         </div>
       ))}
     </div>

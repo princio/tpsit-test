@@ -25,33 +25,13 @@
     },
     {
       "type": "trueFalse",
-      "text": "Il processo può accedere direttamente al proprio PCB.",
-      "answer": false
-    },
-    {
-      "type": "trueFalse",
-      "text": "Il processo può accedere direttamente al proprio PCB solo tramite il Sistema Operativo.",
+      "text": "Il processo può accedere al proprio PCB solo attraverso le chiamate di sistema.",
       "answer": true
     },
     {
       "type": "filler",
       "text": "Il processo è un'entità in _____________.",
       "answer": "evoluzione"
-    },
-    {
-      "type": "trueFalse",
-      "text": "Ogni processo ha il suo spazio di indirizzamento.",
-      "answer": true
-    },
-    {
-      "type": "trueFalse",
-      "text": "Ogni processo può accedere al suo spazio di indirizzamento soltanto.",
-      "answer": true
-    },
-    {
-      "type": "trueFalse",
-      "text": "Ogni processo può accedere allo spazio di indirizzamento di qualsiasi altro processo.",
-      "answer": false
     },
     {
       "type": "multipleChoice",
@@ -68,19 +48,15 @@
       "answer": ["pila", "mucchio"]
     },
     {
-      "type": "trueFalse",
-      "text": "Accedere al contenuto di una variabile nella memoria `stack` è molto più lento che accedere ad una variabile nella memoria `heap`.",
-      "answer": false
-    },
-    {
-      "type": "trueFalse",
-      "text": "Accedere al contenuto di una variabile nella memoria `heap` è molto più lento che accedere ad una variabile nella memoria `stack`.",
-      "answer": false
-    },
-    {
-      "type": "trueFalse",
-      "text": "Accedere al contenuto di una variabile nella memoria `heap` è veloce tanto quanto accedere ad una variabile nella memoria `stack`.",
-      "answer": true
+      "type": "multipleChoice",
+      "text": "Accedere al contenuto di una variabile nella memoria `heap` rispetto ad accedere ad una variabile nella memoria `stack` è:",
+      "options": [
+        "Ugualmente veloce",
+        "Più lenta",
+        "Più veloce",
+        "Dipende dal tipo di variabile"
+      ],
+      "answer": "Uguale"
     },
     {
       "type": "filler",
@@ -89,18 +65,24 @@
     },
     {
       "type": "trueFalse",
-      "text": "La memoria `stack` è una memoria contigua associata ad un processo in grandezza fissa.",
-      "answer": true
+      "text": "La memoria `stack` è una memoria contigua di grandezza variabile associata ad ogni processo.",
+      "answer": false
     },
     {
       "type": "filler",
-      "text": "Scrivere nel codice `int a;` significa _______ la variabile `a`.",
+      "text": "L'istruzione `int a;` equivale ad _________ la variabile `a`.",
       "answer": "allocare"
     },
     {
-      "type": "trueFalse",
-      "text": "L'allocazione di una variabile significa dargli un posto nella RAM, stabilito dall'indirizzo, e porzione di RAM grande quanto le sue dimensioni.",
-      "answer": true
+      "type": "multipleChoice",
+      "text": "Cosa significa allocare una variabile?",
+      "options": [
+        "Assegnargli un posto nella RAM caratterizzato dall'indirizzo e dalla dimensione",
+        "Assegnargli un posto nella RAM caratterizzato dall'indirizzo e dal valore",
+        "Assegnargli un posto nella RAM caratterizzato dal nome e dalla dimensione",
+        "Assegnargli un posto nella RAM caratterizzato dal tipo e dal valore iniziale"
+      ],
+      "answer": "Assegnargli un posto nella RAM caratterizzato dall'indirizzo e dalla dimensione"
     },
     {
       "type": "filler",
@@ -112,7 +94,12 @@
     },
     {
       "type": "filler",
-      "text": "Lo spazio di indirizzamento del processo è composto da una parte _________ e una _________. La parte _________ è suddivisa in __________ e ____________.",
+      "content": [
+      {
+        "kind": "text",
+        "value": "Lo spazio di indirizzamento del processo è composto da una parte _________ e una _________."},
+        {"kind": "text", "value": "La parte _________ è suddivisa in __________ e ____________."}
+      ],
       "answer": ["statica", "dinamica", "dinamica", "stack", "heap"]
     },
     {
@@ -127,8 +114,62 @@
     },
     {
       "type": "trueFalse",
-      "text": "La memoria `heap` ha dimensione limitata.",
+      "text": "La memoria heap utilizzata da un processo può crescere dinamicamente durante l'esecuzione del processo.",
+      "answer": true
+    },
+    {
+      "type": "trueFalse",
+      "text": "Due processi possono condividere lo spazio di indirizzamento.",
       "answer": false
+    },
+    {
+      "type": "trueFalse",
+      "content": [
+        {"kind": "text", "value": "Un programma ha il seguente codice:"},
+        {"kind": "code", "value": "int v=10;"},
+        {"kind": "text", "value": "Esso viene eseguito due volte creando due processi A e B."},
+        {"kind": "text", "value": "La variabile `v` del processo A è la stessa del processo B."}
+      ],
+      "answer": false
+    },
+    {
+      "type": "filler",
+      "content": [
+        {"kind": "text", "value": "Un programma ha il seguente codice:"},
+        {"kind": "code", "value": "int v=10;"},
+        {"kind": "text", "value": "Esso viene eseguito due volte creando due processi A e B."},
+        {"kind": "text", "value": "La variabile `v` del processo A ha stesso ________ ma diverso ________ del processo B."}
+      ],
+      "answer": [ "valore", "indirizzo" ]
+    },
+    {
+      "type": "multipleChoice",
+      "text": "Cosa caratterizza lo spazio di indirizzamento di un processo?",
+      "options": [
+        "È privato e isolato dagli altri processi",
+        "È condiviso con tutti i processi attivi",
+        "È condiviso solo con i processi dello stesso utente",
+        "È gestito direttamente dal programma in esecuzione"
+      ],
+      "answer": "È privato e isolato dagli altri processi"
+    },
+    {
+      "type": "filler",
+      "content": [
+        {"kind": "text", "value": "Nel seguente codice:"},
+        {"kind": "code", "value": "int* v = malloc(...);"},
+        {"kind": "text", "value": "La variabile `v` viene allocata nella memoria _______________."}
+      ],
+      "answer": "heap"
+    },
+    {
+      "type": "filler",
+      "content": [
+        {"kind": "text", "value": "Nel seguente codice:"},
+        {"kind": "code", "value": "int* v = malloc(...);"},
+        {"kind": "text", "value": "La variabile `v` viene detta _______________."}
+      ],
+      "answer": "puntatore"
     }
   ]
 }
