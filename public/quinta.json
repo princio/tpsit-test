@@ -1,5 +1,5 @@
 {
-    "title": "quinta",
+    "title": "Linee di esecuzione e I/O",
     "questions": [
         {
             "type": "multipleChoice",
@@ -13,13 +13,14 @@
         },
         {
             "type": "filler",
-            "text": "In un processo in esecuzione, ho una _____________________ per ogni ____________________.",
+            "text": "In un processo in esecuzione multi-thread, ho una _____________________ per ogni ____________________.",
             "answer": [
                 "linea di esecuzione",
                 "thread"
             ]
         },
         {
+            "skip": true,
             "type": "filler",
             "text": "Le linee vuote vengono ___________________.",
             "answer": [
@@ -27,6 +28,7 @@
             ]
         },
         {
+            "skip": true,
             "type": "multipleChoice",
             "text": "Come vengono trattate le linee vuote durante l'esecuzione?",
             "options": [
@@ -41,10 +43,6 @@
             "type": "filler",
             "content": [
                 {
-                    "kind": "text",
-                    "value": "Dato il seguente codice:"
-                },
-                {
                     "kind": "code",
                     "language": "python",
                     "value": "def funzione(v):\n    print(v)\nfunzione(input())"
@@ -57,22 +55,10 @@
             "answer": "3, 1, 2, 3"
         },
         {
+            "skip": true,
             "type": "trueFalse",
             "text": "Dopo l'esecuzione di una linea, la linea di esecuzione avanza sicuramente alla linea successiva.",
             "answer": false
-        },
-        {
-            "type": "filler",
-            "text": "Dato un single-thread, la sequenza di esecuzione è ________, dipende solo da ___________.",
-            "answer": [
-                "certa",
-                "valori delle variabili"
-            ]
-        },
-        {
-            "type": "trueFalse",
-            "text": "Dato lo stesso input, un programma single-thread produrrà sempre la stessa sequenza di esecuzione.",
-            "answer": true
         },
         {
             "type": "multipleChoice",
@@ -86,18 +72,17 @@
         },
         {
             "type": "filler",
-            "text": "Ogni _______ ha almeno un thread, detto ________.",
+            "text": "Ogni processo ha almeno un thread, detto ________.",
             "answer": [
-                "processo",
                 "main-thread"
             ]
         },
         {
             "type": "multipleChoice",
-            "text": "Quando viene eseguita la linea che avvia un nuovo thread-1, cosa succede?",
+            "text": "Quando viene eseguita la linea che avvia un nuovo thread _thread-1_, cosa succede?",
             "options": [
                 "Il main-thread si interrompe aspettando che thread-1 termini",
-                "Se nel thread-1 è presente la funzione `sleep` allora l'esecuzione tornerà al main-thread",
+                "Se nel thread-1 è presente la funzione sleep() allora l'esecuzione tornerà al main-thread",
                 "Entrambi i thread continueranno la loro esecuzione alternandosi",
                 "Se nel main-thread è presente una funzione I/O allora l'esecuzione passerà al thread-1."
             ],
@@ -105,8 +90,8 @@
         },
         {
             "type": "filler",
-            "text": "Quando si crea un thread aggiuntivo, _____________________________________.",
-            "answer": "si moltiplicano le linee di esecuzione"
+            "text": "Quando si avvia un nuovo thread, si ________ una ___________ linea di esecuzione.",
+            "answer": [ "crea", "nuova" ]
         },
         {
             "type": "multipleChoice",
@@ -121,36 +106,28 @@
         },
         {
             "type": "filler",
-            "text": "Quando si hanno più thread, diventa ____ prevedere la ____ linea di esecuzione."
-            ,"answer": ["impossibile", "prevedere"]
+            "text": "Con più thread avviati, è ____ prevedere la ____ linea di esecuzione."
+            ,"answer": ["impossibile", "prossima"]
         },
         {
             "type": "multipleChoice",
-            "text": "Con più thread, chi decide quale sarà la prossima linea di esecuzione?",
+            "multi": true,
+            "text": "Seleziona le affermazioni corrette riguardo alla libreria di threading:",
             "options": [
-                "Il programmatore, tramite istruzioni esplicite",
-                "La libreria di threading",
-                "Il thread stesso",
-                "L'utente del programma"
+                "Decide quale sarà la prossima linea di esecuzione",
+                "Garantisce che ciascun thread avrà modo di eseguirsi",
+                "Il programmatore decide esplicitamente la sequenza di esecuzione",
+                "Garantisce che i thread vengano eseguiti in ordine di creazione",
+                "Il thread stesso decide quando eseguirsi",
+                "Garantisce che tutti i thread terminino nello stesso momento"
             ],
-            "answer": 1
-        },
-        {
-            "type": "multipleChoice",
-            "text": "Cosa garantisce la libreria di threading riguardo ai thread creati?",
-            "options": [
-                "Che vengano eseguiti in ordine di creazione",
-                "Che ciascun thread avrà modo di eseguirsi",
-                "Che il main-thread venga eseguito per primo",
-                "Che tutti i thread terminino nello stesso momento"
-            ],
-            "answer": 1
+            "answer": [0, 1]
         },
         {
             "type": "filler",
-            "text": "Una linea di esecuzione si dice bloccata quando è in esecuzione ma _______________________.",
+            "text": "Una linea di esecuzione bloccata non avanza e non ____________ la ___________.",
             "answer": [
-                "non utilizza la CPU"
+                "utilizza", "CPU"
             ]
         },
         {
@@ -165,32 +142,25 @@
             "answer": 1
         },
         {
-            "type": "multipleChoice",
-            "text": "Cosa succede quando Python esegue la funzione input()?",
-            "options": [
-                "La CPU lavora continuamente finché l'utente non risponde",
-                "Il programma termina e si riavvia quando l'utente digita qualcosa",
-                "La linea di esecuzione si blocca in attesa che l'utente prema Invio",
-                "Il programma esegue le istruzioni successive in parallelo"
-            ],
-            "answer": 2
-        },
-        {
             "type": "filler",
             "text": "Durante l'attesa dell'input, la CPU è in stato di ____."
             , "answer": [ "IDLE" ]
         },
         {
-            "type": "trueFalse",
-            "text": "La funzione input():",
+            "type": "multipleChoice",
+            "multi": true,
+            "text": "Seleziona le affermazioni corrette sulla funzione input():",
             "options": [
-                "Ha tre fasi: usa la CPU all'inizio, rimane in attesa, poi usa la CPU alla fine per restituire il risultato.",
-                "Ha un'unica fase continua in cui la CPU elabora i dati dalla tastiera."
-            ]
+                "La linea di esecuzione si blocca in attesa che l'utente prema Invio",
+                "Ha tre fasi: usa la CPU all'inizio, rimane in attesa, poi usa la CPU alla fine",
+                "La CPU lavora continuamente",
+                "Ogni volta che preme un tasto utilizza la CPU"
+            ],
+            "answer": [0, 1]
         },
         {
           "type": "filler",
-          "text": "Nel protocollo ____, la connessione viene stabilita tramite un ____ ."
+          "text": "Nel protocollo ____, la connessione viene stabilita tramite il ____ ."
           , "answer": [ "TCP", "three-way handshake" ]
         },
         {
@@ -220,13 +190,12 @@
           "multi": true,
           "text": "Quali delle seguenti sono funzioni bloccanti in Python?",
           "options": [
-            "`input()`",
-            "`for x in range(10): x += 1`",
-            "`socket.accept()`",
-            "`len()`",
-            "`socket.recv()`"
+            "input()",
+            "for x in range(10): x += 1",
+            "socket.accept()",
+            "len()"
           ],
-          "answer": [0, 2, 4]
+          "answer": [0, 2]
         },
         {
           "type": "multipleChoice",
@@ -255,6 +224,47 @@
             "La accept si sblocca quando arriva l'ACK dal server"
           ],
           "answer": [0, 1, 2]
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Seleziona le affermazioni corrette riguardo allo sblocco di send() e recv().",
+          "options": [
+            "La recv() si sblocca all'arrivo dei dati inviati con la send()",
+            "La send() si sblocca alla ricezione dell'ACK",
+            "La recv() si sblocca quando lo decide il processo.",
+            "La send() si sblocca immediatamente dopo l'invio del pacchetto sulla rete",
+            "La recv() si sblocca per un timeout del sistema operativo",
+            "La send() si sblocca al completamento della recv() sul server"
+          ],
+          "answer": [0, 1]
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Seleziona le affermazioni vere sulle funzioni send() e recv().",
+          "options": [
+            "In entrambe la linea di esecuzione è bloccata",
+            "La CPU lavora continuamente durante tutta l'esecuzione della send()",
+            "La send si sblocca sicuramente successivamente alla recv.",
+            "La CPU viene utilizzata 3 volte nella send, 2 volte nella recv",
+            "La recv() si sblocca quando arriva l'ACK",
+            "In entrambe, la maggior parte del tempo la CPU è in stato di IDLE"
+          ],
+          "answer": [0, 2, 3, 5]
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Seleziona le affermazioni che ritieni vere:",
+          "options": [
+            "Una CPU a 5 GHz esegue circa 5 operazioni al nanosecondo",
+            "La durata di trasmissione di un pacchetto è di millisecondi",
+            "Un millisecondo sono mille nanosecondi",
+            "Un pacchetto compie il giro della Terra (40'000km) in circa due secondi.",
+            "Quando la linea di esecuzione è bloccata, non c'è modo di ottimizzare l'utilizzo della CPU."
+          ],
+          "answer": [0, 1]
         }
     ]
 }

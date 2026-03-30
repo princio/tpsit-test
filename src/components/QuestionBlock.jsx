@@ -3,7 +3,7 @@ import { useTestSheet } from './TestSheetContext'
 
 
 export default function QuestionBlock({ question, index }) {
-  const { fontSize } = useTestSheet()
+  const { fontSize, showAnswers } = useTestSheet()
   const content = question.content
     ? question.content
     : [{ kind: 'text', value: question.text }]
@@ -19,20 +19,27 @@ export default function QuestionBlock({ question, index }) {
             <div className="question-inline-row">
               <ContentRenderer content={content} questionIndex={index} />
               <span className="tf-options">
-                <span className="tf-option">V</span>
-                <span className="tf-option">F</span>
+                <span className={`tf-option${showAnswers && question.answer === true ? ' answer-correct' : ''}`}>V</span>
+                <span className={`tf-option${showAnswers && question.answer === false ? ' answer-correct' : ''}`}>F</span>
               </span>
             </div>
           ) : question.type === 'multipleChoice' ? (
             <div>
               <ContentRenderer content={content} questionIndex={index} />
               <div className="mc-options" style={{ fontSize: `${fontSize}px` }}>
-                {question.options.map((opt, i) => (
-                  <span key={i} className="mc-option">
-                    <span className={question.multi ? 'mc-box mc-box-square' : 'mc-box'} />
-                    {opt}
-                  </span>
-                ))}
+                {question.options.map((opt, i) => {
+                  const isCorrect = showAnswers && (
+                    question.multi
+                      ? Array.isArray(question.answer) && question.answer.includes(i)
+                      : question.answer === i
+                  )
+                  return (
+                    <span key={i} className={`mc-option${isCorrect ? ' answer-correct' : ''}`}>
+                      <span className={question.multi ? 'mc-box mc-box-square' : 'mc-box'} />
+                      {opt}
+                    </span>
+                  )
+                })}
               </div>
             </div>
           ) : question.type === 'orderItems' ? (
@@ -41,14 +48,21 @@ export default function QuestionBlock({ question, index }) {
               <div className="oi-items" style={{ fontSize: `${fontSize}px` }}>
                 {question.items.map((item, i) => (
                   <span key={i} className="oi-item">
-                    <span className="oi-box" />
+                    <span className="oi-box">{showAnswers ? question.answer.indexOf(i) + 1 : ''}</span>
                     {item}
                   </span>
                 ))}
               </div>
             </div>
           ) : (
-            <ContentRenderer content={content} questionIndex={index} />
+            <>
+              <ContentRenderer content={content} questionIndex={index} />
+              {showAnswers && question.answer != null && (
+                <div className="answer-reveal">
+                  {Array.isArray(question.answer) ? question.answer.join(', ') : question.answer}
+                </div>
+              )}
+            </>
           )}
 
           {question.type === 'open' && (

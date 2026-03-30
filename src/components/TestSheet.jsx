@@ -30,19 +30,20 @@ function Header({ test }) {
 
 function flattenQuestions(questions) {
   const flat = []
-  questions.forEach((item, i) => {
+  questions.forEach((item) => {
     if (item.concept && Array.isArray(item.questions)) {
-      item.questions.forEach((q, j) => {
-        flat.push({ question: q, index: j })
+      item.questions.forEach((q) => {
+        if (!q.skip) flat.push({ question: q })
       })
     } else {
-      flat.push({ question: item, index: i })
+      if (!item.skip) flat.push({ question: item })
     }
   })
+  flat.forEach((entry, i) => { entry.index = i })
   return flat
 }
 
-export default function TestSheet({ test, fontSize = 13, gap = 8, marginBottom = 10, fontFamily = 'Georgia, "Times New Roman", serif', onPagesCount }) {
+export default function TestSheet({ test, fontSize = 13, gap = 8, marginBottom = 10, fontFamily = 'Georgia, "Times New Roman", serif', showAnswers = false, onPagesCount }) {
   const measureRef = useRef(null)
   const contentRef = useRef(null)
   const headerRef = useRef(null)
@@ -134,7 +135,7 @@ export default function TestSheet({ test, fontSize = 13, gap = 8, marginBottom =
   const pageStyle = { fontSize: `${fontSize}px`, fontFamily }
   const contentStyle = { height: `calc(297mm - 10mm - ${marginBottom}mm)`, overflow: 'visible' }
 
-  const ctx = { fontSize, gap, marginBottom, fontFamily }
+  const ctx = { fontSize, gap, marginBottom, fontFamily, showAnswers }
 
   // Measure pass
   if (!pages) {

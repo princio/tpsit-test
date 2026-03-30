@@ -225,7 +225,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.4rem 0.8rem;
+  padding: 0.2rem 0.5rem;
   border-right: 1px solid #ccc;
 }
 
@@ -247,14 +247,14 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 0.6rem 0.8rem;
+  padding: 0.3rem 0.5rem;
   border-bottom: 1px solid #ccc;
-  min-height: 2rem;
+  min-height: 1.4rem;
 }
 
 .header-field-bottom {
   display: flex;
-  min-height: 2rem;
+  min-height: 1.4rem;
 }
 
 .header-field-data {
@@ -262,16 +262,16 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 0.6rem 0.8rem;
+  padding: 0.3rem 0.5rem;
   border-right: 1px solid #ccc;
 }
 
 .header-field-classe {
-  flex: 0 0 110px;
+  flex: 0 0 90px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 0.6rem 0.8rem;
+  padding: 0.3rem 0.5rem;
 }
 
 .header-voto {
@@ -279,13 +279,13 @@ body {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  padding: 0.6rem 0.8rem;
-  min-width: 70px;
+  padding: 0.3rem 0.5rem;
+  min-width: 55px;
 }
 
 .field-label {
   font-size: 0.7rem;
-  color: #888;
+  color: #c7c7c7;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -338,8 +338,8 @@ body {
 
 .question-number {
   font-weight: bold;
-  font-size: 0.8rem;
-  min-width: 2.0rem;
+  font-size: 0.6rem;
+  min-width: 1.2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -416,6 +416,30 @@ body {
 .code-block code {
   background: none;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.code-line {
+  display: flex;
+  line-height: 1.25;
+}
+
+.code-line-number {
+  border-right: 1px solid rgb(116, 116, 116);
+  display: inline-block;
+  min-width: 1.4em;
+  padding-right: 0.3em;
+  margin-right: 0.3em;
+  text-align: right;
+  color: #999;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.code-line-content {
+  flex: 1;
+  white-space: pre;
 }
 
 .mermaid-container {
@@ -571,4 +595,25 @@ body {
   flex-shrink: 0;
   font-size: 0.7rem;
   color: #aaa;
+}
+
+/* Answer corrections */
+.answer-correct {
+  background: #d4edda;
+  border-color: #28a745;
+}
+
+.answer-correct .mc-box,
+.answer-correct .tf-option {
+  border-color: #28a745;
+}
+
+.answer-reveal {
+  margin-top: 0.3rem;
+  padding: 0.2rem 0.5rem;
+  background: #d4edda;
+  border: 1px solid #28a745;
+  border-radius: 4px;
+  font-size: 0.85em;
+  color: #155724;
 }

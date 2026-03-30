@@ -61,6 +61,10 @@ function PrintView() {
   const [gap, setGap] = useState(8)
   const [marginBottom, setMarginBottom] = useState(20)
   const [fontFamily, setFontFamily] = useState('Georgia, "Times New Roman", serif')
+  const [showAnswers, setShowAnswers] = useState(false)
+  const [maxPages, setMaxPages] = useState(null)
+  const [fixAttempts, setFixAttempts] = useState({})
+  const [variantKeys, setVariantKeys] = useState({})
 
   const fonts = [
     { label: 'Georgia', value: 'Georgia, "Times New Roman", serif' },
@@ -72,7 +76,7 @@ function PrintView() {
 
   function verifyPages() {
     const errors = []
-    const expectedPerCopy = testData.questions.length
+    const expectedPerCopy = testData.questions.filter(q => !q.skip).length
 
     // Check question count per copy
     const containers = document.querySelectorAll('.pages-container')
@@ -82,6 +86,23 @@ function PrintView() {
         errors.push(`Copia ${c + 1}: ${rendered} domande invece di ${expectedPerCopy}`)
       }
     })
+
+    // Check all copies have the same number of pages
+    const pageCounstArr = Object.values(pageCounts)
+    if (pageCounstArr.length > 1 && new Set(pageCounstArr).size > 1) {
+      const detail = pageCounstArr.map((n, i) => `Copia ${i + 1}: ${n}`).join(', ')
+      errors.push(`Le copie hanno un numero diverso di pagine (${detail})`)
+    }
+
+    // Check maxPages limit
+    if (maxPages) {
+      pageCounstArr.forEach((n, i) => {
+        if (n > maxPages) {
+          const attempts = fixAttempts[i] || 0
+          errors.push(`Copia ${i + 1}: ${n} pagine (limite: ${maxPages}, tentativi: ${attempts}/50)`)
+        }
+      })
+    }
 
     // Check every page-content doesn't overflow
     const pageContents = document.querySelectorAll('.page-content')
@@ -106,9 +127,46 @@ function PrintView() {
   }
 
   function handleGenerate() {
+    const input = prompt('Numero massimo di pagine per copia (vuoto = nessun limite):')
+    const parsed = parseInt(input)
+    const limit = isNaN(parsed) || parsed < 1 ? null : parsed
+    setMaxPages(limit)
+    setFixAttempts({})
+    setPageCounts({})
     const v = Array.from({ length: copies }, () => shuffleTest(testData))
+    const keys = Object.fromEntries(v.map((_, i) => [i, 0]))
+    setVariantKeys(keys)
     setVariants(v)
   }
+
+  // Auto-fix: re-shuffle copies that exceed maxPages
+  useEffect(() => {
+    if (!maxPages || !variants) return
+
+    const ready = variants.every((_, i) => pageCounts[i] != null)
+    if (!ready) return
+
+    const toFix = []
+    for (let i = 0; i < variants.length; i++) {
+      if (pageCounts[i] > maxPages && (fixAttempts[i] || 0) < 50) {
+        toFix.push(i)
+      }
+    }
+
+    if (toFix.length === 0) return
+
+    const newVariants = [...variants]
+    const newAttempts = { ...fixAttempts }
+    const newKeys = { ...variantKeys }
+    for (const idx of toFix) {
+      newVariants[idx] = shuffleTest(testData)
+      newAttempts[idx] = (newAttempts[idx] || 0) + 1
+      newKeys[idx] = (newKeys[idx] || 0) + 1
+    }
+    setFixAttempts(newAttempts)
+    setVariantKeys(newKeys)
+    setVariants(newVariants)
+  }, [pageCounts, maxPages])
 
   function handlePrint() {
     const errors = verifyPages()
@@ -133,6 +191,7 @@ function PrintView() {
             <button className="toolbar-btn-primary" onClick={handleGenerate}>Genera</button>
             <button onClick={handlePrint}>Stampa</button>
             <button onClick={handleVerify}>Verifica</button>
+            <button onClick={() => setShowAnswers(s => !s)}>{showAnswers ? 'Nascondi' : 'Risposte'}</button>
             <label className="toolbar-control">
               Copie
               <input
@@ -196,9 +255,9 @@ function PrintView() {
           const prevCount = pageCounts[i - 1] ?? 0
           const needsBlank = i > 0 && prevCount % 2 !== 0
           return (
-            <div key={i}>
+            <div key={`${i}-${variantKeys[i] || 0}`}>
               {needsBlank && <div className="page page-blank" />}
-              <TestSheet test={v} fontSize={fontSize} gap={gap} marginBottom={marginBottom} fontFamily={fontFamily} onPagesCount={n => setPageCounts(c => ({ ...c, [i]: n }))} />
+              <TestSheet test={v} fontSize={fontSize} gap={gap} marginBottom={marginBottom} fontFamily={fontFamily} showAnswers={showAnswers} onPagesCount={n => setPageCounts(c => ({ ...c, [i]: n }))} />
             </div>
           )
         })

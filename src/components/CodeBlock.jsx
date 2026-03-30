@@ -20,23 +20,35 @@ hljs.registerLanguage('bash', bash)
 
 export default function CodeBlock({ language, value }) {
   const codeRef = useRef(null)
+  const lines = value.split('\n')
 
   useEffect(() => {
-    if (codeRef.current) {
+    if (!codeRef.current) return
+    const codeEls = codeRef.current.querySelectorAll('.code-line-content')
+    lines.forEach((line, i) => {
+      const el = codeEls[i]
+      if (!el) return
       try {
         const result = language && hljs.getLanguage(language)
-          ? hljs.highlight(value, { language })
-          : hljs.highlightAuto(value)
-        codeRef.current.innerHTML = result.value
+          ? hljs.highlight(line || ' ', { language, ignoreIllegals: true })
+          : hljs.highlightAuto(line || ' ')
+        el.innerHTML = result.value
       } catch {
-        codeRef.current.textContent = value
+        el.textContent = line
       }
-    }
+    })
   }, [language, value])
 
   return (
     <pre className="code-block">
-      <code ref={codeRef} className={language ? `language-${language}` : ''} />
+      <code className={language ? `language-${language}` : ''} ref={codeRef}>
+        {lines.map((_, i) => (
+          <span key={i} className="code-line">
+            <span className="code-line-number">{i + 1}</span>
+            <span className="code-line-content" />
+          </span>
+        ))}
+      </code>
     </pre>
   )
 }
