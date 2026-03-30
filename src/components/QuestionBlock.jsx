@@ -56,7 +56,7 @@ export default function QuestionBlock({ question, index }) {
             </div>
           ) : (
             <>
-              <ContentRenderer content={content} questionIndex={index} />
+              <ContentRenderer content={content} questionIndex={index} fillerAnswers={question.type === 'filler' ? question.answer : undefined} />
               {showAnswers && question.answer != null && (
                 <div className="answer-reveal">
                   {Array.isArray(question.answer) ? question.answer.join(', ') : question.answer}

@@ -45,14 +45,14 @@
                 {
                     "kind": "code",
                     "language": "python",
-                    "value": "def funzione(v):\n    print(v)\nfunzione(input())"
+                    "value": "from time import sleep\ndef funzione(v):\n    print(v)\nfunzione(input())"
                 },
                 {
                     "kind": "text",
                     "value": "Scrivi la sequenza delle linee di esecuzione: ____________________"
                 }
             ],
-            "answer": "3, 1, 2, 3"
+            "answer": "1, 4, 3"
         },
         {
             "skip": true,
@@ -132,14 +132,15 @@
         },
         {
             "type": "multipleChoice",
-            "text": "Cosa provoca lo sblocco di una linea di esecuzione bloccata?",
+            "multi": true,
+            "text": "Una linea di esecuzione bloccata.",
             "options": [
-                "Il passaggio di un tempo prestabilito",
-                "Un evento esterno, come la pressione di un tasto",
-                "Il riavvio del programma",
-                "L'intervento del sistema operativo ogni secondo"
+                "Dipende dalla velocità della CPU",
+                "Dipende da un evento \"esterno\"",
+                "Usa intensivamente la CPU",
+                "Di solito dipende da altre periferiche"
             ],
-            "answer": 1
+            "answer": [0, 3]
         },
         {
             "type": "filler",
@@ -216,7 +217,7 @@
           "multi": true,
           "text": "Seleziona le affermazioni vere sulle funzioni connect() e accept().",
           "options": [
-            "In entrambe la linea di esecuzione è bloccata",
+            "In entrambe la linea di esecuzione si blocca",
             "La connect() è sicuramente bloccata per meno tempo della accept()",
             "Nella connect() la CPU viene utilizzata una volta per inviare il SYN e una per elaborare il SYN+ACK inviando l'ACK",
             "La accept viene avviata dal client",
@@ -230,14 +231,15 @@
           "multi": true,
           "text": "Seleziona le affermazioni corrette riguardo allo sblocco di send() e recv().",
           "options": [
-            "La recv() si sblocca all'arrivo dei dati inviati con la send()",
+            "La send() si sblocca all'invio dell'ACK",
+            "La recv() si sblocca all'invio dell'ACK",
             "La send() si sblocca alla ricezione dell'ACK",
-            "La recv() si sblocca quando lo decide il processo.",
-            "La send() si sblocca immediatamente dopo l'invio del pacchetto sulla rete",
-            "La recv() si sblocca per un timeout del sistema operativo",
+            "La recv() si sblocca alla ricezione dell'ACK",
+            "La send() si sblocca immediatamente dopo l'invio del pacchetto",
+            "La recv() si sblocca quando la send() invia il pacchetto",
             "La send() si sblocca al completamento della recv() sul server"
           ],
-          "answer": [0, 1]
+          "answer": [0, 2]
         },
         {
           "type": "multipleChoice",
@@ -249,7 +251,7 @@
             "La send si sblocca sicuramente successivamente alla recv.",
             "La CPU viene utilizzata 3 volte nella send, 2 volte nella recv",
             "La recv() si sblocca quando arriva l'ACK",
-            "In entrambe, la maggior parte del tempo la CPU è in stato di IDLE"
+            "In entrambe, la maggior parte del tempo la CPU è IDLE"
           ],
           "answer": [0, 2, 3, 5]
         },
@@ -261,6 +263,7 @@
             "Una CPU a 5 GHz esegue circa 5 operazioni al nanosecondo",
             "La durata di trasmissione di un pacchetto è di millisecondi",
             "Un millisecondo sono mille nanosecondi",
+            "Un secondo è un miliardo di nanosecondi",
             "Un pacchetto compie il giro della Terra (40'000km) in circa due secondi.",
             "Quando la linea di esecuzione è bloccata, non c'è modo di ottimizzare l'utilizzo della CPU."
           ],
