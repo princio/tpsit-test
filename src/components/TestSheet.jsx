@@ -1,5 +1,6 @@
 import { useRef, useState, useLayoutEffect, useCallback } from 'react'
 import QuestionBlock from './QuestionBlock'
+import { TestSheetProvider } from './TestSheetContext'
 
 function Header({ test }) {
   return (
@@ -133,51 +134,57 @@ export default function TestSheet({ test, fontSize = 13, gap = 8, marginBottom =
   const pageStyle = { fontSize: `${fontSize}px`, fontFamily }
   const contentStyle = { height: `calc(297mm - 10mm - ${marginBottom}mm)`, overflow: 'visible' }
 
+  const ctx = { fontSize, gap, marginBottom, fontFamily }
+
   // Measure pass
   if (!pages) {
     return (
-      <div className="pages-container" style={{ visibility: 'hidden', pointerEvents: 'none', position: 'fixed', top: 0, left: 0 }}>
-        <div className="page" style={{ ...pageStyle, height: '297mm' }} ref={measureRef}>
-          <div ref={contentRef} style={contentStyle}>
-            <div ref={headerRef}>
-              <Header test={test} />
-            </div>
-            <div className="questions-list" style={{ gap: `${gap}px` }}>
-              {flatQuestions.map(({ question, index }, i) => (
-                <div key={i} data-q-index={i}>
-                  <QuestionBlock question={question} index={index} />
-                </div>
-              ))}
+      <TestSheetProvider {...ctx}>
+        <div className="pages-container" style={{ visibility: 'hidden', pointerEvents: 'none', position: 'fixed', top: 0, left: 0 }}>
+          <div className="page" style={{ ...pageStyle, height: '297mm' }} ref={measureRef}>
+            <div ref={contentRef} style={contentStyle}>
+              <div ref={headerRef}>
+                <Header test={test} />
+              </div>
+              <div className="questions-list" style={{ gap: `${gap}px` }}>
+                {flatQuestions.map(({ question, index }, i) => (
+                  <div key={i} data-q-index={i}>
+                    <QuestionBlock question={question} index={index} />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </TestSheetProvider>
     )
   }
 
   return (
-    <div className="pages-container" ref={pagesRef}>
-      {pages.map((pageIndices, pageNum) => (
-        <div key={pageNum} className="page" style={pageStyle}>
-          <div className="page-content" style={contentStyle}>
-            {pageNum === 0 && <Header test={test} />}
-            <div className="questions-list" style={{ gap: `${gap}px` }}>
-              {pageIndices.map(i => {
-                const { question, index } = flatQuestions[i]
-                return <QuestionBlock key={i} question={question} index={index} />
-              })}
+    <TestSheetProvider {...ctx}>
+      <div className="pages-container" ref={pagesRef}>
+        {pages.map((pageIndices, pageNum) => (
+          <div key={pageNum} className="page" style={pageStyle}>
+            <div className="page-content" style={contentStyle}>
+              {pageNum === 0 && <Header test={test} />}
+              <div className="questions-list" style={{ gap: `${gap}px` }}>
+                {pageIndices.map(i => {
+                  const { question, index } = flatQuestions[i]
+                  return <QuestionBlock key={i} question={question} index={index} />
+                })}
+              </div>
+            </div>
+            <div className="page-number no-print">
+              {pageNum + 1} / {pages.length} — {pageIndices.length} domande
+              {debugInfo && pageNum === 0 && (
+                <span style={{ marginLeft: '1rem', fontSize: '0.6rem', color: '#888' }}>
+                  contenuto: {debugInfo.availableHeight}px | header: {debugInfo.headerHeight}px
+                </span>
+              )}
             </div>
           </div>
-          <div className="page-number no-print">
-            {pageNum + 1} / {pages.length} — {pageIndices.length} domande
-            {debugInfo && pageNum === 0 && (
-              <span style={{ marginLeft: '1rem', fontSize: '0.6rem', color: '#888' }}>
-                contenuto: {debugInfo.availableHeight}px | header: {debugInfo.headerHeight}px
-              </span>
-            )}
-          </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    </TestSheetProvider>
   )
 }

@@ -518,7 +518,6 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.3rem 0.6rem;
-  font-size: 0.88rem;
   margin-top: 0.4rem;
 }
 
@@ -538,4 +537,38 @@ body {
   border: 1.5px solid #888;
   border-radius: 50%;
   flex-shrink: 0;
+}
+
+.mc-box-square {
+  border-radius: 2px;
+}
+
+/* Order Items */
+.oi-items {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.3rem 0.6rem;
+  margin-top: 0.4rem;
+}
+
+.oi-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  padding: 0.1rem 0.55rem 0.1rem 0.25rem;
+}
+
+.oi-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 1.5px solid #888;
+  border-radius: 3px;
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  color: #aaa;
 }

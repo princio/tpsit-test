@@ -1,7 +1,9 @@
 import ContentRenderer from './ContentRenderer'
+import { useTestSheet } from './TestSheetContext'
 
 
 export default function QuestionBlock({ question, index }) {
+  const { fontSize } = useTestSheet()
   const content = question.content
     ? question.content
     : [{ kind: 'text', value: question.text }]
@@ -24,11 +26,23 @@ export default function QuestionBlock({ question, index }) {
           ) : question.type === 'multipleChoice' ? (
             <div>
               <ContentRenderer content={content} questionIndex={index} />
-              <div className="mc-options">
+              <div className="mc-options" style={{ fontSize: `${fontSize}px` }}>
                 {question.options.map((opt, i) => (
                   <span key={i} className="mc-option">
-                    <span className="mc-box" />
+                    <span className={question.multi ? 'mc-box mc-box-square' : 'mc-box'} />
                     {opt}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ) : question.type === 'orderItems' ? (
+            <div>
+              <ContentRenderer content={content} questionIndex={index} />
+              <div className="oi-items" style={{ fontSize: `${fontSize}px` }}>
+                {question.items.map((item, i) => (
+                  <span key={i} className="oi-item">
+                    <span className="oi-box" />
+                    {item}
                   </span>
                 ))}
               </div>

@@ -1,0 +1,250 @@
+{
+  "title": "Verifica — connect e accept",
+  "subtitle": "Three-way handshake e blocco della linea di esecuzione",
+  "questions": [
+    {
+      "concept": "Three-way handshake TCP",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "Nel protocollo TCP, la connessione viene stabilita tramite un three-way handshake (stretta di mano a tre vie).",
+          "false": "Nel protocollo TCP, la connessione viene stabilita tramite un singolo pacchetto inviato dal client al server."
+        },
+        {
+          "type": "trueFalse",
+          "true": "Il three-way handshake consiste in tre passaggi: SYN, SYN+ACK e ACK.",
+          "false": "Il three-way handshake consiste in due passaggi: SYN e ACK."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Quanti passaggi compongono il three-way handshake del protocollo TCP?",
+          "options": [
+            "Due: SYN e ACK",
+            "Tre: SYN, SYN+ACK e ACK",
+            "Quattro: SYN, ACK, SYN+ACK e FIN",
+            "Uno: un pacchetto SYN+ACK"
+          ],
+          "answer": 1
+        },
+        {
+          "type": "filler",
+          "text": "Nel protocollo TCP, la connessione viene stabilita tramite un ____ (stretta di mano a ____ vie)."
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Quali delle seguenti affermazioni sul three-way handshake TCP sono vere?",
+          "options": [
+            "Il three-way handshake consiste in tre passaggi: SYN, SYN+ACK e ACK",
+            "Il server invia il primo pacchetto SYN per avviare la connessione",
+            "Con il pacchetto SYN, il client comunica al server il proprio numero di sequenza",
+            "Il three-way handshake consiste in due passaggi: SYN e ACK",
+            "Il server risponde con un pacchetto SYN+ACK contenente sia la conferma del numero del client sia il proprio numero di sequenza",
+            "Il pacchetto SYN+ACK del server contiene solo la conferma del numero di sequenza del client",
+            "Dopo il terzo passo (ACK), la connessione è stabilita e i dati possono essere trasmessi",
+            "Dopo il pacchetto SYN+ACK il server chiude la connessione e ne apre una nuova"
+          ],
+          "answer": [0, 2, 4, 6]
+        }
+      ]
+    },
+    {
+      "concept": "Fase 1: pacchetto SYN dal client",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "Il primo passo del three-way handshake è l'invio di un pacchetto SYN dal client al server.",
+          "false": "Il primo passo del three-way handshake è l'invio di un pacchetto SYN dal server al client."
+        },
+        {
+          "type": "trueFalse",
+          "true": "Con il pacchetto SYN, il client comunica al server il proprio numero di sequenza.",
+          "false": "Con il pacchetto SYN, il client comunica al server il numero di sequenza del server."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Cosa contiene il primo pacchetto SYN inviato dal client?",
+          "options": [
+            "I dati da trasmettere al server",
+            "Il numero di sequenza del client",
+            "Il numero di sequenza del server",
+            "La conferma di ricezione del pacchetto precedente"
+          ],
+          "answer": 1
+        },
+        {
+          "type": "filler",
+          "text": "Il client invia un pacchetto ____ al server dicendo: \"il mio numero di ____ è X\"."
+        }
+      ]
+    },
+    {
+      "concept": "Fase 2: pacchetto SYN+ACK dal server",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "Il server risponde al client con un pacchetto SYN+ACK che contiene sia la conferma del numero di sequenza del client sia il proprio numero di sequenza.",
+          "false": "Il server risponde al client con un pacchetto SYN+ACK che contiene solo la conferma del numero di sequenza del client."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Cosa comunica il server al client nel pacchetto SYN+ACK?",
+          "options": [
+            "Solo il proprio numero di sequenza",
+            "Solo la conferma del numero di sequenza del client",
+            "Sia la conferma del numero del client sia il proprio numero di sequenza",
+            "I dati richiesti dal client"
+          ],
+          "answer": 2
+        },
+        {
+          "type": "filler",
+          "text": "Il server risponde con un pacchetto ____+____ che conferma il numero del client e comunica il proprio."
+        }
+      ]
+    },
+    {
+      "concept": "Fase 3: pacchetto ACK dal client",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "Il terzo passo è l'invio di un pacchetto ACK dal client al server per confermare la ricezione del SYN+ACK.",
+          "false": "Il terzo passo è l'invio di un pacchetto ACK dal server al client per confermare l'inizio della trasmissione dati."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Cosa succede dopo il terzo passo (ACK) del three-way handshake?",
+          "options": [
+            "Il server invia un ulteriore pacchetto di conferma",
+            "La connessione è stabilita e i dati possono essere trasmessi",
+            "Il client deve attendere un timeout prima di trasmettere",
+            "Il server chiude la connessione e ne apre una nuova"
+          ],
+          "answer": 1
+        },
+        {
+          "type": "filler",
+          "text": "Dopo il terzo passo, la ____ è stabilita e i ____ possono essere trasmessi."
+        }
+      ]
+    },
+    {
+      "concept": "Funzione connect() — blocco e uso della CPU",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "Quando viene eseguita la funzione connect(), la linea di esecuzione è bloccata.",
+          "false": "Quando viene eseguita la funzione connect(), la linea di esecuzione continua normalmente senza bloccarsi."
+        },
+        {
+          "type": "trueFalse",
+          "true": "Durante l'esecuzione di connect(), la CPU viene utilizzata due volte: per inviare il SYN e per elaborare il SYN+ACK e inviare l'ACK.",
+          "false": "Durante l'esecuzione di connect(), la CPU viene utilizzata una sola volta: per inviare il pacchetto SYN."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Quante volte la CPU viene utilizzata durante l'esecuzione di connect()?",
+          "options": [
+            "Una volta: per inviare il SYN",
+            "Due volte: per inviare il SYN e per elaborare il SYN+ACK inviando l'ACK",
+            "Tre volte: per SYN, SYN+ACK e ACK",
+            "Continuamente per tutta la durata della connessione"
+          ],
+          "answer": 1
+        },
+        {
+          "type": "filler",
+          "text": "Durante connect(), la CPU viene usata per inviare il pacchetto ____ e successivamente per elaborare il pacchetto ____(+ACK) ricevuto."
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Quali delle seguenti affermazioni sulla funzione connect() sono vere?",
+          "options": [
+            "Durante connect(), la linea di esecuzione è bloccata",
+            "Durante connect(), la linea di esecuzione continua normalmente senza bloccarsi",
+            "La CPU viene utilizzata due volte: per inviare il SYN e per elaborare il SYN+ACK inviando l'ACK",
+            "La CPU viene utilizzata continuamente per tutta la durata della connessione",
+            "La linea di esecuzione si sblocca dopo aver ricevuto il SYN+ACK e inviato l'ACK",
+            "La linea di esecuzione si sblocca subito dopo aver inviato il pacchetto SYN"
+          ],
+          "answer": [0, 2, 4]
+        }
+      ]
+    },
+    {
+      "concept": "Funzione accept() — blocco e uso della CPU",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "Quando viene eseguita la funzione accept(), la linea di esecuzione è bloccata.",
+          "false": "Quando viene eseguita la funzione accept(), la linea di esecuzione rimane libera di eseguire altre istruzioni."
+        },
+        {
+          "type": "trueFalse",
+          "true": "Durante l'esecuzione di accept(), la CPU viene utilizzata tre volte.",
+          "false": "Durante l'esecuzione di accept(), la CPU viene utilizzata due volte."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Quali sono i tre momenti in cui la CPU viene usata durante accept()?",
+          "options": [
+            "Invio SYN, ricezione ACK, trasmissione dati",
+            "Ascolto connessioni, elaborazione SYN e invio SYN+ACK, elaborazione ACK finale",
+            "Invio SYN+ACK, ricezione SYN, chiusura connessione",
+            "Avvio server, autenticazione client, inizio trasmissione"
+          ],
+          "answer": 1
+        },
+        {
+          "type": "filler",
+          "text": "Durante accept(), la CPU viene utilizzata ____ volte: per mettersi in ascolto, per elaborare il ____ e inviare il SYN+ACK, e per elaborare l'ACK finale."
+        }
+      ]
+    },
+    {
+      "concept": "Sblocco della linea di esecuzione in connect() e accept()",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "true": "La linea di esecuzione di connect() si sblocca dopo aver ricevuto il SYN+ACK dal server e inviato l'ACK.",
+          "false": "La linea di esecuzione di connect() si sblocca subito dopo aver inviato il pacchetto SYN."
+        },
+        {
+          "type": "trueFalse",
+          "true": "La linea di esecuzione di accept() si sblocca dopo aver ricevuto l'ACK finale dal client.",
+          "false": "La linea di esecuzione di accept() si sblocca dopo aver inviato il pacchetto SYN+ACK al client."
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Quando si sblocca la linea di esecuzione della funzione accept()?",
+          "options": [
+            "Subito dopo essersi messa in ascolto",
+            "Dopo aver inviato il SYN+ACK",
+            "Dopo aver ricevuto e elaborato l'ACK finale dal client",
+            "Dopo che il client ha iniziato a trasmettere dati"
+          ],
+          "answer": 2
+        },
+        {
+          "type": "filler",
+          "text": "La linea di esecuzione di connect() si sblocca dopo aver elaborato il ____+____ e inviato l'ACK."
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Quali delle seguenti affermazioni sulla funzione accept() sono vere?",
+          "options": [
+            "Durante accept(), la linea di esecuzione è bloccata",
+            "Durante accept(), la linea di esecuzione rimane libera di eseguire altre istruzioni",
+            "La CPU viene utilizzata tre volte: ascolto, elaborazione SYN e invio SYN+ACK, elaborazione ACK finale",
+            "La CPU viene utilizzata una sola volta: per inviare il SYN+ACK",
+            "La linea di esecuzione si sblocca dopo aver ricevuto e elaborato l'ACK finale dal client",
+            "La linea di esecuzione si sblocca subito dopo aver inviato il SYN+ACK"
+          ],
+          "answer": [0, 2, 4]
+        }
+      ]
+    }
+  ]
+}

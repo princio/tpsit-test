@@ -1,7 +1,5 @@
 {
   "title": "Verifica — La linea di esecuzione e i Thread",
-  "subtitle": "Generato da big-picture/linea/",
-  "instructions": "Per le domande V/F segna Vero o Falso. Per le domande a scelta multipla segna una sola risposta. Per le domande di completamento riempi gli spazi vuoti.",
   "questions": [
     {
       "concept": "Definizione di linea di esecuzione",
@@ -30,61 +28,6 @@
         {
           "type": "filler",
           "text": "La linea di esecuzione è la ____ linea di codice che verrà ____."
-        }
-      ]
-    },
-    {
-      "concept": "Prerequisito per comprendere i thread",
-      "questions": [
-        {
-          "type": "trueFalse",
-          "true": "Per capire i thread dobbiamo aver ben chiaro il concetto di linea di esecuzione.",
-          "false": "Per capire i thread non è necessario conoscere il concetto di linea di esecuzione."
-        },
-        {
-          "type": "multipleChoice",
-          "text": "Qual è il prerequisito fondamentale per comprendere i thread?",
-          "options": [
-            "Conoscere il linguaggio C",
-            "Aver chiaro il concetto di linea di esecuzione",
-            "Saper usare i socket",
-            "Conoscere il protocollo HTTP"
-          ],
-          "answer": 1
-        },
-        {
-          "type": "filler",
-          "text": "Per capire i ____ dobbiamo aver ben chiaro la linea di ____."
-        }
-      ]
-    },
-    {
-      "concept": "Convenzione di notazione e semantica dell'evidenziazione",
-      "questions": [
-        {
-          "type": "trueFalse",
-          "true": "La linea evidenziata sarà la prossima linea ad essere eseguita.",
-          "false": "La linea evidenziata è la linea che è stata appena eseguita."
-        },
-        {
-          "type": "trueFalse",
-          "true": "La linea evidenziata non è stata ancora eseguita.",
-          "false": "La linea evidenziata è già stata eseguita."
-        },
-        {
-          "type": "multipleChoice",
-          "text": "Cosa significa quando una linea è evidenziata nelle dispense?",
-          "options": [
-            "La linea è stata appena eseguita",
-            "La linea contiene un errore",
-            "La linea sarà la prossima ad essere eseguita",
-            "La linea non verrà mai eseguita"
-          ],
-          "answer": 2
-        },
-        {
-          "type": "filler",
-          "text": "La linea evidenziata sarà la ____ linea ad essere eseguita; non è stata ____ eseguita."
         }
       ]
     },
@@ -168,8 +111,8 @@
       "questions": [
         {
           "type": "trueFalse",
-          "true": "Dopo l'esecuzione di una linea, la linea di esecuzione avanza alla linea successiva (in assenza di salti).",
-          "false": "Dopo l'esecuzione di una linea, la linea di esecuzione salta a una posizione casuale nel codice."
+          "text": "Dopo l'esecuzione di una linea, la linea di esecuzione avanza sicuramente alla linea successiva.",
+          "answer": false
         },
         {
           "type": "multipleChoice",
@@ -682,6 +625,23 @@
           "type": "filler",
           "text": "La libreria di threading non ____ di prevedere quale sarà la prossima linea di esecuzione ad essere ____."
         }
+      ]
+    },
+    {
+      "type": "filler",
+      "text": "In un'operazione I/O il tempo di utilizzo della CPU è ________ rispetto al tempo totale di esecuzione."
+    },
+    {
+      "type": "filler",
+      "text": "La CPU viene usata solo per pochi ____ all'inizio e alla ____ dell'operazione input().",
+      "answer": ""
+    },
+    {
+      "type": "trueFalse",
+      "text": "La funzione input():",
+      "options": [
+        "Ha tre fasi: usa la CPU all'inizio, rimane in attesa, poi usa la CPU alla fine per restituire il risultato.",
+        "Ha un'unica fase continua in cui la CPU elabora i dati dalla tastiera."
       ]
     }
   ]

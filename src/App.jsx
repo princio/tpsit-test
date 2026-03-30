@@ -26,6 +26,16 @@ function shuffle(arr) {
 function shuffleTest(test) {
   const questions = shuffle(test.questions).map(q => {
     if (q.type === 'multipleChoice') {
+      if (q.multi && Array.isArray(q.answer)) {
+        const correctSet = new Set(q.answer)
+        const paired = q.options.map((opt, i) => ({ opt, correct: correctSet.has(i) }))
+        const shuffledPaired = shuffle(paired)
+        return {
+          ...q,
+          options: shuffledPaired.map(p => p.opt),
+          answer: shuffledPaired.map((p, i) => p.correct ? i : -1).filter(i => i >= 0),
+        }
+      }
       const paired = q.options.map(opt => ({ opt, correct: opt === q.answer }))
       const shuffledPaired = shuffle(paired)
       return {
@@ -33,6 +43,9 @@ function shuffleTest(test) {
         options: shuffledPaired.map(p => p.opt),
         answer: shuffledPaired.find(p => p.correct)?.opt ?? q.answer,
       }
+    }
+    if (q.type === 'orderItems') {
+      return { ...q, items: shuffle(q.items) }
     }
     return q
   })
