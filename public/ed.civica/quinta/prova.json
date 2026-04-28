@@ -1,0 +1,159 @@
+{
+    "title": "Business Continuity e Disaster Recovery",
+    "subtitle": "Educazione Civica - Classe Quinta",
+    "instructions": "Rispondi a tutte le domande basandoti sui contenuti dell'articolo studiato.",
+    "questions": [
+        {
+            "type": "multipleChoice",
+            "multi": true,
+            "text": "Seleziona tutte le affermazioni corrette sul rapporto tra business continuity (BC) e disaster recovery (DR):",
+            "options": [
+                "BC adotta un approccio proattivo, DR un approccio reattivo",
+                "BC ha un perimetro più ampio e globale, DR è più focalizzato sull'IT",
+                "BC e DR convergono verso l'obiettivo comune di rendere l'organizzazione resiliente",
+                "BC e DR sono concetti complementari ma con scopi e approcci differenti",
+                "BC e DR sono sinonimi e descrivono lo stesso processo",
+                "BC interviene solo dopo che è avvenuto il disastro, mentre DR pianifica in anticipo",
+                "DR si occupa esclusivamente di gestione delle risorse umane"
+            ],
+            "answer": [0, 1, 2, 3]
+        },
+        {
+            "type": "multipleChoice",
+            "text": "Quale approccio caratterizza la business continuity?",
+            "options": [
+                "Casuale: le misure dipendono dall'umore del management",
+                "Esclusivamente tecnico: si occupa solo di backup e failover",
+                "Proattivo: garantisce la continuità delle operazioni anche in scenari avversi",
+                "Reattivo: interviene dopo l'incidente per ripristinare i sistemi IT"
+            ],
+            "answer": 2
+        },
+        {
+            "type": "multipleChoice",
+            "text": "Quale approccio caratterizza il disaster recovery?",
+            "options": [
+                "Comunicativo: gestisce la reputazione aziendale durante la crisi",
+                "Proattivo: definisce strategie a lungo termine per la resilienza",
+                "Reattivo: ripristina l'infrastruttura IT e i dati dopo un'interruzione grave",
+                "Strategico: coinvolge tutti i reparti aziendali"
+            ],
+            "answer": 2
+        },
+        {
+            "type": "multipleChoice",
+            "text": "Cosa significa la sigla BCP?",
+            "options": [
+                "Backup Continuity Policy",
+                "Backup Control Procedure",
+                "Business Continuity Plan",
+                "Business Cyber Protection"
+            ],
+            "answer": 2
+        },
+        {
+            "type": "multipleChoice",
+            "text": "Cosa significa la sigla DRP?",
+            "options": [
+                "Data Recovery Procedure",
+                "Digital Resilience Program",
+                "Disaster Recovery Plan",
+                "Disaster Response Policy"
+            ],
+            "answer": 2
+        },
+        {
+            "type": "multipleChoice",
+            "text": "Cosa indica l'acronimo RTO?",
+            "options": [
+                "Real Time Operation",
+                "Recovery Time Objective",
+                "Reliable Transfer Order",
+                "Risk Treatment Operation"
+            ],
+            "answer": 1
+        },
+        {
+            "type": "multipleChoice",
+            "text": "Cosa indica l'acronimo RPO?",
+            "options": [
+                "Recovery Point Objective",
+                "Recovery Process Order",
+                "Restore Priority Operation",
+                "Risk Prevention Office"
+            ],
+            "answer": 0
+        },
+        {
+            "type": "multipleChoice",
+            "text": "A cosa serve la BIA (analisi di rischio e impatto) secondo la ISO 22301?",
+            "options": [
+                "A definire il budget annuale del reparto IT",
+                "A scegliere il fornitore di servizi cloud",
+                "A sostituire il piano di disaster recovery",
+                "A valutare le modifiche di contesto interno ed esterno per aggiornare i piani"
+            ],
+            "answer": 3
+        },
+        {
+            "type": "multipleChoice",
+            "multi": true,
+            "text": "Seleziona tutte le affermazioni corrette sulla business continuity (BC):",
+            "options": [
+                "Coinvolge reparti come logistica, produzione, risorse umane e comunicazione",
+                "Definisce esclusivamente RTO e RPO dei sistemi informatici",
+                "Ha un approccio proattivo",
+                "Ha un focus strategico sui processi chiave dell'azienda",
+                "Si attiva solo dopo un incidente per ripristinare i dati",
+                "Si formalizza nel Business Continuity Plan (BCP)",
+                "Si limita esclusivamente all'infrastruttura ICT"
+            ],
+            "answer": [0, 2, 3, 5]
+        },
+        {
+            "type": "multipleChoice",
+            "multi": true,
+            "text": "Seleziona tutte le affermazioni corrette sul disaster recovery (DR):",
+            "options": [
+                "Coinvolge principalmente comunicazione di crisi e marketing",
+                "È tipicamente associato all'ambito ICT",
+                "Ha un approccio proattivo che pianifica scenari aziendali a lungo termine",
+                "Ha un approccio reattivo",
+                "Ha un focus tecnico mirato a minimizzare il downtime",
+                "Si formalizza nel Disaster Recovery Plan (DRP), che definisce RTO, RPO e procedure di backup",
+                "Sostituisce completamente il GDPR"
+            ],
+            "answer": [1, 3, 4, 5]
+        },
+        {
+            "type": "multipleChoice",
+            "multi": true,
+            "text": "Seleziona tutte le misure preventive valide sia per BC sia per DR indicate nell'articolo:",
+            "options": [
+                "Affidarsi a un unico fornitore senza piani di backup",
+                "Analisi di rischio e impatto (BIA)",
+                "Eliminare i contratti SLA per ridurre i costi",
+                "Esercitazioni periodiche e tabletop exercise",
+                "Formazione e sensibilizzazione del personale",
+                "Gestione dei fornitori tramite SLA e contratti adeguati",
+                "Limitare la formazione ai soli dirigenti"
+            ],
+            "answer": [1, 3, 4, 5]
+        },
+        {
+            "type": "multipleChoice",
+            "multi": true,
+            "text": "Seleziona gli standard e le normative richiamati nell'articolo come correlati a BC e/o DR:",
+            "options": [
+                "Codice della Strada",
+                "Direttiva NIS 2",
+                "GDPR",
+                "ISO 22301",
+                "ISO 9001 (sistemi di gestione qualità)",
+                "ISO/IEC 27031",
+                "NIST SP 800-34"
+            ],
+            "answer": [1, 2, 3, 5, 6]
+        }
+    ]
+}

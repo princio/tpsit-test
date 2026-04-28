@@ -1,5 +1,5 @@
 {
-    "title": "Linee di esecuzione e I/O",
+    "title": "Linee di esecuzione e I/O — 5CI",
     "questions": [
         {
             "type": "multipleChoice",
@@ -210,7 +210,7 @@
             "Dopo il terzo passo (ACK), la connessione è stabilita e i dati possono essere trasmessi",
             "Dopo il pacchetto SYN+ACK il server chiude la connessione e ne apre una nuova"
           ],
-          "answer": [ 2, 4 ]
+          "answer": [ 2, 3, 4 ]
         },
         {
           "type": "multipleChoice",
@@ -239,7 +239,7 @@
             "La recv() si sblocca quando la send() invia il pacchetto",
             "La send() si sblocca al completamento della recv() sul server"
           ],
-          "answer": [0, 2]
+          "answer": [1, 2]
         },
         {
           "type": "multipleChoice",
@@ -253,7 +253,7 @@
             "La recv() si sblocca quando arriva l'ACK",
             "In entrambe, la maggior parte del tempo la CPU è IDLE"
           ],
-          "answer": [0, 2, 3, 5]
+          "answer": [0, 2, 5]
         },
         {
           "type": "multipleChoice",

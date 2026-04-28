@@ -1,6 +1,11 @@
 import { useState, useRef } from 'react'
 import CodeBlock from './CodeBlock'
 import MermaidDiagram from './MermaidDiagram'
+import { validateTest } from '../schema'
+
+/** @typedef {import('../schema').TestData} TestData */
+/** @typedef {import('../schema').Question} Question */
+/** @typedef {import('../schema').ConceptGroup} ConceptGroup */
 
 function EditableText({ value, onChange, tag: Tag = 'span', className = '', multiline = false }) {
   if (multiline) {
@@ -269,15 +274,17 @@ export default function ManipulatorPage() {
     if (!file) return
     const reader = new FileReader()
     reader.onload = (e) => {
+      let parsed
       try {
-        const parsed = JSON.parse(e.target.result)
-        if (!parsed.title || !Array.isArray(parsed.questions)) {
-          alert('JSON non valido: deve contenere "title" e "questions".')
-          return
-        }
-        setTestData(parsed)
+        parsed = JSON.parse(e.target.result)
       } catch {
-        alert('JSON non valido')
+        alert('Parsing JSON fallito.')
+        return
+      }
+      try {
+        setTestData(validateTest(parsed))
+      } catch (err) {
+        alert('JSON non conforme allo schema:\n' + (err instanceof Error ? err.message : String(err)))
       }
     }
     reader.readAsText(file)

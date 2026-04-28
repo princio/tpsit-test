@@ -90,7 +90,7 @@
         { "kind": "text", "value": "Se la dimensione di `int` è 8 byte, quanto spazio occupa la variabile `a`? _______" },
         { "kind": "code", "language": "c", "value": "int a[5];" }
       ],
-      "answer": 8
+      "answer": 40
     },
     {
       "type": "filler",

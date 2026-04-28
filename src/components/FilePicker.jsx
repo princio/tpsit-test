@@ -1,5 +1,11 @@
 import { useState, useRef } from 'react'
+import { validateTest } from '../schema'
 
+/** @typedef {import('../schema').TestData} TestData */
+
+/**
+ * @param {{ onTestLoaded: (test: TestData) => void }} props
+ */
 export default function FilePicker({ onTestLoaded }) {
   const [error, setError] = useState(null)
   const [dragging, setDragging] = useState(false)
@@ -10,20 +16,18 @@ export default function FilePicker({ onTestLoaded }) {
     setError(null)
     const reader = new FileReader()
     reader.onload = (e) => {
+      let parsed
       try {
-        const data = JSON.parse(e.target.result)
-        if (!data.title || !Array.isArray(data.questions)) {
-          setError('JSON non valido: deve contenere "title" e "questions".')
-          return
-        }
-        // Flatten concept-grouped questions for compatibility
-        const hasGroups = data.questions.some(q => q.concept && Array.isArray(q.questions))
-        if (hasGroups) {
-          // keep as-is, TestSheet handles both formats
-        }
-        onTestLoaded(data)
+        parsed = JSON.parse(e.target.result)
       } catch {
         setError('Errore nel parsing del JSON. Controlla il formato del file.')
+        return
+      }
+      try {
+        const data = validateTest(parsed)
+        onTestLoaded(data)
+      } catch (err) {
+        setError('JSON non conforme allo schema: ' + (err instanceof Error ? err.message : String(err)))
       }
     }
     reader.readAsText(file)

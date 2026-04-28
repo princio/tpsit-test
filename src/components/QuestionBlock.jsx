@@ -1,7 +1,11 @@
 import ContentRenderer from './ContentRenderer'
 import { useTestSheet } from './TestSheetContext'
 
+/** @typedef {import('../schema').Question} Question */
 
+/**
+ * @param {{ question: Question, index: number }} props
+ */
 export default function QuestionBlock({ question, index }) {
   const { fontSize, showAnswers } = useTestSheet()
   const content = question.content

@@ -1,0 +1,273 @@
+{
+    "title": "Linee di esecuzione e I/O — 5AI",
+    "questions": [
+        {
+            "type": "multipleChoice",
+            "text": "Cosa indica la 'linea di esecuzione'?",
+            "options": [
+                "La prossima linea di codice che verrà eseguita.",
+                "La linea di codice che è stata appena eseguita.",
+                "La linea di codice in esecuzione in questo momento.",
+                "La linea di codice bloccata."
+            ]
+        },
+        {
+            "type": "filler",
+            "text": "In un processo in esecuzione multi-thread, ho una _____________________ per ogni ____________________.",
+            "answer": [
+                "linea di esecuzione",
+                "thread"
+            ]
+        },
+        {
+            "skip": true,
+            "type": "filler",
+            "text": "Le linee vuote vengono ___________________.",
+            "answer": [
+                "ignorate"
+            ]
+        },
+        {
+            "skip": true,
+            "type": "multipleChoice",
+            "text": "Come vengono trattate le linee vuote durante l'esecuzione?",
+            "options": [
+                "Vengono eseguite normalmente",
+                "Causano un errore",
+                "Vengono ignorate",
+                "Vengono convertite in commenti"
+            ],
+            "answer": 2
+        },
+        {
+            "type": "filler",
+            "content": [
+                {
+                    "kind": "code",
+                    "language": "python",
+                    "value": "from time import sleep\ndef funzione(v):\n    print(v)\nfunzione(input())"
+                },
+                {
+                    "kind": "text",
+                    "value": "Scrivi la sequenza delle linee di esecuzione: ____________________"
+                }
+            ],
+            "answer": "1, 4, 3"
+        },
+        {
+            "skip": true,
+            "type": "trueFalse",
+            "text": "Dopo l'esecuzione di una linea, la linea di esecuzione avanza sicuramente alla linea successiva.",
+            "answer": false
+        },
+        {
+            "type": "multipleChoice",
+            "text": "In un programma single-thread con input noto, la prevedibilità della sequenza di esecuzione è:",
+            "options": [
+                "Impossibile da determinare",
+                "Prevedibile solo in parte",
+                "Sempre prevedibile",
+                "Prevedibile solo senza loop"
+            ]
+        },
+        {
+            "type": "filler",
+            "text": "Ogni processo ha almeno un thread, detto ________.",
+            "answer": [
+                "main-thread"
+            ]
+        },
+        {
+            "type": "multipleChoice",
+            "text": "Quando viene eseguita la linea che avvia un nuovo thread _thread-1_, cosa succede?",
+            "options": [
+                "Il main-thread si interrompe aspettando che thread-1 termini",
+                "Se nel thread-1 è presente la funzione sleep() allora l'esecuzione tornerà al main-thread",
+                "Entrambi i thread continueranno la loro esecuzione alternandosi",
+                "Se nel main-thread è presente una funzione I/O allora l'esecuzione passerà al thread-1."
+            ],
+            "answer": 2
+        },
+        {
+            "type": "filler",
+            "text": "Quando si avvia un nuovo thread, si ________ una ___________ linea di esecuzione.",
+            "answer": [ "crea", "nuova" ]
+        },
+        {
+            "type": "multipleChoice",
+            "text": "Cosa succede quando l'interprete Python incontra le linee di definizione di una funzione (def ...)?",
+            "options": [
+                "Le esegue immediatamente",
+                "Le ignora completamente",
+                "Le legge e le registra, ma non le esegue",
+                "Genera un errore se la funzione non viene mai chiamata"
+            ],
+            "answer": 2
+        },
+        {
+            "type": "filler",
+            "text": "Con più thread avviati, è ____ prevedere la ____ linea di esecuzione."
+            ,"answer": ["impossibile", "prossima"]
+        },
+        {
+            "type": "multipleChoice",
+            "multi": true,
+            "text": "Seleziona le affermazioni corrette riguardo alla libreria di threading:",
+            "options": [
+                "Decide quale sarà la prossima linea di esecuzione",
+                "Garantisce che ciascun thread avrà modo di eseguirsi",
+                "Il programmatore decide esplicitamente la sequenza di esecuzione",
+                "Garantisce che i thread vengano eseguiti in ordine di creazione",
+                "Il thread stesso decide quando eseguirsi",
+                "Garantisce che tutti i thread terminino nello stesso momento"
+            ],
+            "answer": [0, 1]
+        },
+        {
+            "type": "filler",
+            "text": "Una linea di esecuzione bloccata non avanza e non ____________ la ___________.",
+            "answer": [
+                "utilizza", "CPU"
+            ]
+        },
+        {
+            "type": "multipleChoice",
+            "multi": true,
+            "text": "Una linea di esecuzione bloccata.",
+            "options": [
+                "Dipende dalla velocità della CPU",
+                "Dipende da un evento \"esterno\"",
+                "Usa intensivamente la CPU",
+                "Di solito dipende da altre periferiche"
+            ],
+            "answer": [0, 3]
+        },
+        {
+            "type": "filler",
+            "text": "Durante l'attesa dell'input, la CPU è in stato di ____."
+            , "answer": [ "IDLE" ]
+        },
+        {
+            "type": "multipleChoice",
+            "multi": true,
+            "text": "Seleziona le affermazioni corrette sulla funzione input():",
+            "options": [
+                "La linea di esecuzione si blocca in attesa che l'utente prema Invio",
+                "Ha tre fasi: usa la CPU all'inizio, rimane in attesa, poi usa la CPU alla fine",
+                "La CPU lavora continuamente",
+                "Ogni volta che preme un tasto utilizza la CPU"
+            ],
+            "answer": [0, 1]
+        },
+        {
+          "type": "filler",
+          "text": "Nel protocollo ____, la connessione viene stabilita tramite il ____ ."
+          , "answer": [ "TCP", "three-way handshake" ]
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Cosa contiene il pacchetto SYN?",
+          "options": [
+            "I dati da trasmettere al server",
+            "Il numero di sequenza del client",
+            "Il numero di sequenza del server",
+            "La conferma di ricezione del pacchetto precedente"
+          ],
+          "answer": 1
+        },
+        {
+          "type": "orderItems",
+          "text": "Ordina le fasi del three-way handshake TCP:",
+          "items": [
+            "SYN",
+            "SYN-ACK",
+            "ACK",
+            "Connessione stabilita"
+          ],
+          "answer": [0, 1, 2, 3]
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Quali delle seguenti sono funzioni bloccanti in Python?",
+          "options": [
+            "input()",
+            "for x in range(10): x += 1",
+            "socket.accept()",
+            "len()"
+          ],
+          "answer": [0, 2]
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Quali delle seguenti affermazioni sul three-way handshake TCP sono vere?",
+          "options": [
+            "Il three-way handshake consiste in tre passaggi, nell'ordine: SYN+ACK, SYN, SYN e ACK",
+            "Il server invia il primo pacchetto SYN per avviare la connessione",
+            "Con il pacchetto SYN, il client comunica al server il proprio numero di sequenza",
+            "Il server risponde con un pacchetto SYN+ACK contenente due numeri di sequenza",
+            "Dopo il terzo passo (ACK), la connessione è stabilita e i dati possono essere trasmessi",
+            "Dopo il pacchetto SYN+ACK il server chiude la connessione e ne apre una nuova"
+          ],
+          "answer": [ 2, 3, 4 ]
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Seleziona le affermazioni vere sulle funzioni connect() e accept().",
+          "options": [
+            "In entrambe la linea di esecuzione si blocca",
+            "La connect() è sicuramente bloccata per meno tempo della accept()",
+            "Nella connect() la CPU viene utilizzata una volta per inviare il SYN e una per elaborare il SYN+ACK inviando l'ACK",
+            "La accept viene avviata dal client",
+            "Durante l'esecuzione della accept() la CPU lavora continuamente, mentre durante la connect() solo all'inizio e alla fine",
+            "La accept si sblocca quando arriva l'ACK dal server"
+          ],
+          "answer": [0, 1, 2]
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Seleziona le affermazioni corrette riguardo allo sblocco di send() e recv().",
+          "options": [
+            "La send() si sblocca all'invio dell'ACK",
+            "La recv() si sblocca all'invio dell'ACK",
+            "La send() si sblocca alla ricezione dell'ACK",
+            "La recv() si sblocca alla ricezione dell'ACK",
+            "La send() si sblocca immediatamente dopo l'invio del pacchetto",
+            "La recv() si sblocca quando la send() invia il pacchetto",
+            "La send() si sblocca al completamento della recv() sul server"
+          ],
+          "answer": [1, 2]
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Seleziona le affermazioni vere sulle funzioni send() e recv().",
+          "options": [
+            "In entrambe la linea di esecuzione è bloccata",
+            "La CPU lavora continuamente durante tutta l'esecuzione della send()",
+            "La send si sblocca sicuramente successivamente alla recv.",
+            "La CPU viene utilizzata 3 volte nella send, 2 volte nella recv",
+            "La recv() si sblocca quando arriva l'ACK",
+            "In entrambe, la maggior parte del tempo la CPU è IDLE"
+          ],
+          "answer": [0, 2, 5]
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Seleziona le affermazioni che ritieni vere:",
+          "options": [
+            "Una CPU a 5 GHz esegue circa 5 operazioni al nanosecondo",
+            "La durata di trasmissione di un pacchetto è di millisecondi",
+            "Un millisecondo sono mille nanosecondi",
+            "Un secondo è un miliardo di nanosecondi",
+            "Un pacchetto compie il giro della Terra (40'000km) in circa due secondi.",
+            "Quando la linea di esecuzione è bloccata, non c'è modo di ottimizzare l'utilizzo della CPU."
+          ],
+          "answer": [0, 1]
+        }
+    ]
+}

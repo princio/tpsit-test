@@ -2,6 +2,9 @@ import { useRef, useState, useLayoutEffect, useCallback } from 'react'
 import QuestionBlock from './QuestionBlock'
 import { TestSheetProvider } from './TestSheetContext'
 
+/** @typedef {import('../schema').TestData} TestData */
+/** @typedef {import('../schema').Question} Question */
+
 function Header({ test }) {
   return (
     <header className="test-header">

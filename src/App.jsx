@@ -3,6 +3,10 @@ import FilePicker from './components/FilePicker'
 import TestSheet from './components/TestSheet'
 import EditorPage from './components/EditorPage'
 import ManipulatorPage from './components/ManipulatorPage'
+import CorrectionPage from './components/CorrectionPage'
+import OpenCorrectionPage from './components/OpenCorrectionPage'
+import './styles/correction.css'
+import './styles/open-correction.css'
 
 function useHashRoute() {
   const [hash, setHash] = useState(window.location.hash || '#/')
@@ -239,6 +243,8 @@ function PrintView() {
             <button onClick={() => setTestData(null)}>Altro test</button>
             <button onClick={() => { window.location.hash = '#/editor' }}>Editor</button>
             <button onClick={() => { window.location.hash = '#/manipulate' }}>Manipola</button>
+            <button onClick={() => { window.location.hash = '#/correction' }}>Correzione</button>
+            <button onClick={() => { window.location.hash = '#/open-correction' }}>Correzione aperta</button>
           </div>
         </div>
       )}
@@ -247,6 +253,8 @@ function PrintView() {
         <div className="toolbar no-print" style={{ justifyContent: 'flex-end' }}>
           <button onClick={() => { window.location.hash = '#/editor' }}>Editor</button>
           <button onClick={() => { window.location.hash = '#/manipulate' }}>Manipola</button>
+          <button onClick={() => { window.location.hash = '#/correction' }}>Correzione</button>
+          <button onClick={() => { window.location.hash = '#/open-correction' }}>Correzione aperta</button>
         </div>
       )}
 
@@ -277,6 +285,14 @@ export default function App() {
 
   if (hash.startsWith('#/editor')) {
     return <EditorPage />
+  }
+
+  if (hash.startsWith('#/open-correction')) {
+    return <OpenCorrectionPage />
+  }
+
+  if (hash.startsWith('#/correction')) {
+    return <CorrectionPage />
   }
 
   return <PrintView />

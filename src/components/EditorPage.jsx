@@ -2,6 +2,13 @@ import { useState, useRef } from 'react'
 import CodeBlock from './CodeBlock'
 import MermaidDiagram from './MermaidDiagram'
 
+/** @typedef {import('../schema').TestData} TestData */
+
+// NOTA: questa pagina usa un formato legacy basato su `testData.sections[]`
+// e su raggruppamenti `{ concept, trueFalse, filler, multipleChoice }` —
+// NON conforme allo schema canonico in `src/schema.ts` (basato su
+// `testData.questions[]`). Va riscritta per allinearsi a TestData.
+
 function EditableText({ value, onChange, tag: Tag = 'span', className = '', multiline = false }) {
   if (multiline) {
     return (
