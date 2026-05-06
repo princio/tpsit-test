@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
-import FilePicker from './FilePicker'
-import ContentRenderer from './ContentRenderer'
+import FilePicker from '@/components/shared/FilePicker'
+import ContentRenderer from '@/components/shared/ContentRenderer'
 
-/** @typedef {import('../schema').TestData} TestData */
-/** @typedef {import('../schema').Question} Question */
+/** @typedef {import('@/schema').TestData} TestData */
+/** @typedef {import('@/schema').Question} Question */
 
 const STORAGE_KEY = 'tpsit-corrections'
 const TESTS_STORAGE_KEY = 'tpsit-tests'

@@ -1,7 +1,7 @@
-import ContentRenderer from './ContentRenderer'
+import ContentRenderer from '@/components/shared/ContentRenderer'
 import { useTestSheet } from './TestSheetContext'
 
-/** @typedef {import('../schema').Question} Question */
+/** @typedef {import('@/schema').Question} Question */
 
 /**
  * @param {{ question: Question, index: number }} props

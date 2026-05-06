@@ -9,23 +9,22 @@
             "text": "Seleziona tutte le affermazioni corrette sul rapporto tra business continuity (BC) e disaster recovery (DR):",
             "options": [
                 "BC adotta un approccio proattivo, DR un approccio reattivo",
-                "BC ha un perimetro più ampio e globale, DR è più focalizzato sull'IT",
+                "BC adotta un approccio reattivo, DR un approccio proattivo",
+                "DR è più focalizzato sulla filiera di approviggionamento",
                 "BC e DR convergono verso l'obiettivo comune di rendere l'organizzazione resiliente",
-                "BC e DR sono concetti complementari ma con scopi e approcci differenti",
-                "BC e DR sono sinonimi e descrivono lo stesso processo",
-                "BC interviene solo dopo che è avvenuto il disastro, mentre DR pianifica in anticipo",
-                "DR si occupa esclusivamente di gestione delle risorse umane"
+                "BC implica che l'azienda sarà immune a qualsiasi incidente",
+                "Le aziende dopo un _disaster_ chiudono quasi sicuramente"
             ],
-            "answer": [0, 1, 2, 3]
+            "answer": [0, 3]
         },
         {
             "type": "multipleChoice",
             "text": "Quale approccio caratterizza la business continuity?",
             "options": [
-                "Casuale: le misure dipendono dall'umore del management",
-                "Esclusivamente tecnico: si occupa solo di backup e failover",
-                "Proattivo: garantisce la continuità delle operazioni anche in scenari avversi",
-                "Reattivo: interviene dopo l'incidente per ripristinare i sistemi IT"
+                "Finché tutto va bene, non devo fare nulla",
+                "Si occupa solo di backup",
+                "Garantire la continuità delle operazioni anche in scenari avversi",
+                "Intervenire dopo l'incidente per ripristinare i sistemi IT"
             ],
             "answer": 2
         },
@@ -33,10 +32,10 @@
             "type": "multipleChoice",
             "text": "Quale approccio caratterizza il disaster recovery?",
             "options": [
-                "Comunicativo: gestisce la reputazione aziendale durante la crisi",
-                "Proattivo: definisce strategie a lungo termine per la resilienza",
-                "Reattivo: ripristina l'infrastruttura IT e i dati dopo un'interruzione grave",
-                "Strategico: coinvolge tutti i reparti aziendali"
+                "Gestire la reputazione aziendale durante la crisi",
+                "Definire strategie a lungo termine per la resilienza",
+                "Ripristinare l'infrastruttura IT e i dati dopo un'interruzione grave",
+                "Coinvolgere solo il reparto delle risorse umane"
             ],
             "answer": 2
         },
@@ -85,6 +84,7 @@
             "answer": 0
         },
         {
+            "skip": true,
             "type": "multipleChoice",
             "text": "A cosa serve la BIA (analisi di rischio e impatto) secondo la ISO 22301?",
             "options": [
@@ -97,18 +97,14 @@
         },
         {
             "type": "multipleChoice",
-            "multi": true,
             "text": "Seleziona tutte le affermazioni corrette sulla business continuity (BC):",
             "options": [
                 "Coinvolge reparti come logistica, produzione, risorse umane e comunicazione",
-                "Definisce esclusivamente RTO e RPO dei sistemi informatici",
-                "Ha un approccio proattivo",
-                "Ha un focus strategico sui processi chiave dell'azienda",
+                "Definisce esclusivamente procedure dei sistemi informatici",
                 "Si attiva solo dopo un incidente per ripristinare i dati",
-                "Si formalizza nel Business Continuity Plan (BCP)",
-                "Si limita esclusivamente all'infrastruttura ICT"
+                "Si limita esclusivamente all'infrastruttura IT"
             ],
-            "answer": [0, 2, 3, 5]
+            "answer": 0
         },
         {
             "type": "multipleChoice",
@@ -116,34 +112,28 @@
             "text": "Seleziona tutte le affermazioni corrette sul disaster recovery (DR):",
             "options": [
                 "Coinvolge principalmente comunicazione di crisi e marketing",
-                "È tipicamente associato all'ambito ICT",
-                "Ha un approccio proattivo che pianifica scenari aziendali a lungo termine",
-                "Ha un approccio reattivo",
-                "Ha un focus tecnico mirato a minimizzare il downtime",
-                "Si formalizza nel Disaster Recovery Plan (DRP), che definisce RTO, RPO e procedure di backup",
-                "Sostituisce completamente il GDPR"
+                "È tipicamente associato all'ambito IT",
+                "Viene definito lì per lì",
+                "Ha un focus tecnico mirato a minimizzare il downtime"
             ],
-            "answer": [1, 3, 4, 5]
+            "answer": [1, 3]
         },
         {
             "type": "multipleChoice",
-            "multi": true,
             "text": "Seleziona tutte le misure preventive valide sia per BC sia per DR indicate nell'articolo:",
             "options": [
                 "Affidarsi a un unico fornitore senza piani di backup",
-                "Analisi di rischio e impatto (BIA)",
-                "Eliminare i contratti SLA per ridurre i costi",
-                "Esercitazioni periodiche e tabletop exercise",
-                "Formazione e sensibilizzazione del personale",
-                "Gestione dei fornitori tramite SLA e contratti adeguati",
-                "Limitare la formazione ai soli dirigenti"
+                "Effettuare analisi di rischio e impatto",
+                "Formazione e sensibilizzazione del personale, limitatamente ai soli dirigenti",
+                "Affidarsi a servizi esterni che non implementano né BC né DS plan"
             ],
-            "answer": [1, 3, 4, 5]
+            "answer": 1
         },
         {
+            "skip": true,
             "type": "multipleChoice",
             "multi": true,
-            "text": "Seleziona gli standard e le normative richiamati nell'articolo come correlati a BC e/o DR:",
+            "text": "Seleziona gli standard e le normative richiamati nell'articolo come correlati a BC e/o DR (1 sola:",
             "options": [
                 "Codice della Strada",
                 "Direttiva NIS 2",
@@ -154,6 +144,64 @@
                 "NIST SP 800-34"
             ],
             "answer": [1, 2, 3, 5, 6]
+        },
+        {
+            "type": "multipleChoice",
+            "multi": true,
+            "text": "Come funziona tipicamente un attacco ransomware?",
+            "options": [
+                "Cancella definitivamente tutti i dati senza alcuna possibilità di recupero",
+                "Cifra i file della vittima lasciandoli nel server",
+                "Copia silenziosamente i dati all'estero senza modificarli né bloccarli",
+                "Si salva la chiave di decriptazione"
+            ],
+            "answer": [ 1, 3 ]
+        },
+        {
+            "type": "multipleChoice",
+            "multi": true,
+            "text": "Cos'è la ridondanza nei sistemi IT e nelle infrastrutture aziendali?",
+            "options": [
+                "La duplicazione di server, switch, fornitori e siti in modo che, se uno si guasta, un altro possa subentrare",
+                "L'eliminazione dei dati superflui per liberare spazio sui dischi",
+                "Possono evitare l'interruzione in caso di incidenti.",
+                "Un protocollo di rete che invia lo stesso pacchetto a più destinazioni contemporaneamente"
+            ],
+            "answer": [0, 2]
+        },
+        {
+            "type": "multipleChoice",
+            "text": "Cosa sono le linee guida AGID?",
+            "options": [
+                "Documenti tecnici dell'Agenzia per l'Italia Digitale che fissano regole e indicazioni operative per la digitalizzazione della Pubblica Amministrazione (sicurezza, identità digitale, accessibilità, interoperabilità, ecc.)",
+                "Norme europee applicabili esclusivamente al settore bancario",
+                "Regolamenti interni adottati da una singola azienda privata",
+                "Standard volontari diffusi solo all'estero, senza efficacia in Italia"
+            ],
+            "answer": 0
+        },
+        {
+            "type": "multipleChoice",
+            "multi": true,
+            "text": "Una crisi reputazionale, in BC, implica quali tra le seguenti azioni?",
+            "options": [
+                "Coinvolgere un consulente specializzato per tutelare il brand e la fiducia dei clienti",
+                "Ignorare la situazione",
+                "Definire una strategia di comunicazione di crisi",
+                "Dare la colpa a qualcun altro"
+            ],
+            "answer": [0, 2]
+        },
+        {
+            "type": "multipleChoice",
+            "text": "Quando si verifica un incidente in un'azienda dotata di piani BC e DR completi e ben testati, rispetto al normale funzionamento:",
+            "options": [
+                "i costi rimangono invariati, perché i piani BC/DR neutralizzano completamente l'evento",
+                "l'azienda comunque sostiene costi aggiuntivi (ore di lavoro straordinario, perdita di clienti)",
+                "l'azienda guadagna grazie alla pubblicità generata dall'incidente",
+                "l'azienda può rimandare a tempo indeterminato la risposta senza alcun aggravio economico"
+            ],
+            "answer": 1
         }
     ]
 }

@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react'
-import { validateTest } from '../schema'
+import { validateTest } from '@/schema'
 
-/** @typedef {import('../schema').TestData} TestData */
+/** @typedef {import('@/schema').TestData} TestData */
 
 /**
  * @param {{ onTestLoaded: (test: TestData) => void }} props

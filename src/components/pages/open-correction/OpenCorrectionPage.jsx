@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import FilePicker from './FilePicker'
-import { defaultCriteria, rubricLevels } from '../data/defaultCriteria'
+import FilePicker from '@/components/shared/FilePicker'
+import { defaultCriteria, rubricLevels } from '@/data/defaultCriteria'
 
 const STORAGE_KEY = 'tpsit-open-corrections'
 

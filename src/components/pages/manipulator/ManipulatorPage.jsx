@@ -1,13 +1,11 @@
 import { useState, useRef } from 'react'
-import CodeBlock from './CodeBlock'
-import MermaidDiagram from './MermaidDiagram'
+import CodeBlock from '@/components/shared/CodeBlock'
+import MermaidDiagram from '@/components/shared/MermaidDiagram'
+import { validateTest } from '@/schema'
 
-/** @typedef {import('../schema').TestData} TestData */
-
-// NOTA: questa pagina usa un formato legacy basato su `testData.sections[]`
-// e su raggruppamenti `{ concept, trueFalse, filler, multipleChoice }` —
-// NON conforme allo schema canonico in `src/schema.ts` (basato su
-// `testData.questions[]`). Va riscritta per allinearsi a TestData.
+/** @typedef {import('@/schema').TestData} TestData */
+/** @typedef {import('@/schema').Question} Question */
+/** @typedef {import('@/schema').ConceptGroup} ConceptGroup */
 
 function EditableText({ value, onChange, tag: Tag = 'span', className = '', multiline = false }) {
   if (multiline) {
@@ -89,7 +87,7 @@ function ContentEditor({ content, onChange }) {
             />
           )}
           {block.kind === 'code' && <CodeBlock language={block.language} value={block.value} />}
-          {block.kind === 'mermaid' && <MermaidDiagram value={block.value} id={`ed-${i}`} />}
+          {block.kind === 'mermaid' && <MermaidDiagram value={block.value} id={`manip-${i}`} />}
         </div>
       ))}
       <div className="editor-add-block">
@@ -101,77 +99,36 @@ function ContentEditor({ content, onChange }) {
   )
 }
 
-function TrueFalseEditor({ data, onChange }) {
-  const content = data.content
-    ? data.content
-    : data.text
-      ? [{ kind: 'text', value: data.text }]
-      : [{ kind: 'text', value: '' }]
-
-  function updateContent(newContent) {
-    if (newContent.length === 1 && newContent[0].kind === 'text') {
-      onChange({ ...data, text: newContent[0].value, content: undefined })
-    } else {
-      const { text, ...rest } = data
-      onChange({ ...rest, content: newContent })
-    }
-  }
-
+function TrueFalseEditor({ data, onChange, onRemove }) {
   return (
     <div className="editor-question-type">
       <div className="editor-type-header">
         <span className="editor-type-badge tf">V/F</span>
-        <label className="editor-answer-toggle">
-          Risposta:
-          <button
-            className={`btn-tf ${data.answer ? 'btn-true' : 'btn-false'}`}
-            onClick={() => onChange({ ...data, answer: !data.answer })}
-          >
-            {data.answer ? 'VERO' : 'FALSO'}
-          </button>
+        <button className="btn-icon btn-remove" onClick={onRemove} title="Rimuovi domanda">x</button>
+      </div>
+      <div className="editor-tf-fields">
+        <label className="editor-tf-field">
+          <span className="editor-tf-label editor-tf-label-true">VERO</span>
+          <input
+            className="editable editable-flex"
+            value={data["true"] || ''}
+            onChange={e => onChange({ ...data, "true": e.target.value })}
+          />
+        </label>
+        <label className="editor-tf-field">
+          <span className="editor-tf-label editor-tf-label-false">FALSO</span>
+          <input
+            className="editable editable-flex"
+            value={data["false"] || ''}
+            onChange={e => onChange({ ...data, "false": e.target.value })}
+          />
         </label>
       </div>
-      <ContentEditor content={content} onChange={updateContent} />
     </div>
   )
 }
 
-function FillerEditor({ data, onChange }) {
-  return (
-    <div className="editor-question-type">
-      <div className="editor-type-header">
-        <span className="editor-type-badge filler">Completamento</span>
-      </div>
-      <EditableText
-        value={data.text}
-        onChange={v => onChange({ ...data, text: v })}
-        tag="p"
-        className="content-text"
-      />
-      <div className="editor-filler-answers">
-        <span className="editor-label">Risposte (in ordine dei ____):</span>
-        {data.answer.map((a, i) => (
-          <input
-            key={i}
-            className="editable editable-inline"
-            value={a}
-            onChange={e => {
-              const updated = [...data.answer]
-              updated[i] = e.target.value
-              onChange({ ...data, answer: updated })
-            }}
-          />
-        ))}
-        <button className="btn-icon" onClick={() => onChange({ ...data, answer: [...data.answer, ''] })}>+</button>
-        {data.answer.length > 1 && (
-          <button className="btn-icon btn-remove" onClick={() => onChange({ ...data, answer: data.answer.slice(0, -1) })}>-</button>
-        )}
-      </div>
-    </div>
-  )
-}
-
-function MultipleChoiceEditor({ data, onChange }) {
+function MultipleChoiceEditor({ data, onChange, onRemove }) {
   const content = data.content
     ? data.content
     : data.text
@@ -191,6 +148,7 @@ function MultipleChoiceEditor({ data, onChange }) {
     <div className="editor-question-type">
       <div className="editor-type-header">
         <span className="editor-type-badge mc">Scelta multipla</span>
+        <button className="btn-icon btn-remove" onClick={onRemove} title="Rimuovi domanda">x</button>
       </div>
       <ContentEditor content={content} onChange={updateContent} />
       <div className="editor-mc-options">
@@ -230,86 +188,85 @@ function MultipleChoiceEditor({ data, onChange }) {
   )
 }
 
-function ConceptEditor({ concept, onChange, onRemove }) {
+function FillerEditor({ data, onChange, onRemove }) {
+  return (
+    <div className="editor-question-type">
+      <div className="editor-type-header">
+        <span className="editor-type-badge filler">Completamento</span>
+        <button className="btn-icon btn-remove" onClick={onRemove} title="Rimuovi domanda">x</button>
+      </div>
+      <EditableText
+        value={data.text || ''}
+        onChange={v => onChange({ ...data, text: v })}
+        tag="p"
+        className="content-text"
+      />
+    </div>
+  )
+}
+
+function QuestionEditor({ question, onChange, onRemove }) {
+  switch (question.type) {
+    case 'trueFalse':
+      return <TrueFalseEditor data={question} onChange={onChange} onRemove={onRemove} />
+    case 'multipleChoice':
+      return <MultipleChoiceEditor data={question} onChange={onChange} onRemove={onRemove} />
+    case 'filler':
+      return <FillerEditor data={question} onChange={onChange} onRemove={onRemove} />
+    default:
+      return <div className="editor-question-type">Tipo sconosciuto: {question.type}</div>
+  }
+}
+
+function ConceptGroupEditor({ group, onChange, onRemove }) {
+  function updateQuestion(i, updated) {
+    const qs = [...group.questions]
+    qs[i] = updated
+    onChange({ ...group, questions: qs })
+  }
+
+  function removeQuestion(i) {
+    onChange({ ...group, questions: group.questions.filter((_, idx) => idx !== i) })
+  }
+
+  function addQuestion(type) {
+    const defaults = {
+      trueFalse: { type: 'trueFalse', "true": 'Affermazione vera.', "false": 'Affermazione falsa.' },
+      multipleChoice: { type: 'multipleChoice', text: 'Domanda?', options: ['Opzione A', 'Opzione B', 'Opzione C', 'Opzione D'], answer: 0 },
+      filler: { type: 'filler', text: 'Completa la ____.' }
+    }
+    onChange({ ...group, questions: [...group.questions, defaults[type]] })
+  }
+
   return (
     <div className="editor-concept">
       <div className="editor-concept-header">
         <EditableText
-          value={concept.concept}
-          onChange={v => onChange({ ...concept, concept: v })}
+          value={group.concept}
+          onChange={v => onChange({ ...group, concept: v })}
           tag="strong"
           className="editor-concept-title"
         />
         <button className="btn-icon btn-remove" onClick={onRemove} title="Rimuovi concetto">x</button>
       </div>
-      {concept.trueFalse && (
-        <TrueFalseEditor
-          data={concept.trueFalse}
-          onChange={v => onChange({ ...concept, trueFalse: v })}
-        />
-      )}
-      {concept.filler && (
-        <FillerEditor
-          data={concept.filler}
-          onChange={v => onChange({ ...concept, filler: v })}
-        />
-      )}
-      {concept.multipleChoice && (
-        <MultipleChoiceEditor
-          data={concept.multipleChoice}
-          onChange={v => onChange({ ...concept, multipleChoice: v })}
-        />
-      )}
-    </div>
-  )
-}
-
-function SectionEditor({ section, onChange, onRemove }) {
-  function updateQuestion(i, updated) {
-    const qs = [...section.questions]
-    qs[i] = updated
-    onChange({ ...section, questions: qs })
-  }
-
-  function removeQuestion(i) {
-    onChange({ ...section, questions: section.questions.filter((_, idx) => idx !== i) })
-  }
-
-  function addQuestion() {
-    const newQ = {
-      concept: 'Nuovo concetto',
-      trueFalse: { text: 'Affermazione vera o falsa.', answer: true },
-      filler: { text: 'Completa la ____.', answer: ['frase'] },
-      multipleChoice: { text: 'Domanda?', options: ['Opzione A', 'Opzione B', 'Opzione C', 'Opzione D'], answer: 0 }
-    }
-    onChange({ ...section, questions: [...section.questions, newQ] })
-  }
-
-  return (
-    <div className="editor-section">
-      <div className="editor-section-header">
-        <EditableText
-          value={section.title}
-          onChange={v => onChange({ ...section, title: v })}
-          tag="h2"
-          className="editor-section-title"
-        />
-        <button className="btn-icon btn-remove" onClick={onRemove} title="Rimuovi sezione">x</button>
-      </div>
-      {section.questions.map((q, i) => (
-        <ConceptEditor
+      {group.questions.map((q, i) => (
+        <QuestionEditor
           key={i}
-          concept={q}
+          question={q}
           onChange={v => updateQuestion(i, v)}
           onRemove={() => removeQuestion(i)}
         />
       ))}
-      <button className="btn-small btn-add-concept" onClick={addQuestion}>+ Aggiungi concetto</button>
+      <div className="editor-add-block">
+        <button onClick={() => addQuestion('trueFalse')}>+ Vero/Falso</button>
+        <button onClick={() => addQuestion('multipleChoice')}>+ Scelta multipla</button>
+        <button onClick={() => addQuestion('filler')}>+ Completamento</button>
+      </div>
     </div>
   )
 }
 
-export default function EditorPage() {
+export default function ManipulatorPage() {
   const [testData, setTestData] = useState(null)
   const inputRef = useRef(null)
 
@@ -317,10 +274,17 @@ export default function EditorPage() {
     if (!file) return
     const reader = new FileReader()
     reader.onload = (e) => {
+      let parsed
       try {
-        setTestData(JSON.parse(e.target.result))
+        parsed = JSON.parse(e.target.result)
       } catch {
-        alert('JSON non valido')
+        alert('Parsing JSON fallito.')
+        return
+      }
+      try {
+        setTestData(validateTest(parsed))
+      } catch (err) {
+        alert('JSON non conforme allo schema:\n' + (err instanceof Error ? err.message : String(err)))
       }
     }
     reader.readAsText(file)
@@ -336,22 +300,27 @@ export default function EditorPage() {
     URL.revokeObjectURL(url)
   }
 
-  function updateSection(i, updated) {
-    const sections = [...testData.sections]
-    sections[i] = updated
-    setTestData({ ...testData, sections })
-  }
-
-  function removeSection(i) {
-    setTestData({ ...testData, sections: testData.sections.filter((_, idx) => idx !== i) })
-  }
-
-  function addSection() {
-    const newSection = {
-      title: 'Nuova sezione',
+  function createNew() {
+    setTestData({
+      title: 'Nuovo test',
+      subtitle: '',
+      instructions: '',
       questions: []
-    }
-    setTestData({ ...testData, sections: [...testData.sections, newSection] })
+    })
+  }
+
+  function updateConceptGroup(i, updated) {
+    const groups = [...testData.questions]
+    groups[i] = updated
+    setTestData({ ...testData, questions: groups })
+  }
+
+  function removeConceptGroup(i) {
+    setTestData({ ...testData, questions: testData.questions.filter((_, idx) => idx !== i) })
+  }
+
+  function addConceptGroup() {
+    setTestData({ ...testData, questions: [...testData.questions, { concept: 'Nuovo concetto', questions: [] }] })
   }
 
   if (!testData) {
@@ -364,7 +333,7 @@ export default function EditorPage() {
           onDragOver={e => e.preventDefault()}
         >
           <div className="file-picker-icon">&#9998;</div>
-          <h2>Carica un JSON da modificare</h2>
+          <h2>Carica un JSON da manipolare</h2>
           <p>Trascina il file qui oppure clicca per selezionarlo</p>
           <input
             ref={inputRef}
@@ -374,6 +343,9 @@ export default function EditorPage() {
             style={{ display: 'none' }}
           />
         </div>
+        <button className="btn-small" style={{ display: 'block', margin: '1rem auto' }} onClick={createNew}>
+          Oppure crea un nuovo test
+        </button>
       </div>
     )
   }
@@ -383,8 +355,7 @@ export default function EditorPage() {
       <div className="toolbar no-print">
         <button onClick={exportJSON}>Esporta JSON</button>
         <button onClick={() => setTestData(null)}>Carica un altro file</button>
-        <button onClick={() => { window.location.hash = '#/' }}>Vai alla vista stampa</button>
-        <button onClick={() => { window.location.hash = '#/manipulate' }}>Manipola</button>
+        <button onClick={() => { window.location.hash = '#/' }}>Vista stampa</button>
       </div>
 
       <div className="editor-sheet">
@@ -416,16 +387,16 @@ export default function EditorPage() {
           </label>
         </div>
 
-        {testData.sections?.map((section, i) => (
-          <SectionEditor
+        {testData.questions.map((group, i) => (
+          <ConceptGroupEditor
             key={i}
-            section={section}
-            onChange={v => updateSection(i, v)}
-            onRemove={() => removeSection(i)}
+            group={group}
+            onChange={v => updateConceptGroup(i, v)}
+            onRemove={() => removeConceptGroup(i)}
           />
         ))}
 
-        <button className="btn-small btn-add-section" onClick={addSection}>+ Aggiungi sezione</button>
+        <button className="btn-small btn-add-section" onClick={addConceptGroup}>+ Aggiungi concetto</button>
       </div>
     </div>
   )

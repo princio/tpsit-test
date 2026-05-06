@@ -1,7 +1,7 @@
 /**
  * Schema canonico dei file di test (JSON) usato dall'intera webapp.
  * Tutte le pagine (FilePicker, TestSheet, ManipulatorPage, CorrectionPage,
- * OpenCorrectionPage, EditorPage) devono fare riferimento a questi tipi.
+ * OpenCorrectionPage) devono fare riferimento a questi tipi.
  *
  * Convenzione: i file `.json` caricati dall'utente devono soddisfare {@link TestData}.
  * Per un controllo a runtime usare {@link validateTest}.

@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
-import FilePicker from './components/FilePicker'
-import TestSheet from './components/TestSheet'
-import EditorPage from './components/EditorPage'
-import ManipulatorPage from './components/ManipulatorPage'
-import CorrectionPage from './components/CorrectionPage'
-import OpenCorrectionPage from './components/OpenCorrectionPage'
+import FilePicker from './components/shared/FilePicker'
+import TestSheet from './components/pages/test-sheet/TestSheet'
+import ManipulatorPage from './components/pages/manipulator/ManipulatorPage'
+import CorrectionPage from './components/pages/correction/CorrectionPage'
+import OpenCorrectionPage from './components/pages/open-correction/OpenCorrectionPage'
 import './styles/correction.css'
 import './styles/open-correction.css'
 
@@ -69,6 +68,7 @@ function PrintView() {
   const [maxPages, setMaxPages] = useState(null)
   const [fixAttempts, setFixAttempts] = useState({})
   const [variantKeys, setVariantKeys] = useState({})
+  const [noShuffle, setNoShuffle] = useState(false)
 
   const fonts = [
     { label: 'Georgia', value: 'Georgia, "Times New Roman", serif' },
@@ -137,7 +137,7 @@ function PrintView() {
     setMaxPages(limit)
     setFixAttempts({})
     setPageCounts({})
-    const v = Array.from({ length: copies }, () => shuffleTest(testData))
+    const v = Array.from({ length: copies }, () => noShuffle ? testData : shuffleTest(testData))
     const keys = Object.fromEntries(v.map((_, i) => [i, 0]))
     setVariantKeys(keys)
     setVariants(v)
@@ -146,6 +146,7 @@ function PrintView() {
   // Auto-fix: re-shuffle copies that exceed maxPages
   useEffect(() => {
     if (!maxPages || !variants) return
+    if (noShuffle) return // senza shuffle, riprovare produrrebbe lo stesso risultato
 
     const ready = variants.every((_, i) => pageCounts[i] != null)
     if (!ready) return
@@ -241,7 +242,6 @@ function PrintView() {
           <div className="toolbar-divider" />
           <div className="toolbar-group">
             <button onClick={() => setTestData(null)}>Altro test</button>
-            <button onClick={() => { window.location.hash = '#/editor' }}>Editor</button>
             <button onClick={() => { window.location.hash = '#/manipulate' }}>Manipola</button>
             <button onClick={() => { window.location.hash = '#/correction' }}>Correzione</button>
             <button onClick={() => { window.location.hash = '#/open-correction' }}>Correzione aperta</button>
@@ -251,7 +251,6 @@ function PrintView() {
 
       {!testData && (
         <div className="toolbar no-print" style={{ justifyContent: 'flex-end' }}>
-          <button onClick={() => { window.location.hash = '#/editor' }}>Editor</button>
           <button onClick={() => { window.location.hash = '#/manipulate' }}>Manipola</button>
           <button onClick={() => { window.location.hash = '#/correction' }}>Correzione</button>
           <button onClick={() => { window.location.hash = '#/open-correction' }}>Correzione aperta</button>
@@ -281,10 +280,6 @@ export default function App() {
 
   if (hash.startsWith('#/manipulate')) {
     return <ManipulatorPage />
-  }
-
-  if (hash.startsWith('#/editor')) {
-    return <EditorPage />
   }
 
   if (hash.startsWith('#/open-correction')) {
