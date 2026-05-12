@@ -54,6 +54,11 @@ function defaultBlock(kind) {
     case 'code': return { kind: 'code', language: 'python', value: '# codice' }
     case 'mermaid': return { kind: 'mermaid', value: 'graph TD\n    A-->B' }
     case 'gantt': return { kind: 'gantt', slices: [{ pid: 'P1', start: 0, end: 3 }, { pid: 'P2', start: 3, end: 5 }] }
+    case 'table': return {
+      kind: 'table',
+      headers: ['Colonna 1', 'Colonna 2'],
+      rows: [['', ''], ['', '']],
+    }
     default: return { kind: 'text', value: 'Nuovo testo' }
   }
 }
@@ -108,6 +113,130 @@ function GanttSlicesEditor({ slices, onChange }) {
   )
 }
 
+function TableEditor({ block, onChange }) {
+  const headers = Array.isArray(block.headers) ? block.headers : []
+  const rows = Array.isArray(block.rows) ? block.rows : []
+  const colCount = Math.max(headers.length, ...rows.map(r => r.length), 1)
+
+  function setHeaders(next) {
+    onChange({ ...block, headers: next })
+  }
+  function setRows(next) {
+    onChange({ ...block, rows: next })
+  }
+  function updateHeader(i, value) {
+    const next = [...headers]
+    while (next.length < colCount) next.push('')
+    next[i] = value
+    setHeaders(next)
+  }
+  function updateCell(r, c, value) {
+    const next = rows.map(row => {
+      const padded = [...row]
+      while (padded.length < colCount) padded.push('')
+      return padded
+    })
+    next[r] = [...next[r]]
+    next[r][c] = value
+    setRows(next)
+  }
+  function addRow() {
+    setRows([...rows, Array.from({ length: colCount }, () => '')])
+  }
+  function removeRow(i) {
+    if (rows.length <= 1) return
+    setRows(rows.filter((_, idx) => idx !== i))
+  }
+  function addColumn() {
+    const nextHeaders = [...headers]
+    while (nextHeaders.length < colCount) nextHeaders.push('')
+    nextHeaders.push(`Colonna ${nextHeaders.length + 1}`)
+    setHeaders(nextHeaders)
+    setRows(rows.map(r => [...r, '']))
+  }
+  function removeColumn(i) {
+    if (colCount <= 1) return
+    const nextHeaders = headers.filter((_, idx) => idx !== i)
+    setHeaders(nextHeaders)
+    setRows(rows.map(r => r.filter((_, idx) => idx !== i)))
+  }
+  function toggleHeaders() {
+    if (headers.length === 0) {
+      setHeaders(Array.from({ length: colCount }, (_, i) => `Colonna ${i + 1}`))
+    } else {
+      setHeaders([])
+    }
+  }
+
+  return (
+    <div className="editor-table">
+      <div className="editor-table-controls">
+        <label className="editor-table-toggle">
+          <input
+            type="checkbox"
+            checked={headers.length > 0}
+            onChange={toggleHeaders}
+          />
+          Intestazioni
+        </label>
+        <button className="btn-small" onClick={addColumn}>+ Colonna</button>
+        <button className="btn-small" onClick={addRow}>+ Riga</button>
+      </div>
+      <div className="editor-table-scroll">
+        <table className="editor-table-grid">
+          {headers.length > 0 && (
+            <thead>
+              <tr>
+                {Array.from({ length: colCount }).map((_, ci) => (
+                  <th key={ci}>
+                    <input
+                      className="editable editable-inline editor-table-input"
+                      value={headers[ci] ?? ''}
+                      onChange={e => updateHeader(ci, e.target.value)}
+                      placeholder={`Col ${ci + 1}`}
+                    />
+                    {colCount > 1 && (
+                      <button
+                        className="btn-icon btn-remove editor-table-col-remove"
+                        onClick={() => removeColumn(ci)}
+                        title="Rimuovi colonna"
+                      >x</button>
+                    )}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+          )}
+          <tbody>
+            {rows.map((row, ri) => (
+              <tr key={ri}>
+                {Array.from({ length: colCount }).map((_, ci) => (
+                  <td key={ci}>
+                    <input
+                      className="editable editable-inline editor-table-input"
+                      value={row[ci] ?? ''}
+                      onChange={e => updateCell(ri, ci, e.target.value)}
+                    />
+                  </td>
+                ))}
+                <td className="editor-table-row-actions">
+                  {rows.length > 1 && (
+                    <button
+                      className="btn-icon btn-remove"
+                      onClick={() => removeRow(ri)}
+                      title="Rimuovi riga"
+                    >x</button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
 function ContentEditor({ content, onChange }) {
   function updateBlock(i, newBlock) {
     const updated = [...content]
@@ -141,6 +270,7 @@ function ContentEditor({ content, onChange }) {
               <option value="code">Codice</option>
               <option value="mermaid">Mermaid</option>
               <option value="gantt">Gantt</option>
+              <option value="table">Tabella</option>
             </select>
             {block.kind === 'code' && (
               <input
@@ -156,6 +286,11 @@ function ContentEditor({ content, onChange }) {
             <GanttSlicesEditor
               slices={block.slices || []}
               onChange={slices => updateBlock(i, { ...block, slices })}
+            />
+          ) : block.kind === 'table' ? (
+            <TableEditor
+              block={block}
+              onChange={next => updateBlock(i, next)}
             />
           ) : block.kind === 'text' ? (
             <EditableText
@@ -180,6 +315,7 @@ function ContentEditor({ content, onChange }) {
         <button onClick={() => addBlock('code')}>+ Codice</button>
         <button onClick={() => addBlock('mermaid')}>+ Mermaid</button>
         <button onClick={() => addBlock('gantt')}>+ Gantt</button>
+        <button onClick={() => addBlock('table')}>+ Tabella</button>
       </div>
     </div>
   )

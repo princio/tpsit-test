@@ -1,0 +1,431 @@
+{
+  "title": "Verifica TPSIT - Sistema Operativo 1.0",
+  "subtitle": "Classe 3 - A.S. 2025/2026",
+  "instructions": "Rispondi a tutte le domande. Per le domande a scelta multipla con più risposte corrette, devi selezionarle TUTTE: anche una sola scelta sbagliata o mancante rende l'intera risposta errata.",
+  "questions": [
+    {
+      "concept": "Livello di astrazione e ruolo del Kernel",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "text": "Senza un sistema operativo, ogni applicazione dovrebbe essere scritta in modo specifico per le funzioni esposte dal particolare hardware su cui gira.",
+          "answer": true
+        },
+        {
+          "type": "trueFalse",
+          "text": "Salvare un file su un hardisk Samsung o Seagate richiede la stessa implementazione.",
+          "answer": false
+        },
+        {
+          "type": "multipleChoice",
+          "text": "In un mondo senza sistema operativo, come dovrebbe essere scritto il codice sorgente di un'applicazione che vuole girare sia su hardware Cisco sia su hardware Intel?",
+          "options": [
+            "Sarebbe sufficiente compilarlo una sola volta: l'hardware si adatta automaticamente.",
+            "Dovrebbe contenere rami condizionali (`if`) che selezionano la chiamata giusta in base all'hardware presente.",
+            "Dovrebbe invocare le funzioni del Kernel, indipendenti dall'hardware.",
+            "Non potrebbe girare su hardware diverso in nessun caso."
+          ],
+          "answer": 1
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Quali delle seguenti affermazioni descrivono CORRETTAMENTE la funzione di astrazione del SO?",
+          "options": [
+            "Il Kernel avvolge l'hardware ed espone alle applicazioni un'interfaccia uniforme.",
+            "Il codice del programma si adatta al sistema operativo, mentre il sistema operativo si adatta all'hardware.",
+            "Durante lo sviluppo è sempre necessario le funzioni specifiche di ciascuna singola periferica.",
+            "Il codice di un programma che salva file su disco, va riscritto se cambio il disco del PC.",
+            "Il Kernel sostituisce l'hardware: senza Kernel l'hardware non potrebbe funzionare.",
+            "Due programmi diversi salvano i file nel disco, essi utilizzano due system call diverse per effettuare tale salvataggio."
+          ],
+          "answer": [
+            0,
+            1,
+            3
+          ]
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Considera due schede di rete prodotte da costruttori diversi (es. Cisco e Intel). Quali affermazioni sono CORRETTE?",
+          "options": [
+            "Permettono l'implementazione di funzioni con lo scopo ma di diversa implementazione.",
+            "Espongono funzioni con la stessa identica implementazione interna.",
+            "I nomi delle funzioni esposte possono variare da hardware a hardware.",
+            "Sono completamente intercambiabili senza alcun adattamento del codice sorgente.",
+            "Senza il SO, il codice sorgente deve gestire esplicitamente entrambi i casi (es. con `if (cisco) ... if (intel) ...`)."
+          ],
+          "answer": [
+            0,
+            2,
+            4
+          ]
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Quali sono le conseguenze CORRETTE dell'introduzione del Kernel come livello di astrazione?",
+          "options": [
+            "Il programmatore dell'applicazione non deve più preoccuparsi delle funzioni specifiche dell'hardware sottostante.",
+            "Cambiare hardware lasciando invariata l'applicazione diventa più semplice ed efficiente.",
+            "L'applicazione diventa direttamente dipendente dal modello specifico di hardware.",
+            "È il SO a doversi adattare all'hardware, non più l'applicazione.",
+            "Le system call possono essere chiamate solamente dalla shell, non dal codice sorgente.",
+            "Le system call sono funzioni che richiedono come argomento il modello dell'Hardware corrente."
+          ],
+          "answer": [
+            0,
+            1,
+            3
+          ]
+        },
+        {
+          "type": "filler",
+          "text": "L'applicazione non deve adattarsi all' ____ in quanto è il SO ad addatarvicisi attraverso i ____.",
+          "answer": [
+            "hardware",
+            "driver"
+          ]
+        },
+        {
+          "type": "open",
+          "text": "Spiega, anche con un esempio concreto, perché senza un livello di astrazione (Kernel) il codice sorgente di un'applicazione diventerebbe difficile da scrivere e da mantenere al variare dell'hardware.",
+          "linesNumber": 5
+        }
+      ]
+    },
+    {
+      "concept": "Gerarchia delle memorie",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "text": "La RAM è classificata come memoria centrale (o di primo livello).",
+          "answer": true
+        },
+        {
+          "type": "trueFalse",
+          "text": "L'HDD è una memoria di primo livello, più veloce della RAM.",
+          "answer": false
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Qual è il criterio *principale* che distingue tra loro HDD, RAM, cache e registri della CPU?",
+          "options": [
+            "Il costo per Megabyte",
+            "La capacità totale di archiviazione",
+            "La velocità di lettura/scrittura",
+            "Il consumo energetico"
+          ],
+          "answer": 2
+        },
+        {
+          "type": "orderItems",
+          "text": "Ordina le seguenti memorie dalla PIÙ VELOCE alla PIÙ LENTA in lettura/scrittura.",
+          "items": [
+            "HDD",
+            "RAM",
+            "Cache",
+            "Registri CPU"
+          ],
+          "answer": [
+            3,
+            2,
+            1,
+            0
+          ]
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Quali affermazioni sulla gerarchia delle memorie sono CORRETTE?",
+          "options": [
+            "L'HDD è una memoria di secondo livello.",
+            "I registri della CPU sono il livello di memoria più vicino alla CPU.",
+            "Più una memoria è vicina alla CPU, più la sua velocità deve avvicinarsi a quella della CPU stessa.",
+            "Se la CPU scambiasse dati direttamente con l'HDD l'utente non se ne accorgerebbe.",
+            "RAM e cache sono memorie di archiviazione permanente.",
+            "La velocità di un'operazione della CPU è di millisecondi."
+          ],
+          "answer": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "type": "filler",
+          "text": "Quanto più una memoria si avvicina alla ____, tanto più la sua ____ di lettura/scrittura deve essere elevata.",
+          "answer": [
+            "CPU",
+            "velocità"
+          ]
+        },
+        {
+          "type": "open",
+          "text": "Perché ha senso organizzare la memoria di un calcolatore in più livelli (registri, cache, RAM, HDD) invece di usare un unico tipo di memoria? Argomenta facendo riferimento alla velocità.",
+          "linesNumber": 5
+        }
+      ]
+    },
+    {
+      "concept": "Programma vs Processo e ruolo del PCB",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "text": "Un programma è un'entità statica: cambia solo quando viene aggiornato.",
+          "answer": true
+        },
+        {
+          "type": "trueFalse",
+          "text": "Un processo viene caricato in RAM perché l'HDD non avrebbe capacità sufficiente per contenerlo.",
+          "answer": false
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Perché un processo viene eseguito a partire dalla RAM e non direttamente dall'HDD?",
+          "options": [
+            "Perché l'HDD non può memorizzare dati binari.",
+            "Perché l'accesso ai dati su HDD rallenterebbe eccessivamente il processore.",
+            "Perché l'HDD è una memoria volatile.",
+            "Perché solo la RAM può eseguire codice."
+          ],
+          "answer": 1
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Quali affermazioni distinguono CORRETTAMENTE un programma da un processo?",
+          "options": [
+            "Il programma è un'entità statica, il processo è un'entità in evoluzione.",
+            "Il programma cambia continuamente; il processo cambia solo con gli aggiornamenti.",
+            "Tutti i processi utilizzano sicuramente CPU e RAM.",
+            "Il programma risiede in HDD; il processo in RAM.",
+            "Programma e processo sono sostanzialmente lo stesso concetto, cambia solo il nome.",
+            "I file personali creati durante l'utilizzo del programma sono considerabili come degli aggiornamenti."
+          ],
+          "answer": [
+            0,
+            2,
+            3
+          ]
+        },
+        {
+          "type": "filler",
+          "text": "Una periferica limitata e condivisa fra più processi diventa ____.",
+          "answer": "risorsa"
+        },
+        {
+          "type": "multipleChoice",
+          "text": "In Windows, dove vengono tipicamente salvati i dati utente prodotti da un programma (es. segnalibri, preferenze)?",
+          "options": [
+            "Nella cartella di installazione del programma.",
+            "Direttamente all'interno del PCB del processo.",
+            "In una cartella utente come `C:\\Users\\utente\\AppData\\`.",
+            "In RAM, finché il sistema operativo è acceso."
+          ],
+          "answer": 2
+        },
+        {
+          "type": "open",
+          "text": "Per gestire più elementi di uno stesso gruppo, si utilizza un particolare strumento molto comune. Questo viene usato anche dal SO per gestire i processi in esecuzione. Qual è questo strumento usa e da quali elementi è composto nel caso del SO?",
+          "linesNumber": 10
+        }
+      ]
+    },
+    {
+      "concept": "Stati di un processo e multitasking",
+      "questions": [
+        {
+          "type": "trueFalse",
+          "text": "Lo stato di un processo è un campo del PCB ed è il sistema operativo a tenerlo aggiornato.",
+          "answer": true
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Quale tra i seguenti NON è un campo tipico del PCB così come visto in lezione?",
+          "options": [
+            "PID",
+            "NOME",
+            "PRIORITÀ ECONOMICA",
+            "STATO"
+          ],
+          "answer": 2
+        },
+        {
+          "type": "filler",
+          "text": "Lo stato ____ (in inglese: ____) indica che il processo non aspetta più altre risorse: gli manca solo la ____ per andare in esecuzione.",
+          "answer": [
+            "pronto",
+            "ready",
+            "CPU"
+          ]
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Quali affermazioni distinguono CORRETTAMENTE lo stato 'pronto' (ready) dallo stato 'in attesa' (wait)?",
+          "options": [
+            "'pronto' aspetta la CPU; 'in attesa' aspetta una risorsa diversa dalla CPU.",
+            "Un processo 'pronto' può andare in esecuzione non appena gli viene assegnata la CPU.",
+            "Un processo 'in attesa' può andare in esecuzione non appena gli viene assegnata la CPU.",
+            "Un processo 'pronto' ha già a disposizione tutte le risorse non-CPU di cui ha bisogno.",
+            "'in attesa' è uno stato di terminazione del processo."
+          ],
+          "answer": [
+            0,
+            1,
+            3
+          ]
+        },
+        {
+          "type": "open",
+          "text": "Spiega i due passaggi del context-switch.",
+          "linesNumber": 10,
+          "skip": true
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Il context-switch.",
+          "options": [
+            "Permette di interrompere l'esecuzione di un processo e riprenderla in un secondo momento.",
+            "È un funzione che non richiede tempo.",
+            "Senza context-switch potremmo ottenere comunque il multitasking.",
+            "Il context-switch è implementabile perché la CPU è una risorsa pre-emptive."
+          ],
+          "answer": [
+            0,
+            3
+          ],
+          "multi": true,
+          "skip": true
+        }
+      ]
+    },
+    {
+      "concept": "Context switch e algoritmi di scheduling",
+      "questions": [
+        {
+          "type": "multipleChoice",
+          "text": "L'operazione di 'saving' all'interno di un context switch consiste nel:",
+          "options": [
+            "Spostare lo stato dal PCB ai registri della CPU.",
+            "Spostare lo stato dai registri della CPU al PCB del processo uscente.",
+            "Eliminare il PCB del processo terminato.",
+            "Salvare il programma su HDD."
+          ],
+          "answer": 1
+        },
+        {
+          "type": "filler",
+          "text": "Il context switch si compone di due fasi: la prima è il salvataggio dei registri da __ a __, poi da ___ a ___.",
+          "answer": [
+            "CPU",
+            "PCB",
+            "PCB",
+            "CPU"
+          ]
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Quali affermazioni su context switch e scheduling pre-emptive sono CORRETTE?",
+          "options": [
+            "Pre-emptive significa che un processo in esecuzione può essere interrotto prima che termini.",
+            "Durante 'saving' lo stato della CPU viene scritto nel PCB del processo uscente.",
+            "Durante 'setting' lo stato del processo entrante viene caricato dal PCB nei registri della CPU.",
+            "Pre-emptive significa che un processo, una volta avviato, deve completare senza interruzioni.",
+            "Su una CPU single-core il context switch è inutile."
+          ],
+          "answer": [
+            0,
+            1,
+            2
+          ],
+          "skip": true
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Quale algoritmo di scheduling assume che TUTTI i processi siano arrivati al tempo 0 e li esegue nell'ordine in cui sono arrivati?",
+          "options": [
+            "FCFS",
+            "SJF (SJB)",
+            "SRTF",
+            "Round Robin"
+          ],
+          "answer": 0
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Quali affermazioni distinguono CORRETTAMENTE FCFS, SJF (SJB) e SRTF?",
+          "options": [
+            "FCFS esegue i processi nell'ordine in cui sono arrivati.",
+            "SJF (SJB) ordina i job in ordine crescente di durata totale.",
+            "SRTF assegna la CPU al processo con il minor tempo rimanente di esecuzione.",
+            "FCFS e SJF sono pre-emptive, mentre SRTF non lo è.",
+            "SRTF è equivalente a FCFS quando tutti i processi arrivano al tempo 0.",
+            "La durata di un processo è sempre nota sin dall'inizio."
+          ],
+          "answer": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "type": "open",
+          "text": "Spiega la differenza tra SJF e SRTF: in che situazione, partendo dagli stessi processi, i due algoritmi producono uno scheduling diverso?",
+          "linesNumber": 5,
+          "skip": true
+        },
+        {
+          "type": "trueFalse",
+          "true": "Affermazione vera.",
+          "false": "Affermazione falsa.",
+          "text": "Su una CPU single-core il context switch è inutile."
+        }
+      ]
+    },
+    {
+      "concept": "Gantt",
+      "questions": [
+        {
+          "type": "open",
+          "content": [
+            {
+              "kind": "text",
+              "value": "Calcola il tempo di attesa e di completamento."
+            },
+            {
+              "kind": "gantt",
+              "slices": [
+                {
+                  "pid": "P1",
+                  "start": 0,
+                  "end": 1
+                },
+                {
+                  "pid": "P2",
+                  "start": 1,
+                  "end": 5
+                },
+                {
+                  "pid": "P3",
+                  "start": 5,
+                  "end": 7
+                },
+                {
+                  "pid": "P2",
+                  "start": 7,
+                  "end": 9
+                }
+              ]
+            }
+          ],
+          "linesNumber": 4
+        }
+      ]
+    }
+  ]
+}

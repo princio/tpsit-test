@@ -45,7 +45,22 @@ export interface GanttBlock {
   slices: { pid: string; start: number; end: number }[]
 }
 
-export type ContentBlock = TextBlock | CodeBlock | MermaidBlock | ImageBlock | GanttBlock
+/** Tabella semplice. Le celle accettano lo stesso markdown-light di {@link TextBlock}
+ *  (backtick → inline code). `headers` è opzionale: se assente, viene renderizzato
+ *  un body-only. */
+export interface TableBlock {
+  kind: 'table'
+  headers?: string[]
+  rows: string[][]
+}
+
+export type ContentBlock =
+  | TextBlock
+  | CodeBlock
+  | MermaidBlock
+  | ImageBlock
+  | GanttBlock
+  | TableBlock
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Domande

@@ -18,6 +18,10 @@ function renderInlineText(text, fillerAnswers, startBlankIndex = 0) {
   })
 }
 
+function renderCell(value) {
+  return renderInlineText(value ?? '', undefined, 0)
+}
+
 export default function ContentRenderer({ content, questionIndex, fillerAnswers }) {
   let blankOffset = 0
   return (
@@ -41,6 +45,34 @@ export default function ContentRenderer({ content, questionIndex, fillerAnswers 
                 <img src={block.value} alt={block.alt || 'Immagine'} />
               </div>
             )
+          case 'table': {
+            const headers = Array.isArray(block.headers) ? block.headers : null
+            const rows = Array.isArray(block.rows) ? block.rows : []
+            return (
+              <div key={i} className="content-table-wrapper">
+                <table className="content-table">
+                  {headers && headers.length > 0 && (
+                    <thead>
+                      <tr>
+                        {headers.map((h, ci) => (
+                          <th key={ci}>{renderCell(h)}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                  )}
+                  <tbody>
+                    {rows.map((row, ri) => (
+                      <tr key={ri}>
+                        {row.map((cell, ci) => (
+                          <td key={ci}>{renderCell(cell)}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )
+          }
           default:
             return null
         }
