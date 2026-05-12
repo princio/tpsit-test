@@ -143,6 +143,28 @@
   border-left: 3px solid #ddd;
 }
 
+.editor-question-type.skipped {
+  opacity: 0.55;
+  background: #f5f5f5;
+  border-left-color: #aaa;
+  border-left-style: dashed;
+}
+
+.editor-question-type.skipped .editor-type-header {
+  opacity: 1;
+}
+
+.editor-skip-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: #555;
+  margin-left: auto;
+  margin-right: 0.4rem;
+  user-select: none;
+}
+
 .editor-type-header {
   display: flex;
   align-items: center;
@@ -170,6 +192,25 @@
 
 .editor-type-badge.mc {
   background: #67c23a;
+}
+
+.editor-type-badge.open {
+  background: #9c6ade;
+}
+
+.editor-open-lines {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  color: #555;
+}
+
+.editor-open-lines input {
+  width: 3.5rem;
+  padding: 0.1rem 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 3px;
 }
 
 .editor-answer-toggle {
@@ -214,6 +255,21 @@
   min-width: 100px;
 }
 
+.editor-filler-answer {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.75rem;
+  color: #555;
+}
+
+.editor-filler-hint {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #888;
+  font-style: italic;
+}
+
 /* Multiple choice options */
 .editor-mc-options {
   display: flex;
@@ -253,6 +309,86 @@
   border-color: #4caf50;
   background: #4caf50;
   color: #fff;
+}
+
+.btn-correct.multi {
+  border-radius: 4px;
+}
+
+.editor-mc-multi-toggle {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  color: #555;
+  cursor: pointer;
+  user-select: none;
+}
+
+.editor-mc-multi-toggle input {
+  margin: 0;
+  cursor: pointer;
+}
+
+/* Manipulator drafts (auto-save) */
+.manipulator-drafts {
+  margin-top: 2rem;
+  width: 500px;
+  max-width: 90vw;
+}
+
+.manipulator-drafts h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+.manipulator-drafts ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.manipulator-drafts li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.manipulator-drafts li:last-child { border-bottom: none; }
+
+.draft-resume {
+  flex: 1;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+  font: inherit;
+}
+
+.draft-resume:hover { background: #f0f4ff; }
+
+.draft-meta {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.2rem;
+}
+
+.manipulator-save-status {
+  margin-left: auto;
+  font-size: 0.85rem;
+  color: #555;
 }
 
 /* Content blocks editor */
@@ -355,42 +491,58 @@
   padding: 0.5rem 1.5rem;
 }
 
-/* TrueFalse two-field layout (ManipulatorPage) */
-.editor-tf-fields {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.editor-tf-field {
-  display: flex;
+/* TrueFalse answer toggle (ManipulatorPage) */
+.editor-tf-answer {
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  color: #555;
 }
 
-.editor-tf-field .editable {
-  flex: 1;
-}
-
-.editor-tf-label {
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0.15rem 0.5rem;
+.btn-tf {
+  width: 1.8rem;
+  height: 1.6rem;
+  border: 1px solid #bbb;
+  background: #fff;
   border-radius: 3px;
-  color: #fff;
-  white-space: nowrap;
-  min-width: 50px;
-  text-align: center;
+  font-weight: 700;
+  cursor: pointer;
+  color: #666;
 }
 
-.editor-tf-label-true {
+.btn-tf.active.true {
   background: #d4edda;
+  border-color: #5cb85c;
   color: #155724;
 }
 
-.editor-tf-label-false {
+.btn-tf.active.false {
   background: #f8d7da;
+  border-color: #d9534f;
   color: #721c24;
+}
+
+/* Gantt slices editor */
+.editor-gantt {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.editor-gantt-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-top: 0.6rem;
+}
+
+.editor-gantt-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.editor-gantt-row input[type="number"] {
+  width: 5rem;
 }

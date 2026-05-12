@@ -1,0 +1,282 @@
+{
+  "title": "Verifica TPSIT - Amministrazione Digitale",
+  "subtitle": "Classe 3 - A.S. 2025/2026",
+  "instructions": "Rispondi a tutte le domande. Per le domande a scelta multipla con più risposte corrette, devi selezionarle TUTTE: anche una sola scelta sbagliata o mancante rende l'intera risposta errata.",
+  "questions": [
+    {
+      "concept": "Funzioni di Hash",
+      "questions": [
+        {
+          "type": "filler",
+          "text": "Una funzione di hash crittografica produce un'____ (o digest) di lunghezza ____ a partire da un input di dimensione qualunque.",
+          "answer": ["impronta", "fissa"]
+        },
+        {
+          "type": "trueFalse",
+          "text": "Una buona funzione di hash crittografica è progettata per essere a senso unico: dato il digest, è computazionalmente infattibile risalire all'input originale.",
+          "answer": true
+        },
+        {
+          "type": "trueFalse",
+          "text": "Cambiando un solo bit del messaggio di input, l'hash prodotto resta praticamente uguale a quello originale, differendo solo per pochi bit.",
+          "answer": false
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Quale tra le seguenti è una funzione di hash crittografica considerata ancora sicura allo stato dell'arte?",
+          "options": [
+            "MD5",
+            "SHA-1",
+            "SHA-256",
+            "DES"
+          ],
+          "answer": 2
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Cosa si intende per \"collisione\" in una funzione di hash?",
+          "options": [
+            "Due input diversi che producono lo stesso digest.",
+            "Un input che produce un digest pari a zero.",
+            "Una situazione in cui l'algoritmo restituisce un errore di esecuzione.",
+            "Un digest la cui lunghezza varia in base all'input."
+          ],
+          "answer": 0
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Quali delle seguenti sono proprietà di una buona funzione di hash crittografica?",
+          "options": [
+            "Resistenza alla preimmagine: dato il digest non è praticamente possibile risalire all'input.",
+            "Effetto valanga: una piccola modifica dell'input cambia drasticamente l'output.",
+            "Reversibilità: dall'hash si può ricostruire il messaggio in tempo polinomiale.",
+            "Resistenza alle collisioni: è difficile trovare due input distinti con lo stesso digest.",
+            "Output di lunghezza variabile in funzione della dimensione dell'input."
+          ],
+          "answer": [0, 1, 3]
+        }
+      ]
+    },
+    {
+      "concept": "Firma Digitale",
+      "questions": [
+        {
+          "type": "filler",
+          "text": "La firma digitale è basata su crittografia ____, in cui ogni utente possiede una chiave ____ (segreta) e una chiave ____ (distribuibile).",
+          "answer": ["asimmetrica", "privata", "pubblica"]
+        },
+        {
+          "type": "trueFalse",
+          "text": "Una firma digitale apposta correttamente su un documento informatico garantisce l'integrità del documento, l'autenticità del firmatario e il non ripudio.",
+          "answer": true
+        },
+        {
+          "type": "trueFalse",
+          "text": "Per verificare una firma digitale si utilizza la stessa chiave privata che è stata usata per generarla.",
+          "answer": false
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Quale ente è autorizzato a rilasciare i certificati qualificati di firma digitale in Italia?",
+          "options": [
+            "Qualsiasi azienda privata, senza autorizzazioni particolari.",
+            "Un Certificatore Qualificato (Trust Service Provider) accreditato presso AgID.",
+            "Il Ministero dell'Interno tramite la Polizia Postale.",
+            "L'utente stesso, generandosi il certificato in autonomia."
+          ],
+          "answer": 1
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Cosa contiene tecnicamente la firma digitale apposta su un documento?",
+          "options": [
+            "Una scansione grafica della firma autografa del firmatario.",
+            "L'impronta (hash) del documento cifrata con la chiave privata del firmatario.",
+            "Il documento intero cifrato con la chiave pubblica del destinatario.",
+            "Una password personale dell'utente associata al documento."
+          ],
+          "answer": 1
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Quali delle seguenti affermazioni sulla firma digitale sono CORRETTE?",
+          "options": [
+            "Ha pieno valore legale ed è equiparata alla firma autografa.",
+            "Richiede un certificato qualificato emesso da un ente accreditato.",
+            "È sufficiente conoscere la chiave pubblica del firmatario per generare la firma a suo nome.",
+            "Garantisce il non ripudio: il firmatario non può negare di aver firmato il documento.",
+            "È una semplice immagine della firma incollata nel documento."
+          ],
+          "answer": [0, 1, 3]
+        }
+      ]
+    },
+    {
+      "concept": "PEC - Posta Elettronica Certificata",
+      "questions": [
+        {
+          "type": "filler",
+          "text": "La PEC ha lo stesso valore legale di una ____ con ricevuta di ____, ed è regolamentata in Italia dal ____ (DPR 68/2005 e CAD).",
+          "answer": ["raccomandata", "ritorno", "legislatore"]
+        },
+        {
+          "type": "trueFalse",
+          "text": "Un messaggio inviato da una casella PEC ha valore legale solo se anche il destinatario possiede una casella PEC.",
+          "answer": true
+        },
+        {
+          "type": "trueFalse",
+          "text": "La PEC garantisce di per sé anche la riservatezza (segretezza) del contenuto del messaggio, che viaggia sempre cifrato end-to-end.",
+          "answer": false
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Quali ricevute genera il sistema PEC nel corso di un invio andato a buon fine?",
+          "options": [
+            "Solo la ricevuta di lettura, quando il destinatario apre il messaggio.",
+            "Una ricevuta di accettazione dal gestore del mittente e una ricevuta di avvenuta consegna dal gestore del destinatario.",
+            "Una singola ricevuta firmata dal destinatario in persona.",
+            "Nessuna ricevuta: la PEC è un protocollo identico all'email tradizionale."
+          ],
+          "answer": 1
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Chi può fornire un indirizzo PEC a un cittadino o a un'azienda?",
+          "options": [
+            "Qualsiasi provider email, come Gmail o Outlook.",
+            "Esclusivamente l'Agenzia delle Entrate.",
+            "Un gestore PEC iscritto in un apposito elenco pubblico tenuto da AgID.",
+            "Solo le Pubbliche Amministrazioni, non i privati."
+          ],
+          "answer": 2
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Quali delle seguenti affermazioni sulla PEC sono CORRETTE?",
+          "options": [
+            "Certifica la data e l'ora di invio e di consegna del messaggio.",
+            "Sostituisce la firma digitale: chi invia da PEC firma automaticamente il contenuto.",
+            "Le ricevute prodotte dal sistema hanno valore legale opponibile a terzi.",
+            "Per le imprese e i professionisti il possesso di un indirizzo PEC è obbligatorio.",
+            "Per inviare una PEC non è necessaria alcuna autenticazione: chiunque può usare la casella altrui."
+          ],
+          "answer": [0, 2, 3]
+        }
+      ]
+    },
+    {
+      "concept": "SPID e CIE",
+      "questions": [
+        {
+          "type": "filler",
+          "text": "L'acronimo SPID significa Sistema ____ di ____ ____, mentre l'acronimo CIE significa ____ d'Identità ____.",
+          "answer": ["Pubblico", "Identità", "Digitale", "Carta", "Elettronica"]
+        },
+        {
+          "type": "trueFalse",
+          "text": "SPID prevede tre livelli di sicurezza progressivi: il livello 2 richiede una seconda credenziale (es. OTP), il livello 3 richiede un dispositivo fisico aggiuntivo.",
+          "answer": true
+        },
+        {
+          "type": "trueFalse",
+          "text": "Le credenziali SPID vengono rilasciate direttamente dall'AgID, che gestisce in prima persona l'identità di ogni cittadino.",
+          "answer": false
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Quale strumento è necessario per autenticarsi tramite la CIE ai servizi online di livello più alto da uno smartphone?",
+          "options": [
+            "Un lettore di smart card collegato via USB obbligatoriamente.",
+            "Uno smartphone dotato di NFC e l'app CieID con il PIN della carta.",
+            "Soltanto l'inserimento del numero di serie della CIE in un form web.",
+            "Una webcam che inquadri la foto stampata sulla carta."
+          ],
+          "answer": 1
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Chi sono gli \"Identity Provider\" (IdP) nel sistema SPID?",
+          "options": [
+            "I siti web della Pubblica Amministrazione che richiedono l'identità del cittadino.",
+            "I gestori privati accreditati da AgID che verificano l'identità e rilasciano le credenziali SPID.",
+            "Le caselle PEC dei cittadini, utilizzate come canale di autenticazione.",
+            "Le forze dell'ordine, che certificano l'identità tramite documento cartaceo."
+          ],
+          "answer": 1
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Quali delle seguenti affermazioni su SPID e CIE sono CORRETTE?",
+          "options": [
+            "Entrambi consentono l'accesso ai servizi online della Pubblica Amministrazione.",
+            "La CIE è un documento di riconoscimento fisico, mentre SPID è un set di credenziali digitali.",
+            "SPID e CIE sono strumenti identici: cambia solo il nome usato dal sito su cui ci si autentica.",
+            "Entrambi supportano l'autenticazione a due fattori per garantire un livello di sicurezza più alto.",
+            "La CIE non può essere utilizzata per accedere ai servizi online: serve solo per identificarsi di persona."
+          ],
+          "answer": [0, 1, 3]
+        }
+      ]
+    },
+    {
+      "concept": "Documento Informatico e Conservazione",
+      "questions": [
+        {
+          "type": "filler",
+          "text": "Il documento informatico è la rappresentazione ____ di atti, fatti o dati giuridicamente rilevanti, ed è disciplinato dal ____ (Codice dell'Amministrazione Digitale).",
+          "answer": ["informatica", "CAD"]
+        },
+        {
+          "type": "trueFalse",
+          "text": "Un documento informatico sottoscritto con firma digitale o con firma elettronica qualificata ha l'efficacia probatoria prevista dall'art. 2702 del Codice Civile per la scrittura privata.",
+          "answer": true
+        },
+        {
+          "type": "trueFalse",
+          "text": "Per essere a norma, la conservazione digitale di un documento deve essere svolta obbligatoriamente in proprio dal soggetto che lo ha prodotto, senza poter delegare a terzi.",
+          "answer": false
+        },
+        {
+          "type": "multipleChoice",
+          "text": "A cosa serve il processo di conservazione digitale a norma?",
+          "options": [
+            "A comprimere i documenti per occupare meno spazio sui server.",
+            "A garantire nel tempo autenticità, integrità, leggibilità e reperibilità dei documenti informatici.",
+            "A trasformare automaticamente ogni documento in formato PDF.",
+            "A sostituire la firma digitale dopo la sua scadenza."
+          ],
+          "answer": 1
+        },
+        {
+          "type": "multipleChoice",
+          "text": "Chi è il \"Conservatore accreditato\" nell'ecosistema della conservazione digitale?",
+          "options": [
+            "Il dipendente pubblico che firma il documento prima dell'archiviazione.",
+            "Un soggetto pubblico o privato qualificato da AgID per fornire servizi di conservazione a norma.",
+            "Il software di archiviazione installato sul PC dell'utente.",
+            "L'autore del documento informatico originale."
+          ],
+          "answer": 1
+        },
+        {
+          "type": "multipleChoice",
+          "multi": true,
+          "text": "Quali delle seguenti caratteristiche sono richieste a un sistema di conservazione digitale a norma?",
+          "options": [
+            "Apposizione di una marca temporale e/o firma del Responsabile della Conservazione sul pacchetto di archiviazione.",
+            "Tenere traccia, tramite metadati, della provenienza e del ciclo di vita di ciascun documento.",
+            "Cancellare automaticamente i documenti dopo 30 giorni dal versamento.",
+            "Garantire la leggibilità nel tempo, anche al variare dei formati e delle tecnologie.",
+            "Memorizzare i documenti unicamente in chiaro su supporti rimovibili non protetti."
+          ],
+          "answer": [0, 1, 3]
+        }
+      ]
+    }
+  ]
+}

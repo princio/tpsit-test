@@ -60,6 +60,336 @@ body {
   font-size: 0.9rem;
 }
 
+/* HomePage layout */
+.home-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.home-header {
+  text-align: center;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #d0d0d0;
+}
+
+.home-header h1 {
+  font-size: 2rem;
+  margin: 0 0 0.4rem;
+  color: #222;
+  letter-spacing: -0.01em;
+}
+
+.home-subtitle {
+  color: #666;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.home-library {
+  display: flex;
+}
+
+.home-library .library {
+  max-height: 65vh;
+}
+
+.home-upload {
+  border-top: 1px dashed #cfcfcf;
+  padding-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.home-upload-title {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #777;
+  font-weight: 500;
+}
+
+.home-upload .file-picker-container {
+  min-height: 0;
+}
+
+.home-upload .file-picker-card {
+  padding: 1.5rem 2.5rem;
+}
+
+/* AppShell — workspace header with back button + mode tabs */
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-shell-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #2a2a2a;
+  color: #eee;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid #1a1a1a;
+  flex-wrap: wrap;
+}
+
+.app-shell-back {
+  background: transparent;
+  color: #eee;
+  border: 1px solid #555;
+  border-radius: 6px;
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+.app-shell-back:hover {
+  background: #3a3a3a;
+}
+
+.app-shell-title {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.app-shell-title strong {
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-shell-meta {
+  font-size: 0.75rem;
+  color: #aaa;
+  font-weight: normal;
+}
+
+.app-shell-tabs {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.app-shell-tab {
+  background: transparent;
+  color: #ccc;
+  border: 1px solid transparent;
+  border-bottom: 2px solid transparent;
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.88rem;
+  border-radius: 4px 4px 0 0;
+}
+
+.app-shell-tab:hover {
+  background: #3a3a3a;
+  color: #fff;
+}
+
+.app-shell-tab.active {
+  background: #f5f5f5;
+  color: #1a1a1a;
+  border-bottom-color: #f5f5f5;
+  font-weight: 600;
+}
+
+.app-shell-content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+@media print {
+  .app-shell-header { display: none; }
+}
+
+@media (max-width: 760px) {
+  .app-shell-header {
+    padding: 0.4rem 0.6rem;
+  }
+  .app-shell-tabs {
+    width: 100%;
+    order: 99;
+    overflow-x: auto;
+  }
+}
+
+/* Test source chooser (library + upload, side by side) */
+.test-source-chooser {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 2rem;
+  min-height: 100vh;
+  padding: 2rem;
+  flex-wrap: wrap;
+}
+
+.test-source-chooser .file-picker-container {
+  min-height: 0;
+  flex: 0 1 auto;
+}
+
+.test-source-library {
+  flex: 1 1 480px;
+  max-width: 720px;
+  display: flex;
+  align-items: stretch;
+}
+
+.test-source-upload {
+  flex: 0 1 auto;
+  display: flex;
+  align-items: center;
+}
+
+/* Library */
+.library {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  width: 100%;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.library-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.library-header h3 {
+  font-size: 1.05rem;
+  margin: 0;
+  color: #333;
+}
+
+.library-sync {
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.library-sync:hover:not(:disabled) {
+  background: #e0e0e0;
+}
+
+.library-sync:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.library-error {
+  background: #fff0f0;
+  border: 1px solid #f8c0c0;
+  color: #cc3333;
+  padding: 0.5rem 0.7rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.library-empty {
+  color: #888;
+  text-align: center;
+  padding: 1.5rem 0;
+  font-size: 0.9rem;
+}
+
+.library-tree {
+  overflow-y: auto;
+  flex: 1 1 auto;
+  font-size: 0.9rem;
+}
+
+.library-dir-header,
+.library-file {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: #333;
+  border-radius: 4px;
+}
+
+.library-dir-header:hover,
+.library-file:hover:not(:disabled) {
+  background: #f0f4ff;
+}
+
+.library-dir-header {
+  font-weight: 600;
+  color: #444;
+}
+
+.library-icon {
+  flex: 0 0 auto;
+}
+
+.library-name {
+  flex: 0 0 auto;
+}
+
+.library-title {
+  margin-left: auto;
+  color: #888;
+  font-size: 0.82rem;
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 50%;
+}
+
+.library-file.invalid {
+  color: #b06800;
+}
+
+.library-file.invalid .library-icon {
+  color: #cc8800;
+}
+
+.library-file.loading {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+@media (max-width: 760px) {
+  .test-source-chooser {
+    flex-direction: column;
+    padding: 1rem;
+  }
+  .library {
+    max-height: 60vh;
+  }
+}
+
 /* Toolbar */
 .toolbar {
   position: sticky;
@@ -472,6 +802,56 @@ body {
 .content-image img {
   max-width: 100%;
   max-height: 300px;
+}
+
+/* Gantt chart (single-row scheduling diagram) */
+.gantt-chart {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  margin: 0.5rem 0 1.6rem;
+  min-height: 2.4rem;
+}
+
+.gantt-slice {
+  position: relative;
+  border: 1px solid #555;
+  border-right-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  min-width: 1.5rem;
+}
+
+.gantt-slice:last-child {
+  border-right-width: 1px;
+}
+
+.gantt-pid {
+  font-weight: 600;
+  font-size: 0.95em;
+  padding: 0.25rem 0.3rem;
+}
+
+.gantt-start,
+.gantt-end {
+  position: absolute;
+  bottom: -1.1rem;
+  font-size: 0.75rem;
+  color: #333;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.gantt-start {
+  left: 0;
+  transform: translateX(-50%);
+}
+
+.gantt-end {
+  right: 0;
+  transform: translateX(50%);
 }
 
 /* Inline blank (filler) */

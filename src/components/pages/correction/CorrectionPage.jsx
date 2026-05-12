@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import FilePicker from '@/components/shared/FilePicker'
+import TestSourceChooser from '@/components/shared/TestSourceChooser'
 import ContentRenderer from '@/components/shared/ContentRenderer'
 
 /** @typedef {import('@/schema').TestData} TestData */
@@ -603,11 +603,19 @@ function StatsView({ testData, corrections }) {
   )
 }
 
-export default function CorrectionPage() {
+export default function CorrectionPage({ test = null } = {}) {
   const [testData, setTestData] = useState(null)
   const [corrections, setCorrections] = useState(loadCorrections)
   const [editing, setEditing] = useState(null)
   const [view, setView] = useState('list') // 'list' | 'new' | 'edit' | 'stats'
+
+  // When the parent supplies a test, normalize and use it as the active test.
+  useEffect(() => {
+    if (!test) return
+    const normalized = { ...test, questions: flattenQuestions(test) }
+    saveTest(normalized)
+    setTestData(normalized)
+  }, [test])
 
   function handleTestLoaded(data) {
     // Normalize test data: flatten concept-grouped questions
@@ -674,13 +682,8 @@ export default function CorrectionPage() {
       <div className="toolbar no-print">
         <div className="toolbar-group">
           <button className={view === 'list' ? 'toolbar-btn-primary' : ''} onClick={() => { setView('list'); setEditing(null) }}>Correzioni</button>
-          <button className={view === 'new' ? 'toolbar-btn-primary' : ''} onClick={() => { setView('new'); setEditing(null); setTestData(null) }}>Nuova correzione</button>
-          <button className={view === 'stats' ? 'toolbar-btn-primary' : ''} onClick={() => { setView('stats'); setEditing(null); setTestData(null) }}>Statistiche</button>
-        </div>
-        <div className="toolbar-divider" />
-        <div className="toolbar-group">
-          <button onClick={() => { window.location.hash = '#/' }}>Stampa</button>
-          <button onClick={() => { window.location.hash = '#/manipulate' }}>Manipola</button>
+          <button className={view === 'new' ? 'toolbar-btn-primary' : ''} onClick={() => { setView('new'); setEditing(null) }}>Nuova correzione</button>
+          <button className={view === 'stats' ? 'toolbar-btn-primary' : ''} onClick={() => { setView('stats'); setEditing(null) }}>Statistiche</button>
         </div>
       </div>
 
@@ -699,7 +702,7 @@ export default function CorrectionPage() {
         <div className="correction-container">
           <div className="correction-load-notice">
             <p>Per modificare la correzione di <strong>{editing.studentName}</strong>, carica il file del test originale.</p>
-            <FilePicker onTestLoaded={handleTestLoaded} />
+            <TestSourceChooser onTestLoaded={handleTestLoaded} />
           </div>
         </div>
       )}
@@ -717,7 +720,7 @@ export default function CorrectionPage() {
 
       {view === 'new' && !testData && (
         <div className="correction-container">
-          <FilePicker onTestLoaded={setTestData} />
+          <TestSourceChooser onTestLoaded={setTestData} />
         </div>
       )}
 
@@ -734,7 +737,7 @@ export default function CorrectionPage() {
       {view === 'stats' && !testData && (
         <div className="correction-container">
           <p className="correction-load-notice">Carica il file del test per vedere le statistiche delle correzioni salvate.</p>
-          <FilePicker onTestLoaded={setTestData} />
+          <TestSourceChooser onTestLoaded={setTestData} />
         </div>
       )}
 

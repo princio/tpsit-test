@@ -332,7 +332,7 @@ function validateQuestion(q: unknown, path: string): void {
     case 'open':
       if (obj.answer != null && typeof obj.answer !== 'string')
         throw new Error(`${path}: "answer" di open deve essere stringa.`)
-      if (obj.linesNumber != null && (!Number.isInteger(obj.linesNumber) || obj.linesNumber < 1))
+      if (obj.linesNumber != null && (!Number.isInteger(obj.linesNumber) || (obj.linesNumber as number) < 1))
         throw new Error(`${path}: "linesNumber" di open deve essere un intero >= 1.`)
       break
   }

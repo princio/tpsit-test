@@ -71,8 +71,9 @@ export default function QuestionBlock({ question, index }) {
 
           {question.type === 'open' && (
             <div className="open-answer-lines">
-              <span className="open-line" />
-              <span className="open-line" />
+              {Array.from({ length: question.linesNumber ?? 2 }).map((_, i) => (
+                <span key={i} className="open-line" />
+              ))}
             </div>
           )}
         </div>

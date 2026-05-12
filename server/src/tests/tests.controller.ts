@@ -1,22 +1,37 @@
-import { Controller, Get, Put, Param, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Query,
+} from '@nestjs/common';
 import { TestsService } from './tests.service';
 
-@Controller('api/tests')
+@Controller('api')
 export class TestsController {
   constructor(private readonly testsService: TestsService) {}
 
-  @Get()
-  list() {
-    return this.testsService.list();
+  @Get('tests')
+  list(
+    @Query('classe') classe?: string,
+    @Query('materia') materia?: string,
+    @Query('uda') uda?: string,
+  ) {
+    return this.testsService.list({ classe, materia, uda });
   }
 
-  @Get(':filename')
-  read(@Param('filename') filename: string) {
-    return this.testsService.read(filename);
+  @Get('tests/:id')
+  read(@Param('id', ParseIntPipe) id: number) {
+    return this.testsService.read(id);
   }
 
-  @Put(':filename')
-  save(@Param('filename') filename: string, @Body() body: any) {
-    return this.testsService.save(filename, body);
+  @Get('tests/:id/versions')
+  listVersions(@Param('id', ParseIntPipe) id: number) {
+    return this.testsService.listVersions(id);
+  }
+
+  @Get('versions/:versionId')
+  readVersion(@Param('versionId', ParseIntPipe) versionId: number) {
+    return this.testsService.readVersion(versionId);
   }
 }

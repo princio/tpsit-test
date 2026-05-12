@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import FilePicker from '@/components/shared/FilePicker'
+import TestSourceChooser from '@/components/shared/TestSourceChooser'
 import { defaultCriteria, rubricLevels } from '@/data/defaultCriteria'
 
 const STORAGE_KEY = 'tpsit-open-corrections'
@@ -537,12 +537,18 @@ function QuestionPicker({ testData, onSelect }) {
 
 // ---- Main Page ----
 
-export default function OpenCorrectionPage() {
+export default function OpenCorrectionPage({ test = null } = {}) {
   const [testData, setTestData] = useState(null)
   const [corrections, setCorrections] = useState(loadCorrections)
   const [editing, setEditing] = useState(null)
   const [selectedQuestion, setSelectedQuestion] = useState(null)
   const [view, setView] = useState('list')
+
+  // When the parent supplies a test, use it as the active test.
+  useEffect(() => {
+    if (!test) return
+    setTestData(test)
+  }, [test])
 
   useEffect(() => { saveCorrections(corrections) }, [corrections])
 
@@ -590,13 +596,7 @@ export default function OpenCorrectionPage() {
       <div className="toolbar no-print">
         <div className="toolbar-group">
           <button className={view === 'list' ? 'toolbar-btn-primary' : ''} onClick={() => { setView('list'); setEditing(null); setSelectedQuestion(null) }}>Correzioni</button>
-          <button className={view === 'new' ? 'toolbar-btn-primary' : ''} onClick={() => { setView('new'); setEditing(null); setSelectedQuestion(null); setTestData(null) }}>Nuova correzione</button>
-        </div>
-        <div className="toolbar-divider" />
-        <div className="toolbar-group">
-          <button onClick={() => { window.location.hash = '#/' }}>Stampa</button>
-          <button onClick={() => { window.location.hash = '#/correction' }}>Correzione rapida</button>
-          <button onClick={() => { window.location.hash = '#/manipulate' }}>Manipola</button>
+          <button className={view === 'new' ? 'toolbar-btn-primary' : ''} onClick={() => { setView('new'); setEditing(null); setSelectedQuestion(null) }}>Nuova correzione</button>
         </div>
       </div>
 
@@ -626,7 +626,7 @@ export default function OpenCorrectionPage() {
 
       {view === 'new' && !testData && (
         <div className="correction-container">
-          <FilePicker onTestLoaded={setTestData} />
+          <TestSourceChooser onTestLoaded={setTestData} />
         </div>
       )}
 

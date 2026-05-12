@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+/// One row per JSON file in public/. The file is the canonical source;
+/// every distinct content snapshot is captured as a TestVersion row.
+model Test {
+  id          Int           @id @default(autoincrement())
+  /// Path relative to public/, e.g. "terza/sistema-operativo/sistema-operativo.json".
+  filePath    String        @unique
+  classe      String
+  materia     String
+  uda         String
+  versions    TestVersion[]
+  submissions Submission[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([classe, materia, uda])
+}
+
+/// Immutable snapshot of a JSON file's content at a point in time.
+/// Captured by the SyncService whenever a new content hash is seen.
+model TestVersion {
+  id          Int          @id @default(autoincrement())
+  test        Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
+  testId      Int
+  /// SHA-256 of the raw JSON file content.
+  hash        String
+  /// Raw JSON file content as captured at version time.
+  data        String
+  /// Extracted title (or filename if invalid / missing).
+  title       String
+  /// True if the content passed validateTest() at sync time.
+  valid       Boolean
+  /// Validation error message if `valid` is false.
+  errors      String?
+  createdAt   DateTime     @default(now())
+  submissions Submission[]
+
+  @@unique([testId, hash])
+  @@index([testId])
+}
+
+model Submission {
+  id            Int         @id @default(autoincrement())
+  test          Test        @relation(fields: [testId], references: [id], onDelete: Cascade)
+  testId        Int
+  /// Version of the test the student actually saw.
+  testVersion   TestVersion @relation(fields: [testVersionId], references: [id])
+  testVersionId Int
+  studentName   String?
+  answers       String
+  score         Float?
+  createdAt     DateTime    @default(now())
+
+  @@index([testId])
+  @@index([testVersionId])
+}

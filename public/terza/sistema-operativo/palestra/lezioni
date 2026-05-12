@@ -1,0 +1,41 @@
+# Registro lezioni
+
+## Lezione 1 - PCB
+
+I programmi sono entità statiche che cambiano solamente con gli aggiornamenti.
+I vari dati utili all'utente (segnalibri) vengono salvati in cartelle differenti da quella del programma (cartelle utente, in windows C:\Users\utente\AppData\).
+Il processo è un'entità logica in evoluzione: si trova nella RAM perché l'accesso alla sua memoria direttamente nell'HDD rallenterebbe troppo il processore.
+Un processo cambia continuamente perché esegue operazioni con la CPU.
+Tutti i processi utilizzano SICURAMENTE due periferiche: RAM e CPU.
+Periferiche limitate e condivise → risorse.
+Quante scelte compie al secondo un sistema operativo?
+Le effettua con: algoritmi e controllo della situazione attuale.
+Il controllo della situazione attuale avviene grazie ad un registro: ogni voce del registro è un PCB.
+
+
+## Lezione 2 - Introduzione al multitasking
+
+Programma (statico, HDD, non usa CPU e RAM, AppData)
+Processo (dinamico, usa CPU e RAM, EVOLVE, da stato_x a stato _x+1 → bloccato da risorsa; risorsa non-disponibile).
+
+processi → registro (gestione attività/task manager)
+
+PCB (process control block)
+PID (~5 cifre; NOME; PATH; STATO→aggiornato dal SO)
+
+1) avvio
+2) esecuzione
+3) in attesa (wait) → non della CPU
+4) pronto (ready) → non aspetta le risorse (può partire)
+5) termination → libera le risorsa
+
+(2-3-4) si riferiscono alla CPU in un modo, e a tutte le altre risorse in un altro.
+
+
+CPU 1-single core
+
+## Lezione 3 - Context Switch
+
+Stato della CPU: saving (da CPU a PCB) e setting (da PCB a CPU).
+Context switch, pre-emptive (pre-rilasciabile, diverso da masterizzatore).
+FCFS (tempo di arrivo di tutti i processi 0); SJB (come FCFS ma ordinando i job in ordine crescente di durata); SRTF (il processo con tempo rimanente minore va in esecuzione).
