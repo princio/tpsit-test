@@ -1,5 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { createHash } from 'crypto';
+import { promises as fs } from 'fs';
+import * as path from 'path';
 import { PrismaService } from '../prisma/prisma.service';
+import { SyncService } from '../sync/sync.service';
+import { validateTestSafe } from '../schema/validate';
 
 export interface TestSummary {
   id: number;
@@ -27,7 +36,109 @@ export interface VersionSummary {
 
 @Injectable()
 export class TestsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly sync: SyncService,
+  ) {}
+
+  /**
+   * Overwrites the canonical JSON file for the given test id with `data`,
+   * validates it against the schema, and re-syncs to capture the new version.
+   * Throws BadRequestException if validation fails.
+   */
+  async saveFile(id: number, data: unknown): Promise<unknown> {
+    const test = await this.prisma.test.findUnique({ where: { id } });
+    if (!test) throw new NotFoundException(`Test ${id} non trovato`);
+
+    const validation = validateTestSafe(data);
+    if (!validation.valid) {
+      throw new BadRequestException(
+        `JSON non conforme allo schema: ${validation.error}`,
+      );
+    }
+
+    const absPath = path.join(this.sync.getPublicDir(), test.filePath);
+    const serialized = JSON.stringify(data, null, 2) + '\n';
+    await fs.writeFile(absPath, serialized, 'utf-8');
+
+    const entry = await this.sync.syncFile(test.filePath);
+    return {
+      id: test.id,
+      filePath: test.filePath,
+      classe: test.classe,
+      materia: test.materia,
+      uda: test.uda,
+      sync: entry,
+    };
+  }
+
+  /**
+   * Captures a new TestVersion in the DB for the given test without touching
+   * the canonical file on disk. Validates the body and dedupes by content
+   * hash: an identical hash returns the existing version instead of creating
+   * a duplicate.
+   */
+  async saveVersion(id: number, data: unknown): Promise<unknown> {
+    const test = await this.prisma.test.findUnique({ where: { id } });
+    if (!test) throw new NotFoundException(`Test ${id} non trovato`);
+
+    const validation = validateTestSafe(data);
+    if (!validation.valid) {
+      throw new BadRequestException(
+        `JSON non conforme allo schema: ${validation.error}`,
+      );
+    }
+
+    const serialized = JSON.stringify(data, null, 2) + '\n';
+    const hash = createHash('sha256').update(serialized).digest('hex');
+
+    const existing = await this.prisma.testVersion.findUnique({
+      where: { testId_hash: { testId: test.id, hash } },
+    });
+    if (existing) {
+      return {
+        id: test.id,
+        filePath: test.filePath,
+        version: {
+          id: existing.id,
+          hash: existing.hash,
+          title: existing.title,
+          valid: existing.valid,
+          createdAt: existing.createdAt,
+        },
+        status: 'unchanged',
+      };
+    }
+
+    const title =
+      typeof validation.data.title === 'string' && validation.data.title.trim()
+        ? validation.data.title
+        : test.filePath;
+
+    const created = await this.prisma.testVersion.create({
+      data: {
+        testId: test.id,
+        hash,
+        data: serialized,
+        title,
+        valid: true,
+        errors: null,
+      },
+    });
+
+    return {
+      id: test.id,
+      filePath: test.filePath,
+      version: {
+        id: created.id,
+        hash: created.hash,
+        title: created.title,
+        valid: created.valid,
+        createdAt: created.createdAt,
+      },
+      status: 'new-version',
+    };
+  }
 
   async list(filters: {
     classe?: string;

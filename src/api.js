@@ -57,3 +57,29 @@ export async function triggerSync() {
   const res = await fetch('/api/sync', { method: 'POST' })
   return jsonOrThrow(res)
 }
+
+/**
+ * Overwrite the JSON file on disk for the test with id `id`. The backend
+ * validates the body and captures a new version. Throws on 4xx/5xx.
+ */
+export async function saveTestFile(id, data) {
+  const res = await fetch(`/api/tests/${id}/file`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+  return jsonOrThrow(res)
+}
+
+/**
+ * Save a new version of the test in the database only — does NOT touch
+ * the canonical file on disk. Backend dedupes by content hash.
+ */
+export async function saveTestVersion(id, data) {
+  const res = await fetch(`/api/tests/${id}/versions`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+  return jsonOrThrow(res)
+}

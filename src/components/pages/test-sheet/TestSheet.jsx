@@ -5,29 +5,57 @@ import { TestSheetProvider } from './TestSheetContext'
 /** @typedef {import('@/schema').TestData} TestData */
 /** @typedef {import('@/schema').Question} Question */
 
-function Header({ test }) {
+function Header({ index, test, showInstructions, showLegend }) {
+  const hasInstructions =
+    showInstructions && typeof test.instructions === 'string' && test.instructions.trim()
   return (
     <header className="test-header">
-      <div className="header-title">
-        <h1>{test.title}</h1>
-      </div>
-      <div className="header-fields">
-        <div className="header-field-nome">
-          <span className="field-label">Nome</span>
+      <div className="test-header-row">
+        <div className="header-title">
+          <h1>{test.title} {index}</h1>
         </div>
-        <div className="header-field-bottom">
-          <div className="header-field-data">
-            <span className="field-label">Data</span>
+        <div className="header-fields">
+          <div className="header-field-nome">
+            <span className="field-label">Nome</span>
           </div>
-          <div className="header-field-classe">
-            <span className="field-label">Classe</span>
+          <div className="header-field-bottom">
+            <div className="header-field-data">
+              <span className="field-label">Data</span>
+            </div>
+            <div className="header-field-classe">
+              <span className="field-label">Classe</span>
+            </div>
           </div>
         </div>
+        <div className="header-voto">
+          <span className="field-label">Voto</span>
+        </div>
       </div>
-      <div className="header-voto">
-        <span className="field-label">Voto</span>
-      </div>
+      {hasInstructions && (
+        <div className="test-instructions">{test.instructions}</div>
+      )}
+      {showLegend && <Legend />}
     </header>
+  )
+}
+
+function Legend() {
+  return (
+    <div className="test-legend">
+      <span className="test-legend-label">Legenda:</span>
+      <span className="test-legend-item">
+        <span className="mc-box" />
+        <span>Risposta singola: una sola opzione</span>
+      </span>
+      <span className="test-legend-item">
+        <span className="mc-box mc-box-square" />
+        <span>Risposta multipla</span>
+      </span>
+      <span className="test-legend-item">
+        <span className="oi-box">1</span>
+        <span>Ordinamento</span>
+      </span>
+    </div>
   )
 }
 
@@ -46,7 +74,7 @@ function flattenQuestions(questions) {
   return flat
 }
 
-export default function TestSheet({ test, fontSize = 13, gap = 8, marginBottom = 10, fontFamily = 'Georgia, "Times New Roman", serif', showAnswers = false, onPagesCount }) {
+export default function TestSheet({ index, test, fontSize = 13, gap = 8, marginBottom = 10, fontFamily = 'Georgia, "Times New Roman", serif', showAnswers = false, showInstructions = true, showLegend = true, onPagesCount }) {
   const measureRef = useRef(null)
   const contentRef = useRef(null)
   const headerRef = useRef(null)
@@ -59,7 +87,7 @@ export default function TestSheet({ test, fontSize = 13, gap = 8, marginBottom =
   // Reset pages synchronously when layout params change → forces measure pass
   useLayoutEffect(() => {
     setPages(null)
-  }, [test, fontSize, gap, marginBottom, fontFamily])
+  }, [test, fontSize, gap, marginBottom, fontFamily, showInstructions, showLegend])
 
   // Phase 1: Measure individual question heights and do initial pagination
   useLayoutEffect(() => {
@@ -148,7 +176,7 @@ export default function TestSheet({ test, fontSize = 13, gap = 8, marginBottom =
           <div className="page" style={{ ...pageStyle, height: '297mm' }} ref={measureRef}>
             <div ref={contentRef} style={contentStyle}>
               <div ref={headerRef}>
-                <Header test={test} />
+                <Header index={index} test={test} showInstructions={showInstructions} showLegend={showLegend} />
               </div>
               <div className="questions-list" style={{ gap: `${gap}px` }}>
                 {flatQuestions.map(({ question, index }, i) => (
@@ -170,7 +198,7 @@ export default function TestSheet({ test, fontSize = 13, gap = 8, marginBottom =
         {pages.map((pageIndices, pageNum) => (
           <div key={pageNum} className="page" style={pageStyle}>
             <div className="page-content" style={contentStyle}>
-              {pageNum === 0 && <Header test={test} />}
+              {pageNum === 0 && <Header test={test} showInstructions={showInstructions} showLegend={showLegend} />}
               <div className="questions-list" style={{ gap: `${gap}px` }}>
                 {pageIndices.map(i => {
                   const { question, index } = flatQuestions[i]

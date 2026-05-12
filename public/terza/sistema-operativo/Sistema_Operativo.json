@@ -1,6 +1,9 @@
 {
-  "title": "Verifica TPSIT - Sistema Operativo 1.0",
-  "subtitle": "Classe 3 - A.S. 2025/2026",
+  "classe": "terza",
+  "materia": "sistema-operativo",
+  "uda": "sistema-operativo",
+  "title": "Sistema Operativo",
+  "subtitle": "Classe 3AI - A.S. 2025/2026",
   "instructions": "Rispondi a tutte le domande. Per le domande a scelta multipla con più risposte corrette, devi selezionarle TUTTE: anche una sola scelta sbagliata o mancante rende l'intera risposta errata.",
   "questions": [
     {
@@ -13,16 +16,16 @@
         },
         {
           "type": "trueFalse",
-          "text": "Salvare un file su un hardisk Samsung o Seagate richiede la stessa implementazione.",
+          "text": "La funzione che salva un file su un hardisk Samsung o Seagate richiede la stessa implementazione.",
           "answer": false
         },
         {
           "type": "multipleChoice",
-          "text": "In un mondo senza sistema operativo, come dovrebbe essere scritto il codice sorgente di un'applicazione che vuole girare sia su hardware Cisco sia su hardware Intel?",
+          "text": "In un mondo senza sistema operativo, come dovrebbe essere scritto il codice sorgente di un'applicazione che vuole girare su hardware di produttori diversi?",
           "options": [
             "Sarebbe sufficiente compilarlo una sola volta: l'hardware si adatta automaticamente.",
-            "Dovrebbe contenere rami condizionali (`if`) che selezionano la chiamata giusta in base all'hardware presente.",
-            "Dovrebbe invocare le funzioni del Kernel, indipendenti dall'hardware.",
+            "Dovrebbe contenere rami condizionali (if) che selezionano la chiamata giusta in base all'hardware presente.",
+            "Può invocare le system call, indipendenti dall'hardware.",
             "Non potrebbe girare su hardware diverso in nessun caso."
           ],
           "answer": 1
@@ -32,7 +35,7 @@
           "multi": true,
           "text": "Quali delle seguenti affermazioni descrivono CORRETTAMENTE la funzione di astrazione del SO?",
           "options": [
-            "Il Kernel avvolge l'hardware ed espone alle applicazioni un'interfaccia uniforme.",
+            "Il Kernel (nucleo) avvolge l'hardware ed espone alle applicazioni un'interfaccia uniforme.",
             "Il codice del programma si adatta al sistema operativo, mentre il sistema operativo si adatta all'hardware.",
             "Durante lo sviluppo è sempre necessario le funzioni specifiche di ciascuna singola periferica.",
             "Il codice di un programma che salva file su disco, va riscritto se cambio il disco del PC.",
@@ -50,16 +53,14 @@
           "multi": true,
           "text": "Considera due schede di rete prodotte da costruttori diversi (es. Cisco e Intel). Quali affermazioni sono CORRETTE?",
           "options": [
-            "Permettono l'implementazione di funzioni con lo scopo ma di diversa implementazione.",
+            "Permettono l'implementazione di funzioni aventi lo stesso scopo ma diversa implementazione.",
             "Espongono funzioni con la stessa identica implementazione interna.",
             "I nomi delle funzioni esposte possono variare da hardware a hardware.",
-            "Sono completamente intercambiabili senza alcun adattamento del codice sorgente.",
-            "Senza il SO, il codice sorgente deve gestire esplicitamente entrambi i casi (es. con `if (cisco) ... if (intel) ...`)."
+            "Sono completamente intercambiabili senza alcun adattamento del codice sorgente."
           ],
           "answer": [
             0,
-            2,
-            4
+            2
           ]
         },
         {
@@ -82,16 +83,11 @@
         },
         {
           "type": "filler",
-          "text": "L'applicazione non deve adattarsi all' ____ in quanto è il SO ad addatarvicisi attraverso i ____.",
+          "text": "L'applicazione non deve adattarsi all' ______ in quanto è il SO ad addatarsi attraverso i ______.",
           "answer": [
             "hardware",
             "driver"
           ]
-        },
-        {
-          "type": "open",
-          "text": "Spiega, anche con un esempio concreto, perché senza un livello di astrazione (Kernel) il codice sorgente di un'applicazione diventerebbe difficile da scrivere e da mantenere al variare dell'hardware.",
-          "linesNumber": 5
         }
       ]
     },
@@ -140,31 +136,30 @@
           "multi": true,
           "text": "Quali affermazioni sulla gerarchia delle memorie sono CORRETTE?",
           "options": [
-            "L'HDD è una memoria di secondo livello.",
+            "L'HDD è una memoria persistente di secondo livello.",
             "I registri della CPU sono il livello di memoria più vicino alla CPU.",
             "Più una memoria è vicina alla CPU, più la sua velocità deve avvicinarsi a quella della CPU stessa.",
             "Se la CPU scambiasse dati direttamente con l'HDD l'utente non se ne accorgerebbe.",
             "RAM e cache sono memorie di archiviazione permanente.",
-            "La velocità di un'operazione della CPU è di millisecondi."
+            "La velocità di un'operazione della CPU è di millisecondi.",
+            "L'HDD è una memoria volatile di secondo livello.",
+            "La velocità di un'operazione della CPU è di nanosecondi."
           ],
           "answer": [
             0,
             1,
-            2
+            2,
+            7
           ]
         },
         {
           "type": "filler",
-          "text": "Quanto più una memoria si avvicina alla ____, tanto più la sua ____ di lettura/scrittura deve essere elevata.",
+          "text": "Quanto più una memoria si avvicina alla ____, tanto più la sua _______ deve essere _______.",
           "answer": [
             "CPU",
-            "velocità"
+            "velocità",
+            "elevata"
           ]
-        },
-        {
-          "type": "open",
-          "text": "Perché ha senso organizzare la memoria di un calcolatore in più livelli (registri, cache, RAM, HDD) invece di usare un unico tipo di memoria? Argomenta facendo riferimento alla velocità.",
-          "linesNumber": 5
         }
       ]
     },
@@ -197,22 +192,19 @@
           "multi": true,
           "text": "Quali affermazioni distinguono CORRETTAMENTE un programma da un processo?",
           "options": [
-            "Il programma è un'entità statica, il processo è un'entità in evoluzione.",
             "Il programma cambia continuamente; il processo cambia solo con gli aggiornamenti.",
             "Tutti i processi utilizzano sicuramente CPU e RAM.",
             "Il programma risiede in HDD; il processo in RAM.",
-            "Programma e processo sono sostanzialmente lo stesso concetto, cambia solo il nome.",
-            "I file personali creati durante l'utilizzo del programma sono considerabili come degli aggiornamenti."
+            "Programma e processo sono sostanzialmente lo stesso concetto, cambia solo il nome."
           ],
           "answer": [
-            0,
-            2,
-            3
+            1,
+            2
           ]
         },
         {
           "type": "filler",
-          "text": "Una periferica limitata e condivisa fra più processi diventa ____.",
+          "text": "Una periferica limitata e condivisa fra più processi viene chiamata ________.",
           "answer": "risorsa"
         },
         {
@@ -227,9 +219,19 @@
           "answer": 2
         },
         {
+          "type": "filler",
+          "text": "Il processo è una _____________________________.",
+          "answer": [
+            "entità logica in evoluzione"
+          ],
+          "blankSize": [
+            35
+          ]
+        },
+        {
           "type": "open",
-          "text": "Per gestire più elementi di uno stesso gruppo, si utilizza un particolare strumento molto comune. Questo viene usato anche dal SO per gestire i processi in esecuzione. Qual è questo strumento usa e da quali elementi è composto nel caso del SO?",
-          "linesNumber": 10
+          "text": "Come si chiama l'elemento del registro dei processi? Elenca i suoi campi principali.",
+          "linesNumber": 6
         }
       ]
     },
@@ -242,19 +244,8 @@
           "answer": true
         },
         {
-          "type": "multipleChoice",
-          "text": "Quale tra i seguenti NON è un campo tipico del PCB così come visto in lezione?",
-          "options": [
-            "PID",
-            "NOME",
-            "PRIORITÀ ECONOMICA",
-            "STATO"
-          ],
-          "answer": 2
-        },
-        {
           "type": "filler",
-          "text": "Lo stato ____ (in inglese: ____) indica che il processo non aspetta più altre risorse: gli manca solo la ____ per andare in esecuzione.",
+          "text": "Lo stato detto _______ (in inglese: ______) indica che il processo non aspetta più altre risorse ma è in attesa de ________.",
           "answer": [
             "pronto",
             "ready",
@@ -276,28 +267,7 @@
             0,
             1,
             3
-          ]
-        },
-        {
-          "type": "open",
-          "text": "Spiega i due passaggi del context-switch.",
-          "linesNumber": 10,
-          "skip": true
-        },
-        {
-          "type": "multipleChoice",
-          "text": "Il context-switch.",
-          "options": [
-            "Permette di interrompere l'esecuzione di un processo e riprenderla in un secondo momento.",
-            "È un funzione che non richiede tempo.",
-            "Senza context-switch potremmo ottenere comunque il multitasking.",
-            "Il context-switch è implementabile perché la CPU è una risorsa pre-emptive."
           ],
-          "answer": [
-            0,
-            3
-          ],
-          "multi": true,
           "skip": true
         }
       ]
@@ -324,7 +294,8 @@
             "PCB",
             "PCB",
             "CPU"
-          ]
+          ],
+          "skip": true
         },
         {
           "type": "multipleChoice",
@@ -383,7 +354,34 @@
           "type": "trueFalse",
           "true": "Affermazione vera.",
           "false": "Affermazione falsa.",
-          "text": "Su una CPU single-core il context switch è inutile."
+          "text": "Su una CPU single-core il context switch è inutile.",
+          "answer": false
+        },
+        {
+          "type": "filler",
+          "text": "Durante il context switch: per prima cosa si ______ il contesto da _________ a _________ del processo ______; successivamente si ______ il contesto da _________ a _________ del processo ____. Questo è possibile perché la CPU è una risorsa _______________.",
+          "answer": [
+            "salva",
+            "CPU",
+            "PCB",
+            "uscente",
+            "copia",
+            "PCB",
+            "CPU",
+            "entrante",
+            "pre-emptive"
+          ],
+          "blankSize": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            20
+          ]
         }
       ]
     },
@@ -402,28 +400,65 @@
               "slices": [
                 {
                   "pid": "P1",
-                  "start": 0,
-                  "end": 1
+                  "duration": 1
                 },
                 {
                   "pid": "P2",
-                  "start": 1,
-                  "end": 5
+                  "duration": 4
                 },
                 {
                   "pid": "P3",
-                  "start": 5,
-                  "end": 7
+                  "duration": 2
                 },
                 {
-                  "pid": "P2",
-                  "start": 7,
-                  "end": 9
+                  "pid": "P1",
+                  "duration": 2
                 }
+              ]
+            },
+            {
+              "kind": "table",
+              "headers": [
+                "",
+                "Arrivo",
+                "Durata"
+              ],
+              "rows": [
+                [
+                  "P1",
+                  "0",
+                  "3"
+                ],
+                [
+                  "P2",
+                  "0",
+                  "4"
+                ],
+                [
+                  "P3",
+                  "3",
+                  "2"
+                ]
               ]
             }
           ],
-          "linesNumber": 4
+          "linesNumber": 6
+        },
+        {
+          "type": "filler",
+          "text": "Anche con una CPU ______, grazie al _____________ il Sistema Operativo riesce a portare avanti più processi “_________”, senza che l'utente si accorga che tutti, eccetto uno, non sono in ____________.",
+          "answer": [
+            "single-core",
+            "multitasking",
+            "parallelamente/contemporaneamente",
+            "esecuzione"
+          ],
+          "blankSize": [
+            15,
+            15,
+            15,
+            15
+          ]
         }
       ]
     }

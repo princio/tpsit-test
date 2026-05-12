@@ -37,12 +37,13 @@ export interface ImageBlock {
 }
 
 /** Diagramma di Gantt mono-riga per scheduling.
- *  Le slice sono renderizzate in sequenza: ogni cella mostra `pid` al centro,
- *  `start` in basso a sinistra e `end` in basso a destra; la larghezza è
- *  proporzionale a `end - start`. */
+ *  Le slice sono contigue (nessun gap): ogni slice ha solo `pid` e `duration`,
+ *  e gli istanti `start`/`end` sono calcolati cumulativamente dal renderer.
+ *  Ogni cella mostra `pid` al centro, `start` in basso a sinistra e `end` in
+ *  basso a destra; la larghezza è proporzionale a `duration`. */
 export interface GanttBlock {
   kind: 'gantt'
-  slices: { pid: string; start: number; end: number }[]
+  slices: { pid: string; duration: number }[]
 }
 
 /** Tabella semplice. Le celle accettano lo stesso markdown-light di {@link TextBlock}
@@ -114,6 +115,11 @@ export interface FillerQuestion extends BaseQuestion {
   /** Soluzioni per ciascun blank, in ordine di apparizione. È accettata anche
    *  una singola stringa quando il blank è uno solo. */
   answer?: string[] | string
+  /** Numero di underscore (larghezza) di ciascun blank in stampa, in ordine di
+   *  apparizione (parallelo a `answer`). Default per ciascun blank: 10 se
+   *  l'entry corrispondente è mancante. Tenere una larghezza fissa evita di
+   *  rivelare la lunghezza della soluzione. */
+  blankSize?: number[]
 }
 
 /** Ordinamento: lo studente deve riordinare `items`. */

@@ -1,31 +1,30 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import CodeBlock from '@/components/shared/CodeBlock'
 import MermaidDiagram from '@/components/shared/MermaidDiagram'
 import GanttChart from '@/components/shared/GanttChart'
 import { validateTest } from '@/schema'
+import { saveTestFile, saveTestVersion } from '@/api'
+
+/** Fields injected by the backend on test load. Stripped before writing JSON. */
+const BACKEND_META_FIELDS = [
+  'id',
+  'filePath',
+  'versionId',
+  'versionValid',
+  'versionErrors',
+  'versionCreatedAt',
+  'sync',
+]
+
+function stripBackendMeta(testData) {
+  const clean = { ...testData }
+  for (const k of BACKEND_META_FIELDS) delete clean[k]
+  return clean
+}
 
 /** @typedef {import('@/schema').TestData} TestData */
 /** @typedef {import('@/schema').Question} Question */
 /** @typedef {import('@/schema').ConceptGroup} ConceptGroup */
-
-const DRAFTS_KEY = 'tpsit-manipulator-drafts'
-
-function loadDrafts() {
-  try { return JSON.parse(localStorage.getItem(DRAFTS_KEY)) || {} }
-  catch { return {} }
-}
-
-function persistDrafts(drafts) {
-  localStorage.setItem(DRAFTS_KEY, JSON.stringify(drafts))
-}
-
-function uniqueName(base, drafts) {
-  const trimmed = (base || 'Senza titolo').trim() || 'Senza titolo'
-  if (!drafts[trimmed]) return trimmed
-  let n = 2
-  while (drafts[`${trimmed} (${n})`]) n++
-  return `${trimmed} (${n})`
-}
 
 function EditableText({ value, onChange, tag: Tag = 'span', className = '', multiline = false }) {
   if (multiline) {
@@ -53,7 +52,7 @@ function defaultBlock(kind) {
   switch (kind) {
     case 'code': return { kind: 'code', language: 'python', value: '# codice' }
     case 'mermaid': return { kind: 'mermaid', value: 'graph TD\n    A-->B' }
-    case 'gantt': return { kind: 'gantt', slices: [{ pid: 'P1', start: 0, end: 3 }, { pid: 'P2', start: 3, end: 5 }] }
+    case 'gantt': return { kind: 'gantt', slices: [{ pid: 'P1', duration: 3 }, { pid: 'P2', duration: 2 }] }
     case 'table': return {
       kind: 'table',
       headers: ['Colonna 1', 'Colonna 2'],
@@ -63,24 +62,41 @@ function defaultBlock(kind) {
   }
 }
 
+/** Normalize a slice to `{ pid, duration }` (handles legacy start/end shape). */
+function normalizeSlice(s) {
+  if (typeof s?.duration === 'number') return { pid: s.pid ?? '', duration: Math.max(0, s.duration) }
+  if (typeof s?.start === 'number' && typeof s?.end === 'number') {
+    return { pid: s.pid ?? '', duration: Math.max(0, s.end - s.start) }
+  }
+  return { pid: s?.pid ?? '', duration: 0 }
+}
+
 function GanttSlicesEditor({ slices, onChange }) {
-  function updateSlice(i, patch) {
-    const next = slices.map((s, idx) => (idx === i ? { ...s, ...patch } : s))
+  const normalized = slices.map(normalizeSlice)
+  function update(next) {
     onChange(next)
   }
+  function updateSlice(i, patch) {
+    update(normalized.map((s, idx) => (idx === i ? { ...s, ...patch } : s)))
+  }
   function removeSlice(i) {
-    onChange(slices.filter((_, idx) => idx !== i))
+    update(normalized.filter((_, idx) => idx !== i))
   }
   function addSlice() {
-    const last = slices[slices.length - 1]
-    const start = last ? last.end : 0
-    onChange([...slices, { pid: `P${slices.length + 1}`, start, end: start + 2 }])
+    update([...normalized, { pid: `P${normalized.length + 1}`, duration: 2 }])
   }
+  // Compute cumulative start for display.
+  let cursor = 0
+  const withStart = normalized.map(s => {
+    const start = cursor
+    cursor += s.duration
+    return { ...s, start, end: cursor }
+  })
   return (
     <div className="editor-gantt">
-      <GanttChart slices={slices} />
+      <GanttChart slices={normalized} />
       <div className="editor-gantt-rows">
-        {slices.map((s, i) => (
+        {withStart.map((s, i) => (
           <div key={i} className="editor-gantt-row">
             <input
               className="editable editable-inline"
@@ -90,19 +106,16 @@ function GanttSlicesEditor({ slices, onChange }) {
             />
             <input
               type="number"
+              min="0"
+              step="1"
               className="editable editable-inline"
-              value={s.start}
-              onChange={e => updateSlice(i, { start: parseFloat(e.target.value) || 0 })}
-              placeholder="start"
+              value={s.duration}
+              onChange={e => updateSlice(i, { duration: Math.max(0, parseFloat(e.target.value) || 0) })}
+              placeholder="durata"
+              title="Durata della slice"
             />
-            <input
-              type="number"
-              className="editable editable-inline"
-              value={s.end}
-              onChange={e => updateSlice(i, { end: parseFloat(e.target.value) || 0 })}
-              placeholder="end"
-            />
-            {slices.length > 1 && (
+            <span className="editor-gantt-range">[{s.start} → {s.end}]</span>
+            {normalized.length > 1 && (
               <button className="btn-icon btn-remove" onClick={() => removeSlice(i)} title="Rimuovi slice">x</button>
             )}
           </div>
@@ -486,10 +499,31 @@ function FillerEditor({ data, onChange, onRemove }) {
   const answers = Array.isArray(data.answer)
     ? data.answer
     : typeof data.answer === 'string' ? [data.answer] : []
+  const blankSizes = Array.isArray(data.blankSize) ? data.blankSize : []
 
   function setAnswer(i, value) {
     const next = blanks.map((_, k) => (k === i ? value : (answers[k] ?? '')))
     onChange({ ...data, answer: next })
+  }
+
+  function setBlankSize(i, raw) {
+    // Build a new blankSize array aligned with the current number of blanks.
+    // Empty / invalid input falls back to undefined for that slot (default 10).
+    const next = blanks.map((_, k) => {
+      if (k === i) {
+        if (raw === '' || raw == null) return undefined
+        const n = parseInt(raw, 10)
+        return Number.isInteger(n) && n >= 2 ? n : undefined
+      }
+      return blankSizes[k]
+    })
+    // If all entries are undefined, drop the field entirely to keep JSON clean.
+    if (next.every(v => v === undefined)) {
+      const { blankSize: _b, ...rest } = data
+      onChange(rest)
+    } else {
+      onChange({ ...data, blankSize: next })
+    }
   }
 
   return (
@@ -505,11 +539,26 @@ function FillerEditor({ data, onChange, onRemove }) {
           {blanks.map((_, i) => (
             <label key={i} className="editor-filler-answer">
               <span>Soluzione blank #{i + 1}</span>
-              <input
-                className="editable editable-inline"
-                value={answers[i] ?? ''}
-                onChange={e => setAnswer(i, e.target.value)}
-              />
+              <div className="editor-filler-row">
+                <input
+                  className="editable editable-inline editor-filler-answer-input"
+                  value={answers[i] ?? ''}
+                  onChange={e => setAnswer(i, e.target.value)}
+                />
+                <span className="editor-filler-width">
+                  larghezza
+                  <input
+                    type="number"
+                    min="2"
+                    step="1"
+                    className="editable editable-inline"
+                    value={blankSizes[i] ?? ''}
+                    placeholder="10"
+                    title="Numero di underscore del blank in stampa. Default 10."
+                    onChange={e => setBlankSize(i, e.target.value)}
+                  />
+                </span>
+              </div>
             </label>
           ))}
         </div>
@@ -616,128 +665,63 @@ function ConceptGroupEditor({ group, onChange, onRemove }) {
 }
 
 export default function ManipulatorPage({ test = null } = {}) {
-  const [testData, setTestData] = useState(null)
-  const [draftName, setDraftName] = useState(null)
-  const [drafts, setDrafts] = useState(() => loadDrafts())
+  const [testData, setTestData] = useState(test)
   const [saveStatus, setSaveStatus] = useState('')
-  const inputRef = useRef(null)
+  const [saving, setSaving] = useState(false)
 
-  // If a test is provided by the parent (the new app-level shell), seed an
-  // edit session from it. Re-runs when the upstream test changes.
+  // Re-seed from the upstream test whenever the parent switches it out.
   useEffect(() => {
-    if (!test) return
-    const current = loadDrafts()
-    const name = uniqueName(test.title, current)
-    const next = name === test.title ? test : { ...test, title: name }
-    setDraftName(name)
-    setTestData(next)
+    if (test) setTestData(test)
   }, [test])
 
-  // Auto-save (debounced). The draft is keyed by `draftName`. When the user
-  // renames the title to something unique, we move the draft slot. If the new
-  // title collides with another draft, we keep saving under `draftName` and
-  // surface a warning so we never silently overwrite somebody else's draft.
-  useEffect(() => {
-    if (!testData || !draftName) return
-    setSaveStatus('Salvataggio…')
-    const handle = setTimeout(() => {
-      const current = loadDrafts()
-      const desired = (testData.title || '').trim()
-      if (!desired) {
-        current[draftName] = testData
-        persistDrafts(current)
-        setDrafts(current)
-        setSaveStatus('Salvato (titolo vuoto)')
-        return
-      }
-      if (desired === draftName) {
-        current[draftName] = testData
-        persistDrafts(current)
-        setDrafts(current)
-        setSaveStatus('Salvato')
-        return
-      }
-      if (current[desired]) {
-        current[draftName] = testData
-        persistDrafts(current)
-        setDrafts(current)
-        setSaveStatus(`Nome "${desired}" già usato — bozza salvata come "${draftName}"`)
-        return
-      }
-      delete current[draftName]
-      current[desired] = testData
-      persistDrafts(current)
-      setDrafts(current)
-      setDraftName(desired)
-      setSaveStatus('Salvato')
-    }, 600)
-    return () => clearTimeout(handle)
-  }, [testData, draftName])
-
-  function startSession(data) {
-    const current = loadDrafts()
-    const name = uniqueName(data.title, current)
-    const next = name === data.title ? data : { ...data, title: name }
-    setDraftName(name)
-    setTestData(next)
+  function describeStatus(prefix, status) {
+    if (status === 'new-version') return `${prefix} (nuova versione)`
+    if (status === 'unchanged') return `${prefix} (invariato)`
+    return prefix
   }
 
-  function resumeDraft(name) {
-    setDraftName(name)
-    setTestData(drafts[name])
-    setSaveStatus('')
-  }
-
-  function deleteDraft(name) {
-    if (!confirm(`Eliminare la bozza "${name}"?`)) return
-    const current = loadDrafts()
-    delete current[name]
-    persistDrafts(current)
-    setDrafts(current)
-    if (name === draftName) {
-      setTestData(null)
-      setDraftName(null)
-      setSaveStatus('')
+  /** Validates locally and overwrites the JSON file on disk via the backend. */
+  async function handleOverwriteFile() {
+    if (!testData?.id) return
+    const clean = stripBackendMeta(testData)
+    try {
+      validateTest(clean)
+    } catch (err) {
+      setSaveStatus('✗ Validazione: ' + (err instanceof Error ? err.message : String(err)))
+      return
+    }
+    setSaving(true)
+    setSaveStatus('Sovrascrittura file…')
+    try {
+      const result = await saveTestFile(testData.id, clean)
+      setSaveStatus('✓ File ' + describeStatus('sovrascritto', result?.sync?.status))
+    } catch (e) {
+      setSaveStatus('✗ ' + (e instanceof Error ? e.message : String(e)))
+    } finally {
+      setSaving(false)
     }
   }
 
-  function handleFile(file) {
-    if (!file) return
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      let parsed
-      try {
-        parsed = JSON.parse(e.target.result)
-      } catch {
-        alert('Parsing JSON fallito.')
-        return
-      }
-      try {
-        startSession(validateTest(parsed))
-      } catch (err) {
-        alert('JSON non conforme allo schema:\n' + (err instanceof Error ? err.message : String(err)))
-      }
+  /** Saves a new TestVersion in the DB without touching the file on disk. */
+  async function handleSaveVersion() {
+    if (!testData?.id) return
+    const clean = stripBackendMeta(testData)
+    try {
+      validateTest(clean)
+    } catch (err) {
+      setSaveStatus('✗ Validazione: ' + (err instanceof Error ? err.message : String(err)))
+      return
     }
-    reader.readAsText(file)
-  }
-
-  function exportJSON() {
-    const blob = new Blob([JSON.stringify(testData, null, 2)], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = (testData.title || 'test').replace(/[^a-zA-Z0-9àèéìòù_-]/g, '_') + '.json'
-    a.click()
-    URL.revokeObjectURL(url)
-  }
-
-  function createNew() {
-    startSession({
-      title: 'Nuovo test',
-      subtitle: '',
-      instructions: '',
-      questions: []
-    })
+    setSaving(true)
+    setSaveStatus('Salvataggio versione…')
+    try {
+      const result = await saveTestVersion(testData.id, clean)
+      setSaveStatus('✓ Versione ' + describeStatus('salvata', result?.status))
+    } catch (e) {
+      setSaveStatus('✗ ' + (e instanceof Error ? e.message : String(e)))
+    } finally {
+      setSaving(false)
+    }
   }
 
   function updateConceptGroup(i, updated) {
@@ -755,61 +739,36 @@ export default function ManipulatorPage({ test = null } = {}) {
   }
 
   if (!testData) {
-    const draftEntries = Object.entries(drafts)
     return (
-      <div className="file-picker-container" style={{ flexDirection: 'column' }}>
-        <div
-          className="file-picker-card"
-          onClick={() => inputRef.current?.click()}
-          onDrop={e => { e.preventDefault(); handleFile(e.dataTransfer.files[0]) }}
-          onDragOver={e => e.preventDefault()}
-        >
-          <div className="file-picker-icon">&#9998;</div>
-          <h2>Carica un JSON da manipolare</h2>
-          <p>Trascina il file qui oppure clicca per selezionarlo</p>
-          <input
-            ref={inputRef}
-            type="file"
-            accept=".json"
-            onChange={e => handleFile(e.target.files[0])}
-            style={{ display: 'none' }}
-          />
-        </div>
-        <button className="btn-small" style={{ display: 'block', margin: '1rem auto' }} onClick={createNew}>
-          Oppure crea un nuovo test
-        </button>
-        {draftEntries.length > 0 && (
-          <div className="manipulator-drafts">
-            <h3>Bozze salvate</h3>
-            <ul>
-              {draftEntries.map(([name, data]) => {
-                const count = Array.isArray(data?.questions) ? data.questions.length : 0
-                return (
-                  <li key={name}>
-                    <button className="draft-resume" onClick={() => resumeDraft(name)}>
-                      <strong>{name}</strong>
-                      <span className="draft-meta">{count} elemento/i</span>
-                    </button>
-                    <button className="btn-icon btn-remove" onClick={() => deleteDraft(name)} title="Elimina bozza">x</button>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-        )}
+      <div className="editor-empty">
+        <p>Nessun test caricato. Torna alla libreria per selezionarne uno.</p>
       </div>
     )
   }
 
+  const canSave = !!testData?.id && !saving
+
   return (
     <div className="editor-page">
       <div className="toolbar no-print">
-        <button onClick={exportJSON}>Esporta JSON</button>
-        <button onClick={() => { setTestData(null); setDraftName(null); setSaveStatus('') }}>Cambia bozza</button>
-        <button onClick={() => deleteDraft(draftName)}>Elimina bozza</button>
-        <span className="manipulator-save-status">
-          Bozza: <strong>{draftName}</strong>{saveStatus ? ` — ${saveStatus}` : ''}
-        </span>
+        <button
+          className="toolbar-btn-primary"
+          onClick={handleOverwriteFile}
+          disabled={!canSave}
+          title="Sovrascrivi il file JSON originale sul filesystem (e cattura una versione)"
+        >
+          💾 Sovrascrivi file su disco
+        </button>
+        <button
+          onClick={handleSaveVersion}
+          disabled={!canSave}
+          title="Salva una nuova versione nel database senza toccare il file su disco"
+        >
+          📚 Salva versione (DB)
+        </button>
+        {saveStatus && (
+          <span className="manipulator-file-status">{saveStatus}</span>
+        )}
       </div>
 
       <div className="editor-sheet">

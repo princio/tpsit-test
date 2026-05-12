@@ -54,6 +54,8 @@ export default function PrintPage({ test }) {
   const [marginBottom, setMarginBottom] = useState(20)
   const [fontFamily, setFontFamily] = useState('Georgia, "Times New Roman", serif')
   const [showAnswers, setShowAnswers] = useState(false)
+  const [showInstructions, setShowInstructions] = useState(true)
+  const [showLegend, setShowLegend] = useState(true)
   const [maxPages, setMaxPages] = useState(null)
   const [fixAttempts, setFixAttempts] = useState({})
   const [variantKeys, setVariantKeys] = useState({})
@@ -189,6 +191,12 @@ export default function PrintPage({ test }) {
           <button onClick={handlePrint}>Stampa</button>
           <button onClick={handleVerify}>Verifica</button>
           <button onClick={() => setShowAnswers(s => !s)}>{showAnswers ? 'Nascondi' : 'Risposte'}</button>
+          <label className="toolbar-control" title="Mostra le istruzioni del test sotto l'intestazione">
+            <input type="checkbox" checked={showInstructions} onChange={e => setShowInstructions(e.target.checked)} /> Istruzioni
+          </label>
+          <label className="toolbar-control" title="Mostra la legenda dei tipi di domanda">
+            <input type="checkbox" checked={showLegend} onChange={e => setShowLegend(e.target.checked)} /> Legenda
+          </label>
           <label className="toolbar-control">
             Copie
             <input
@@ -247,12 +255,15 @@ export default function PrintPage({ test }) {
           <div key={`${i}-${variantKeys[i] || 0}`}>
             {needsBlank && <div className="page page-blank" />}
             <TestSheet
+              index={i}
               test={v}
               fontSize={fontSize}
               gap={gap}
               marginBottom={marginBottom}
               fontFamily={fontFamily}
               showAnswers={showAnswers}
+              showInstructions={showInstructions}
+              showLegend={showLegend}
               onPagesCount={n => setPageCounts(c => ({ ...c, [i]: n }))}
             />
           </div>

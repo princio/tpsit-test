@@ -2,17 +2,29 @@ import CodeBlock from './CodeBlock'
 import MermaidDiagram from './MermaidDiagram'
 import GanttChart from './GanttChart'
 
-function renderInlineText(text, fillerAnswers, startBlankIndex = 0) {
+const DEFAULT_BLANK_SIZE = 10
+
+function blankWidthFor(blankSizes, i) {
+  const n = Array.isArray(blankSizes) && Number.isInteger(blankSizes[i]) && blankSizes[i] >= 2
+    ? blankSizes[i]
+    : DEFAULT_BLANK_SIZE
+  return `${n * 0.55}rem`
+}
+
+function renderInlineText(text, fillerAnswers, startBlankIndex = 0, blankSizes) {
   const parts = text.split(/(`[^`]+`|_{2,})/)
   let blankIndex = startBlankIndex
   return parts.map((part, i) => {
     if (part.startsWith('`') && part.endsWith('`'))
       return <code key={i} className="inline-code">{part.slice(1, -1)}</code>
     if (/^_{2,}$/.test(part)) {
-      const answer = fillerAnswers && fillerAnswers[blankIndex]
+      const w = blankWidthFor(blankSizes, blankIndex)
       blankIndex++
-      const minWidth = answer ? `${Math.max(3, answer.length * 0.6)}rem` : undefined
-      return <span key={i} className="inline-blank" style={minWidth ? { minWidth, width: minWidth } : undefined} />
+      // Answer text is shown via `.answer-reveal` (when enabled), not inline.
+      void (fillerAnswers && fillerAnswers[blankIndex - 1])
+      return (
+        <span key={i} className="inline-blank" style={{ minWidth: w, width: w }} />
+      )
     }
     return part
   })
@@ -22,16 +34,18 @@ function renderCell(value) {
   return renderInlineText(value ?? '', undefined, 0)
 }
 
-export default function ContentRenderer({ content, questionIndex, fillerAnswers }) {
+export default function ContentRenderer({ content, questionIndex, fillerAnswers, blankSizes, skipKinds }) {
   let blankOffset = 0
+  const skip = Array.isArray(skipKinds) ? new Set(skipKinds) : null
   return (
     <div className="question-content">
       {content.map((block, i) => {
+        if (skip && skip.has(block.kind)) return null
         switch (block.kind) {
           case 'text': {
             const offset = blankOffset
             blankOffset += (block.value.match(/_{2,}/g) || []).length
-            return <p key={i} className="content-text">{renderInlineText(block.value, fillerAnswers, offset)}</p>
+            return <p key={i} className="content-text">{renderInlineText(block.value, fillerAnswers, offset, blankSizes)}</p>
           }
           case 'code':
             return <CodeBlock key={i} language={block.language} value={block.value} />

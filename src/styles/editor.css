@@ -270,6 +270,31 @@
   font-style: italic;
 }
 
+.editor-filler-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.editor-filler-answer-input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.editor-filler-width {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.72rem;
+  color: #777;
+  flex: 0 0 auto;
+}
+
+.editor-filler-width input {
+  width: 3rem;
+  text-align: right;
+}
+
 /* Multiple choice options */
 .editor-mc-options {
   display: flex;
@@ -389,6 +414,15 @@
   margin-left: auto;
   font-size: 0.85rem;
   color: #555;
+}
+
+.manipulator-file-status {
+  font-size: 0.85rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background: #eef4ff;
+  color: #1a4a8a;
+  border: 1px solid #c0d4f0;
 }
 
 /* Content blocks editor */
@@ -545,4 +579,100 @@
 
 .editor-gantt-row input[type="number"] {
   width: 5rem;
+}
+
+.editor-gantt-range {
+  color: #666;
+  font-size: 0.8rem;
+  font-family: monospace;
+  min-width: 5rem;
+}
+
+/* Table editor */
+.editor-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.editor-table-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.editor-table-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.editor-table-scroll {
+  overflow-x: auto;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.editor-table-grid {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+.editor-table-grid th,
+.editor-table-grid td {
+  border: 1px solid #e0e0e0;
+  padding: 0;
+  position: relative;
+  vertical-align: top;
+}
+
+.editor-table-grid thead th {
+  background: #f5f5f5;
+}
+
+.editor-table-input {
+  width: 100%;
+  border: none;
+  padding: 0.35rem 0.5rem;
+  background: transparent;
+  font: inherit;
+  outline: none;
+}
+
+.editor-table-input:focus {
+  background: #eef4ff;
+  box-shadow: inset 0 0 0 2px #3366cc;
+}
+
+.editor-table-col-remove {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.editor-table-grid th:hover .editor-table-col-remove {
+  opacity: 1;
+}
+
+.editor-table-row-actions {
+  border: none !important;
+  background: transparent;
+  width: 1.5rem;
+  text-align: center;
+}
+
+.editor-table-row-actions .btn-icon {
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.editor-table-grid tr:hover .editor-table-row-actions .btn-icon {
+  opacity: 1;
 }

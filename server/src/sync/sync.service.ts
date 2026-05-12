@@ -68,6 +68,13 @@ export class SyncService {
     return this.publicDir;
   }
 
+  /** Re-sync a single file (relative path under public/). Captures a new
+   *  version when its content hash hasn't been seen before. */
+  async syncFile(filePath: string): Promise<SyncEntry> {
+    const absPath = path.join(this.publicDir, filePath);
+    return this.syncOne(absPath);
+  }
+
   async sync(): Promise<SyncResult> {
     const files = await this.walk(this.publicDir);
     const result: SyncResult = {

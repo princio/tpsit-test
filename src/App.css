@@ -544,10 +544,53 @@ body {
 /* Header */
 .test-header {
   display: flex;
-  align-items: stretch;
+  flex-direction: column;
   margin-bottom: 0.5rem;
   border: 1px solid #ccc;
   font-size: 0.85rem;
+}
+
+.test-header-row {
+  display: flex;
+  align-items: stretch;
+}
+
+.test-instructions {
+  border-top: 1px solid #ccc;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  white-space: pre-wrap;
+}
+
+.test-legend {
+  border-top: 1px solid #ccc;
+  padding: 0.3rem 0.6rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.15rem 0.9rem;
+  font-size: 0.72rem;
+  background: #fafafa;
+}
+
+.test-legend-label {
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #555;
+  margin-right: 0.2rem;
+}
+
+.test-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: #444;
+}
+
+.test-legend-item .tf-options {
+  margin-right: 0;
 }
 
 .header-title {
@@ -668,18 +711,18 @@ body {
 .question-number {
   background-color: white;
   position: absolute;
-  top: 0;
+  bottom: 0;
   right: 0;
   font-weight: bold;
-  font-size: 0.6rem;
-  min-width: 1.2rem;
+  font-size: 0.55rem;
+  min-width: 0.8rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.1rem 0.25rem;
-  border-bottom: 1px solid #ddd;
+  padding: 0.05rem 0.2rem;
+  border-top: 1px solid #ddd;
   border-left: 1px solid #ddd;
-  border-bottom-left-radius: 4px;
+  border-top-left-radius: 4px;
   z-index: 1;
   line-height: 1;
 }
@@ -804,13 +847,43 @@ body {
   max-height: 300px;
 }
 
+/* Tables in question content */
+.content-table-wrapper {
+  margin: 0.5rem 0;
+  overflow-x: auto;
+}
+
+.content-table {
+  border-collapse: collapse;
+  width: auto;
+  max-width: 100%;
+  font-size: 0.95em;
+}
+
+.content-table th,
+.content-table td {
+  border: 1px solid #999;
+  padding: 0.3rem 0.6rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.content-table thead th {
+  background: #f0f0f0;
+  font-weight: 600;
+}
+
+.content-table tbody tr:nth-child(even) {
+  background: #fafafa;
+}
+
 /* Gantt chart (single-row scheduling diagram) */
 .gantt-chart {
   display: flex;
   align-items: stretch;
   width: 100%;
   margin: 0.5rem 0 1.6rem;
-  min-height: 2.4rem;
+  min-height: 1.8rem;
 }
 
 .gantt-slice {
@@ -836,9 +909,14 @@ body {
 
 .gantt-start,
 .gantt-end {
+  background-color: white;
   position: absolute;
   bottom: -1.1rem;
   font-size: 0.75rem;
+  min-width: 2rem;
+  min-height: 14px;
+  font-weight: bold;
+  text-align: center;
   color: #333;
   font-variant-numeric: tabular-nums;
   line-height: 1;
@@ -882,6 +960,7 @@ body {
   display: inline-flex;
   gap: 0.4rem;
   flex-shrink: 0;
+  margin-right: 0.8rem;
 }
 
 .tf-option {

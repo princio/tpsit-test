@@ -1,8 +1,11 @@
 import {
+  Body,
   Controller,
   Get,
   Param,
   ParseIntPipe,
+  Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { TestsService } from './tests.service';
@@ -33,5 +36,21 @@ export class TestsController {
   @Get('versions/:versionId')
   readVersion(@Param('versionId', ParseIntPipe) versionId: number) {
     return this.testsService.readVersion(versionId);
+  }
+
+  @Put('tests/:id/file')
+  saveFile(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: unknown,
+  ) {
+    return this.testsService.saveFile(id, body);
+  }
+
+  @Post('tests/:id/versions')
+  saveVersion(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: unknown,
+  ) {
+    return this.testsService.saveVersion(id, body);
   }
 }
