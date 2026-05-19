@@ -1,6 +1,7 @@
 import { useRef, useState, useLayoutEffect, useCallback } from 'react'
 import QuestionBlock from './QuestionBlock'
 import { TestSheetProvider } from './TestSheetContext'
+import ContentRenderer from '@/components/shared/ContentRenderer'
 
 /** @typedef {import('@/schema').TestData} TestData */
 /** @typedef {import('@/schema').Question} Question */
@@ -62,15 +63,22 @@ function Legend() {
 function flattenQuestions(questions) {
   const flat = []
   questions.forEach((item) => {
-    if (item.concept && Array.isArray(item.questions)) {
+    if (Array.isArray(item.questions)) {
+      // QuestionGroup (includes legacy ConceptGroup with concept+questions)
+      if (Array.isArray(item.content) && item.content.length > 0)
+        flat.push({ sharedContent: item.content })
       item.questions.forEach((q) => {
         if (!q.skip) flat.push({ question: q })
       })
+    } else if (typeof item.concept === 'string') {
+      // ConceptSeparator
+      flat.push({ conceptLabel: item.concept })
     } else {
       if (!item.skip) flat.push({ question: item })
     }
   })
-  flat.forEach((entry, i) => { entry.index = i })
+  let qIndex = 0
+  flat.forEach((entry) => { if (entry.question) entry.index = qIndex++ })
   return flat
 }
 
@@ -179,9 +187,13 @@ export default function TestSheet({ index, test, fontSize = 13, gap = 8, marginB
                 <Header index={index} test={test} showInstructions={showInstructions} showLegend={showLegend} />
               </div>
               <div className="questions-list" style={{ gap: `${gap}px` }}>
-                {flatQuestions.map(({ question, index }, i) => (
+                {flatQuestions.map((entry, i) => (
                   <div key={i} data-q-index={i}>
-                    <QuestionBlock question={question} index={index} />
+                    {entry.sharedContent
+                      ? <ContentRenderer content={entry.sharedContent} />
+                      : entry.conceptLabel != null
+                        ? <div className="test-concept-label">{entry.conceptLabel}</div>
+                        : <QuestionBlock question={entry.question} index={entry.index} />}
                   </div>
                 ))}
               </div>
@@ -201,8 +213,12 @@ export default function TestSheet({ index, test, fontSize = 13, gap = 8, marginB
               {pageNum === 0 && <Header test={test} showInstructions={showInstructions} showLegend={showLegend} />}
               <div className="questions-list" style={{ gap: `${gap}px` }}>
                 {pageIndices.map(i => {
-                  const { question, index } = flatQuestions[i]
-                  return <QuestionBlock key={i} question={question} index={index} />
+                  const entry = flatQuestions[i]
+                  return entry.sharedContent
+                    ? <ContentRenderer key={i} content={entry.sharedContent} />
+                    : entry.conceptLabel != null
+                      ? <div key={i} className="test-concept-label">{entry.conceptLabel}</div>
+                      : <QuestionBlock key={i} question={entry.question} index={entry.index} />
                 })}
               </div>
             </div>

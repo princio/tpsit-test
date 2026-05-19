@@ -201,43 +201,26 @@ export class TestsService {
     return summaries;
   }
 
-  /**
-   * Reads the latest valid version's content. Falls back to the latest version
-   * (which may be invalid) if no valid version exists.
-   */
+  /** Reads the test content directly from the local JSON file on disk. */
   async read(id: number): Promise<unknown> {
-    const test = await this.prisma.test.findUnique({
-      where: { id },
-      include: {
-        versions: { orderBy: { createdAt: 'desc' }, take: 1 },
-      },
-    });
+    const test = await this.prisma.test.findUnique({ where: { id } });
     if (!test) throw new NotFoundException(`Test ${id} non trovato`);
 
-    let chosen = test.versions[0];
-    if (chosen && !chosen.valid) {
-      const valid = await this.prisma.testVersion.findFirst({
-        where: { testId: id, valid: true },
-        orderBy: { createdAt: 'desc' },
-      });
-      if (valid) chosen = valid;
-    }
-    if (!chosen) {
-      throw new NotFoundException(`Nessuna versione disponibile per il test ${id}`);
+    const absPath = path.join(this.sync.getPublicDir(), test.filePath);
+    let raw: string;
+    try {
+      raw = await fs.readFile(absPath, 'utf-8');
+    } catch {
+      throw new NotFoundException(`File non trovato su disco: ${test.filePath}`);
     }
 
-    const parsed =
-      this.tryParse(chosen.data) ?? { __invalid: true, raw: chosen.data };
+    const parsed = this.tryParse(raw) ?? { __invalid: true, raw };
     return {
       id: test.id,
       filePath: test.filePath,
       classe: test.classe,
       materia: test.materia,
       uda: test.uda,
-      versionId: chosen.id,
-      versionValid: chosen.valid,
-      versionErrors: chosen.errors,
-      versionCreatedAt: chosen.createdAt,
       ...(typeof parsed === 'object' && parsed !== null
         ? (parsed as Record<string, unknown>)
         : { data: parsed }),

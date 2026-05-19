@@ -67,7 +67,7 @@ export default function App() {
   let content
   switch (activeMode) {
     case 'edit':
-      content = <ManipulatorPage test={currentTest} />
+      content = <ManipulatorPage test={currentTest} onTestChange={setCurrentTest} />
       break
     case 'correction':
       content = <CorrectionPage test={currentTest} />

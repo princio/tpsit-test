@@ -89,7 +89,7 @@ function flattenQuestions(testData) {
   const questions = []
   if (Array.isArray(testData.questions)) {
     testData.questions.forEach(item => {
-      if (item.concept && Array.isArray(item.questions)) {
+      if (Array.isArray(item.questions)) { // QuestionGroup or legacy ConceptGroup
         // Nested format: questions are under concept
         questions.push(...item.questions)
       } else {

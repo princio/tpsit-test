@@ -676,3 +676,141 @@
 .editor-table-grid tr:hover .editor-table-row-actions .btn-icon {
   opacity: 1;
 }
+
+/* Reorder controls */
+.editor-question-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
+.editor-question-row > :last-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.reorder-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding-top: 0.4rem;
+  flex-shrink: 0;
+}
+
+.reorder-btns .btn-icon:disabled {
+  opacity: 0.2;
+  cursor: default;
+}
+
+.reorder-btns .btn-icon:disabled:hover {
+  background: transparent;
+  color: #999;
+}
+
+/* Insert slot (between items) */
+.insert-slot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 12px;
+  margin: 2px 0;
+}
+
+.insert-slot::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: transparent;
+  transition: background 0.15s;
+  border-radius: 1px;
+}
+
+.insert-slot:hover::before,
+.insert-slot--open::before {
+  background: #4a90d9;
+}
+
+.insert-slot-btn {
+  position: relative;
+  z-index: 1;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  background: #fff;
+  color: #aaa;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s, border-color 0.15s, color 0.15s, background 0.15s;
+  padding: 0;
+}
+
+.insert-slot:hover .insert-slot-btn,
+.insert-slot--open .insert-slot-btn {
+  opacity: 1;
+  border-color: #4a90d9;
+  color: #4a90d9;
+}
+
+.insert-slot--open .insert-slot-btn {
+  background: #4a90d9;
+  color: #fff;
+}
+
+.insert-slot-menu {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.13);
+  display: flex;
+  gap: 0.3rem;
+  padding: 0.4rem;
+  white-space: nowrap;
+}
+
+.insert-slot-menu button {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  border: 1px dashed #bbb;
+  background: transparent;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #555;
+}
+
+.insert-slot-menu button:hover {
+  border-color: #4a90d9;
+  color: #4a90d9;
+  background: #f0f6ff;
+}
+
+/* Concept separator */
+.editor-separator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  border-left: 3px solid #aab;
+  background: #f5f5fa;
+  border-radius: 4px;
+}
+
+.editor-separator-icon {
+  color: #889;
+  font-size: 1rem;
+  font-weight: bold;
+  flex-shrink: 0;
+}

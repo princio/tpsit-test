@@ -149,14 +149,25 @@ export type Question =
 
 export type QuestionType = Question['type']
 
-/** Gruppo di domande accomunate da un concetto. */
-export interface ConceptGroup {
+/** Separatore visivo tra sezioni/argomenti. Non contiene domande. */
+export interface ConceptSeparator {
   concept: string
+}
+
+/** Gruppo di domande con contenuto condiviso mostrato una sola volta prima di tutte le domande. */
+export interface QuestionGroup {
+  /** Blocchi di contenuto (testo, codice, ecc.) mostrati una sola volta prima di tutte le domande del gruppo. */
+  content?: ContentBlock[]
   questions: Question[]
 }
 
-/** Elemento di livello superiore in `TestData.questions`: domanda piatta o gruppo. */
-export type QuestionItem = Question | ConceptGroup
+/** @deprecated Usa {@link ConceptSeparator} per i separatori e {@link QuestionGroup} per i gruppi. */
+export interface ConceptGroup extends QuestionGroup {
+  concept: string
+}
+
+/** Elemento di livello superiore in `TestData.questions`. */
+export type QuestionItem = Question | ConceptSeparator | QuestionGroup
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Test
@@ -180,12 +191,22 @@ export interface TestData {
 // Type guards
 // ──────────────────────────────────────────────────────────────────────────────
 
-export function isConceptGroup(item: unknown): item is ConceptGroup {
+/** Separatore di sezione — ha `concept` ma non `questions`. */
+export function isConceptSeparator(item: unknown): item is ConceptSeparator {
   return (
     !!item &&
     typeof item === 'object' &&
-    typeof (item as ConceptGroup).concept === 'string' &&
-    Array.isArray((item as ConceptGroup).questions)
+    typeof (item as ConceptSeparator).concept === 'string' &&
+    !Array.isArray((item as QuestionGroup).questions)
+  )
+}
+
+/** Gruppo di domande con contenuto condiviso (include il vecchio formato `{ concept, questions }`). */
+export function isQuestionGroup(item: unknown): item is QuestionGroup {
+  return (
+    !!item &&
+    typeof item === 'object' &&
+    Array.isArray((item as QuestionGroup).questions)
   )
 }
 
@@ -205,7 +226,7 @@ export function isQuestion(item: unknown): item is Question {
 export function flattenQuestions(test: TestData): Question[] {
   const out: Question[] = []
   for (const item of test.questions) {
-    if (isConceptGroup(item)) {
+    if (isQuestionGroup(item)) {
       for (const q of item.questions) if (!q.skip) out.push(q)
     } else if (isQuestion(item) && !item.skip) {
       out.push(item)
@@ -245,10 +266,13 @@ export function validateTest(data: unknown): TestData {
     throw new Error('"instructions" deve essere una stringa.')
 
   t.questions.forEach((item, i) => {
-    if (isConceptGroup(item)) {
-      if (typeof item.concept !== 'string' || !item.concept.trim())
+    if (isConceptSeparator(item)) {
+      if (!item.concept.trim())
         throw new Error(`questions[${i}].concept: deve essere una stringa non vuota.`)
-      item.questions.forEach((q, j) =>
+    } else if (isQuestionGroup(item)) {
+      if (item.content != null && !Array.isArray(item.content))
+        throw new Error(`questions[${i}].content: deve essere un array di blocchi.`)
+      item.questions.forEach((q: unknown, j: number) =>
         validateQuestion(q, `questions[${i}].questions[${j}]`),
       )
     } else {

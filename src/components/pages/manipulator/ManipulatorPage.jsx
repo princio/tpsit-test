@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import CodeBlock from '@/components/shared/CodeBlock'
 import MermaidDiagram from '@/components/shared/MermaidDiagram'
 import GanttChart from '@/components/shared/GanttChart'
-import { validateTest } from '@/schema'
+import { validateTest, isConceptSeparator, isQuestionGroup } from '@/schema'
 import { saveTestFile, saveTestVersion } from '@/api'
 
 /** Fields injected by the backend on test load. Stripped before writing JSON. */
@@ -45,6 +45,23 @@ function EditableText({ value, onChange, tag: Tag = 'span', className = '', mult
       onBlur={e => onChange(e.currentTarget.textContent)}
       dangerouslySetInnerHTML={{ __html: value }}
     />
+  )
+}
+
+function moveItem(arr, from, delta) {
+  const to = from + delta
+  if (to < 0 || to >= arr.length) return arr
+  const next = [...arr]
+  ;[next[from], next[to]] = [next[to], next[from]]
+  return next
+}
+
+function ReorderButtons({ index, total, onMove }) {
+  return (
+    <div className="reorder-btns">
+      <button className="btn-icon" onClick={() => onMove(-1)} disabled={index === 0} title="Sposta su">↑</button>
+      <button className="btn-icon" onClick={() => onMove(1)} disabled={index === total - 1} title="Sposta giù">↓</button>
+    </div>
   )
 }
 
@@ -293,6 +310,7 @@ function ContentEditor({ content, onChange }) {
                 placeholder="linguaggio"
               />
             )}
+            <ReorderButtons index={i} total={content.length} onMove={d => onChange(moveItem(content, i, d))} />
             <button className="btn-icon btn-remove" onClick={() => removeBlock(i)} title="Rimuovi blocco">x</button>
           </div>
           {block.kind === 'gantt' ? (
@@ -614,7 +632,70 @@ function QuestionEditor({ question, onChange, onRemove }) {
   }
 }
 
-function ConceptGroupEditor({ group, onChange, onRemove }) {
+const ITEM_DEFAULTS = {
+  separator:      { concept: 'Nuovo argomento' },
+  group:          { questions: [] },
+  trueFalse:      { type: 'trueFalse', text: 'Affermazione.', answer: true },
+  multipleChoice: { type: 'multipleChoice', text: 'Domanda?', options: ['Opzione A', 'Opzione B', 'Opzione C', 'Opzione D'], answer: 0 },
+  filler:         { type: 'filler', text: 'Completa la ____.' },
+  open:           { type: 'open', text: 'Domanda aperta?', linesNumber: 2 },
+}
+
+function InsertSlot({ onInsert, questionsOnly = false }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+
+  useEffect(() => {
+    if (!open) return
+    function onMouseDown(e) {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false)
+    }
+    document.addEventListener('mousedown', onMouseDown)
+    return () => document.removeEventListener('mousedown', onMouseDown)
+  }, [open])
+
+  function insert(key) {
+    onInsert({ ...ITEM_DEFAULTS[key] })
+    setOpen(false)
+  }
+
+  return (
+    <div className={`insert-slot${open ? ' insert-slot--open' : ''}`} ref={ref}>
+      <button className="insert-slot-btn" title="Inserisci qui" onClick={() => setOpen(v => !v)}>+</button>
+      {open && (
+        <div className="insert-slot-menu">
+          {!questionsOnly && (
+            <>
+              <button onClick={() => insert('separator')}>§ Separatore</button>
+              <button onClick={() => insert('group')}>Gruppo</button>
+            </>
+          )}
+          <button onClick={() => insert('trueFalse')}>Vero/Falso</button>
+          <button onClick={() => insert('multipleChoice')}>Scelta multipla</button>
+          <button onClick={() => insert('filler')}>Completamento</button>
+          <button onClick={() => insert('open')}>Aperta</button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function ConceptSeparatorEditor({ item, onChange, onRemove }) {
+  return (
+    <div className="editor-separator">
+      <span className="editor-separator-icon">§</span>
+      <EditableText
+        value={item.concept}
+        onChange={v => onChange({ ...item, concept: v })}
+        tag="strong"
+        className="editor-concept-title"
+      />
+      <button className="btn-icon btn-remove" onClick={onRemove} title="Rimuovi separatore">x</button>
+    </div>
+  )
+}
+
+function QuestionGroupEditor({ group, onChange, onRemove }) {
   function updateQuestion(i, updated) {
     const qs = [...group.questions]
     qs[i] = updated
@@ -625,53 +706,57 @@ function ConceptGroupEditor({ group, onChange, onRemove }) {
     onChange({ ...group, questions: group.questions.filter((_, idx) => idx !== i) })
   }
 
-  function addQuestion(type) {
-    const defaults = {
-      trueFalse: { type: 'trueFalse', text: 'Affermazione.', answer: true },
-      multipleChoice: { type: 'multipleChoice', text: 'Domanda?', options: ['Opzione A', 'Opzione B', 'Opzione C', 'Opzione D'], answer: 0 },
-      filler: { type: 'filler', text: 'Completa la ____.' },
-      open: { type: 'open', text: 'Domanda aperta?', linesNumber: 2 },
-    }
-    onChange({ ...group, questions: [...group.questions, defaults[type]] })
+  function insertInGroup(index, item) {
+    const qs = [...group.questions]
+    qs.splice(index, 0, item)
+    onChange({ ...group, questions: qs })
   }
+
+  const sharedContent = Array.isArray(group.content) ? group.content : []
 
   return (
     <div className="editor-concept">
       <div className="editor-concept-header">
-        <EditableText
-          value={group.concept}
-          onChange={v => onChange({ ...group, concept: v })}
-          tag="strong"
-          className="editor-concept-title"
-        />
-        <button className="btn-icon btn-remove" onClick={onRemove} title="Rimuovi concetto">x</button>
+        <span className="editor-type-badge" style={{ background: '#e8f0fe', color: '#3a5fcc' }}>Gruppo</span>
+        <button className="btn-icon btn-remove" onClick={onRemove} title="Rimuovi gruppo">x</button>
       </div>
-      {group.questions.map((q, i) => (
-        <QuestionEditor
-          key={i}
-          question={q}
-          onChange={v => updateQuestion(i, v)}
-          onRemove={() => removeQuestion(i)}
-        />
-      ))}
-      <div className="editor-add-block">
-        <button onClick={() => addQuestion('trueFalse')}>+ Vero/Falso</button>
-        <button onClick={() => addQuestion('multipleChoice')}>+ Scelta multipla</button>
-        <button onClick={() => addQuestion('filler')}>+ Completamento</button>
-        <button onClick={() => addQuestion('open')}>+ Aperta</button>
-      </div>
+      <ContentEditor
+        content={sharedContent}
+        onChange={c => onChange({ ...group, content: c.length ? c : undefined })}
+      />
+      {group.questions.flatMap((q, i) => [
+        <InsertSlot key={`slot-${i}`} questionsOnly onInsert={item => insertInGroup(i, item)} />,
+        <div key={`item-${i}`} className="editor-question-row">
+          <ReorderButtons index={i} total={group.questions.length} onMove={d => onChange({ ...group, questions: moveItem(group.questions, i, d) })} />
+          <QuestionEditor
+            question={q}
+            onChange={v => updateQuestion(i, v)}
+            onRemove={() => removeQuestion(i)}
+          />
+        </div>,
+      ])}
+      <InsertSlot questionsOnly onInsert={item => insertInGroup(group.questions.length, item)} />
     </div>
   )
 }
 
-export default function ManipulatorPage({ test = null } = {}) {
+export default function ManipulatorPage({ test = null, onTestChange } = {}) {
   const [testData, setTestData] = useState(test)
   const [saveStatus, setSaveStatus] = useState('')
   const [saving, setSaving] = useState(false)
+  const seededIdRef = useRef(test?.id ?? null)
 
-  // Re-seed from the upstream test whenever the parent switches it out.
+  function updateTestData(updated) {
+    setTestData(updated)
+    onTestChange?.(updated)
+  }
+
+  // Re-seed only when a different test is selected (different id).
   useEffect(() => {
-    if (test) setTestData(test)
+    if (test && test.id !== seededIdRef.current) {
+      seededIdRef.current = test.id
+      setTestData(test)
+    }
   }, [test])
 
   function describeStatus(prefix, status) {
@@ -727,15 +812,29 @@ export default function ManipulatorPage({ test = null } = {}) {
   function updateConceptGroup(i, updated) {
     const groups = [...testData.questions]
     groups[i] = updated
-    setTestData({ ...testData, questions: groups })
+    updateTestData({ ...testData, questions: groups })
   }
 
   function removeConceptGroup(i) {
-    setTestData({ ...testData, questions: testData.questions.filter((_, idx) => idx !== i) })
+    updateTestData({ ...testData, questions: testData.questions.filter((_, idx) => idx !== i) })
   }
 
-  function addConceptGroup() {
-    setTestData({ ...testData, questions: [...testData.questions, { concept: 'Nuovo concetto', questions: [] }] })
+  function insertAt(index, item) {
+    const qs = [...testData.questions]
+    qs.splice(index, 0, item)
+    updateTestData({ ...testData, questions: qs })
+  }
+
+  function addConceptSeparator() {
+    updateTestData({ ...testData, questions: [...testData.questions, { ...ITEM_DEFAULTS.separator }] })
+  }
+
+  function addQuestionGroup() {
+    updateTestData({ ...testData, questions: [...testData.questions, { ...ITEM_DEFAULTS.group }] })
+  }
+
+  function addQuestion(type) {
+    updateTestData({ ...testData, questions: [...testData.questions, { ...ITEM_DEFAULTS[type] }] })
   }
 
   if (!testData) {
@@ -778,7 +877,7 @@ export default function ManipulatorPage({ test = null } = {}) {
             <input
               className="editable editable-large"
               value={testData.title}
-              onChange={e => setTestData({ ...testData, title: e.target.value })}
+              onChange={e => updateTestData({ ...testData, title: e.target.value })}
             />
           </label>
           <label>
@@ -786,7 +885,7 @@ export default function ManipulatorPage({ test = null } = {}) {
             <input
               className="editable editable-inline"
               value={testData.subtitle || ''}
-              onChange={e => setTestData({ ...testData, subtitle: e.target.value })}
+              onChange={e => updateTestData({ ...testData, subtitle: e.target.value })}
             />
           </label>
           <label>
@@ -794,22 +893,44 @@ export default function ManipulatorPage({ test = null } = {}) {
             <textarea
               className="editable editable-textarea"
               value={testData.instructions || ''}
-              onChange={e => setTestData({ ...testData, instructions: e.target.value })}
+              onChange={e => updateTestData({ ...testData, instructions: e.target.value })}
               rows={2}
             />
           </label>
         </div>
 
-        {testData.questions.map((group, i) => (
-          <ConceptGroupEditor
-            key={i}
-            group={group}
-            onChange={v => updateConceptGroup(i, v)}
-            onRemove={() => removeConceptGroup(i)}
-          />
-        ))}
+        {testData.questions.flatMap((item, i) => [
+          <InsertSlot key={`slot-${i}`} onInsert={it => insertAt(i, it)} />,
+          <div key={`item-${i}`} className="editor-question-row">
+            <ReorderButtons index={i} total={testData.questions.length} onMove={d => updateTestData({ ...testData, questions: moveItem(testData.questions, i, d) })} />
+            {isConceptSeparator(item)
+              ? <ConceptSeparatorEditor
+                  item={item}
+                  onChange={v => updateConceptGroup(i, v)}
+                  onRemove={() => removeConceptGroup(i)}
+                />
+              : isQuestionGroup(item)
+                ? <QuestionGroupEditor
+                    group={item}
+                    onChange={v => updateConceptGroup(i, v)}
+                    onRemove={() => removeConceptGroup(i)}
+                  />
+                : <QuestionEditor
+                    question={item}
+                    onChange={v => updateConceptGroup(i, v)}
+                    onRemove={() => removeConceptGroup(i)}
+                  />}
+          </div>,
+        ])}
 
-        <button className="btn-small btn-add-section" onClick={addConceptGroup}>+ Aggiungi concetto</button>
+        <div className="editor-add-block">
+          <button className="btn-small" onClick={addConceptSeparator}>§ Separatore</button>
+          <button className="btn-small" onClick={addQuestionGroup}>+ Gruppo</button>
+          <button className="btn-small" onClick={() => addQuestion('trueFalse')}>+ Vero/Falso</button>
+          <button className="btn-small" onClick={() => addQuestion('multipleChoice')}>+ Scelta multipla</button>
+          <button className="btn-small" onClick={() => addQuestion('filler')}>+ Completamento</button>
+          <button className="btn-small" onClick={() => addQuestion('open')}>+ Aperta</button>
+        </div>
       </div>
     </div>
   )
