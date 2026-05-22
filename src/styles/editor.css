@@ -154,15 +154,26 @@
   opacity: 1;
 }
 
-.editor-skip-toggle {
+.editor-skip-toggle,
+.editor-pin-toggle {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
   font-size: 0.75rem;
   color: #555;
-  margin-left: auto;
   margin-right: 0.4rem;
   user-select: none;
+  cursor: pointer;
+}
+
+/* Push the pin+skip group to the right by giving pin auto left-margin */
+.editor-pin-toggle {
+  margin-left: auto;
+}
+
+.editor-pin-toggle.pinned {
+  color: #b45309;
+  font-weight: 600;
 }
 
 .editor-type-header {

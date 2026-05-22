@@ -17,6 +17,7 @@ export default function AppShell({ test, mode, onModeChange, onBackToHome, child
     { key: 'print', label: 'Stampa' },
     { key: 'correction', label: 'Correzione' },
     { key: 'open-correction', label: 'Correzione aperta' },
+    { key: 'excel', label: 'Griglia' },
   ]
 
   const meta = [test?.classe, test?.materia, test?.uda].filter(Boolean).join(' / ')

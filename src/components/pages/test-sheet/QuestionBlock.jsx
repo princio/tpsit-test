@@ -1,4 +1,4 @@
-import ContentRenderer from '@/components/shared/ContentRenderer'
+import ContentRenderer, { InlineText } from '@/components/shared/ContentRenderer'
 import { useTestSheet } from './TestSheetContext'
 
 /** @typedef {import('@/schema').Question} Question */
@@ -40,7 +40,7 @@ export default function QuestionBlock({ question, index }) {
                   return (
                     <span key={i} className={`mc-option${isCorrect ? ' answer-correct' : ''}`}>
                       <span className={question.multi ? 'mc-box mc-box-square' : 'mc-box'} />
-                      {opt}
+                      <span><InlineText value={opt} /></span>
                     </span>
                   )
                 })}
@@ -53,7 +53,7 @@ export default function QuestionBlock({ question, index }) {
                 {question.items.map((item, i) => (
                   <span key={i} className="oi-item">
                     <span className="oi-box">{showAnswers ? question.answer.indexOf(i) + 1 : ''}</span>
-                    {item}
+                    <span><InlineText value={item} /></span>
                   </span>
                 ))}
               </div>

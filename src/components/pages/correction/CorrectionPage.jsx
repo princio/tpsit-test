@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import TestSourceChooser from '@/components/shared/TestSourceChooser'
-import ContentRenderer from '@/components/shared/ContentRenderer'
+import ContentRenderer, { InlineText } from '@/components/shared/ContentRenderer'
 
 /** @typedef {import('@/schema').TestData} TestData */
 /** @typedef {import('@/schema').Question} Question */
@@ -295,10 +295,10 @@ function CorrectionForm({ testData, editingCorrection, onSave, onCancel }) {
                       </div>
                       {answerList && (
                         <ul className="correction-q-answer-list">
-                          {answerList.map((v, i) => <li key={i}>{v}</li>)}
+                          {answerList.map((v, i) => <li key={i}><InlineText value={v} /></li>)}
                         </ul>
                       )}
-                      {answer && <span className="correction-q-answer">{answer}</span>}
+                      {answer && <span className="correction-q-answer"><InlineText value={answer} /></span>}
                     </div>
                     <div className="correction-score-switch">
                       {presets.map(v => (

@@ -5,10 +5,11 @@ import PrintPage from './components/pages/print/PrintPage'
 import ManipulatorPage from './components/pages/manipulator/ManipulatorPage'
 import CorrectionPage from './components/pages/correction/CorrectionPage'
 import OpenCorrectionPage from './components/pages/open-correction/OpenCorrectionPage'
+import ExcelExportPage from './components/pages/excel-export/ExcelExportPage'
 import './styles/correction.css'
 import './styles/open-correction.css'
 
-const MODES = ['edit', 'print', 'correction', 'open-correction']
+const MODES = ['edit', 'print', 'correction', 'open-correction', 'excel']
 const DEFAULT_MODE = 'print'
 
 /** Legacy hash routes from previous app versions, mapped to new mode keys. */
@@ -74,6 +75,9 @@ export default function App() {
       break
     case 'open-correction':
       content = <OpenCorrectionPage test={currentTest} />
+      break
+    case 'excel':
+      content = <ExcelExportPage test={currentTest} />
       break
     case 'print':
     default:

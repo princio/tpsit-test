@@ -66,3 +66,17 @@ model Submission {
   @@index([testId])
   @@index([testVersionId])
 }
+
+/// Interactive correction grid: one session per test, identified by a composite key.
+/// Stores students + per-question weights; updated on every autosave from the Griglia tab.
+model GrigliaSession {
+  id        Int      @id @default(autoincrement())
+  /// Composite key: "title:classe:uda" — matches the frontend storage key.
+  key       String   @unique
+  /// JSON array of students with scores and notes.
+  students  String   @default("[]")
+  /// JSON object mapping question index → weight.
+  weights   String   @default("{}")
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}

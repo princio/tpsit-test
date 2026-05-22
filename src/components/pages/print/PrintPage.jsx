@@ -10,9 +10,25 @@ function shuffle(arr) {
   return a
 }
 
+/** Shuffles `arr` but leaves items with `pin: true` in their original positions. */
+function shuffleWithPins(arr) {
+  const result = new Array(arr.length)
+  const freeSlots = []
+  const unpinned = []
+
+  arr.forEach((item, i) => {
+    if (item.pin) result[i] = item
+    else { freeSlots.push(i); unpinned.push(item) }
+  })
+
+  const shuffled = shuffle(unpinned)
+  freeSlots.forEach((slot, k) => { result[slot] = shuffled[k] })
+  return result
+}
+
 function shuffleTest(test) {
-  const questions = shuffle(test.questions).map(q => {
-    if (q.type === 'multipleChoice') {
+  const questions = shuffleWithPins(test.questions).map(q => {
+    if (q.type === 'multipleChoice' && !q.pin) {
       if (q.multi && Array.isArray(q.answer)) {
         const correctSet = new Set(q.answer)
         const paired = q.options.map((opt, i) => ({ opt, correct: correctSet.has(i) }))
@@ -23,15 +39,15 @@ function shuffleTest(test) {
           answer: shuffledPaired.map((p, i) => p.correct ? i : -1).filter(i => i >= 0),
         }
       }
-      const paired = q.options.map(opt => ({ opt, correct: opt === q.answer }))
+      const paired = q.options.map((opt, i) => ({ opt, correct: i === q.answer }))
       const shuffledPaired = shuffle(paired)
       return {
         ...q,
         options: shuffledPaired.map(p => p.opt),
-        answer: shuffledPaired.find(p => p.correct)?.opt ?? q.answer,
+        answer: shuffledPaired.findIndex(p => p.correct),
       }
     }
-    if (q.type === 'orderItems') {
+    if (q.type === 'orderItems' && !q.pin) {
       return { ...q, items: shuffle(q.items) }
     }
     return q

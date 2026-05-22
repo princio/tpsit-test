@@ -7,49 +7,66 @@
   "instructions": "Rispondi a tutte le domande. Non sono ammessi appunti o dispositivi elettronici.",
   "questions": [
     {
-      "type": "trueFalse",
-      "text": "Un thread è una linea di esecuzione indipendente all'interno di un processo.",
-      "answer": true,
-      "skip": true
+      "questions": [],
+      "content": [
+        {
+          "kind": "text",
+          "value": "Nell'esecuzione **concorrente** più attività sono attive nello stesso intervallo di tempo, alternandosi prima che l'una o l'altra abbiano concluso la propria esecuzione. Attenzione: *concorrente* è molto diverso da *contemporaneamente*, infatti su un processore single-core è possibile avere più attività concorrenti ma è impossibile avere più attività in esecuzione contemporaneamente, si tratta sempre di un'alternanza di chi sta usando la CPU. Attenzione: un processo/thread in **esecuzione** significa che sta usando la CPU. Un processo/thread può essere attivo ma non utilizzare la CPU nel momento attuale."
+        }
+      ],
+      "pin": true
     },
     {
-      "type": "trueFalse",
-      "text": "Un processo può contenere al massimo un thread.",
-      "answer": false
-    },
-    {
-      "type": "trueFalse",
-      "text": "La sequenza della linea di esecuzione con più thread è prevedibile.",
-      "answer": false
+      "type": "multipleChoice",
+      "text": "Seleziona le affermazioni vere.",
+      "options": [
+        "Un processo può contenere al massimo un thread.",
+        "Un processo contiene minimo un thread.",
+        "La sequenza della linea di esecuzione con più thread è prevedibile.",
+        "In un processo sequenziale la sequenza della linea di esecuzione non è sempre prevedibile.",
+        "I thread sono inutili nelle CPU single-core.",
+        "I thread servono anche a facilitare la scrittura del codice per suddividerlo in “*sotto-processi*”."
+      ],
+      "answer": [
+        1,
+        5
+      ],
+      "multi": true
     },
     {
       "type": "filler",
-      "text": "Un'applicazione CPU bound è limitata dalla velocità della ________, mentre un'applicazione IO bound è limitata dalla velocità dei dispositivi di ________.",
+      "text": "Se ho ________ thread ho ________ linee di esecuzione contemporaneamente.",
       "answer": [
-        "CPU",
-        "input/output"
-      ],
-      "skip": true
+        "4",
+        "4"
+      ]
+    },
+    {
+      "type": "filler",
+      "text": "In un programma sequenziale i task vengono eseguiti uno ________ l'altro, mentre con il multi-threading possono essere eseguiti in modo ________.",
+      "answer": [
+        "dopo",
+        "concorrente"
+      ]
+    },
+    {
+      "type": "trueFalse",
+      "text": "Se due thread sono concorrenti su un singolo processore, si eseguono esattamente nello stesso istante.",
+      "answer": false
+    },
+    {
+      "type": "trueFalse",
+      "text": "Più thread dello stesso processo non possono mai essere concorrenti.",
+      "answer": false
     },
     {
       "type": "multipleChoice",
-      "text": "Quale delle seguenti è un'applicazione tipicamente IO bound?",
+      "text": "Su un singolo processore, due thread si alternano rapidamente. Come si definisce correttamente questa esecuzione?",
       "options": [
-        "Un programma che scarica file da internet",
-        "Un programma che calcola numeri primi",
-        "Un programma che comprime un video",
-        "Un programma che addestra una rete neurale"
-      ],
-      "answer": 0
-    },
-    {
-      "type": "multipleChoice",
-      "text": "Quale delle seguenti è un'applicazione tipicamente CPU bound?",
-      "options": [
-        "Un server web che gestisce richieste HTTP",
-        "Un programma che legge e scrive su database",
-        "Un programma che esegue il rendering 3D di una scena",
-        "Un programma che aspetta input dall'utente"
+        "Sequenziale, perché un solo processore è coinvolto",
+        "Contemporanea, perché i thread girano nello stesso istante",
+        "Concorrente, perché entrambi i thread sono attivi nello stesso intervallo di tempo",
+        "Parallela, perché il processore gestisce più thread"
       ],
       "answer": 2
     },
@@ -61,59 +78,20 @@
           "value": "In Python la libreria per creare thread si chiama ________."
         }
       ],
-      "answer": "threading"
-    },
-    {
-      "type": "trueFalse",
-      "content": [
-        {
-          "kind": "text",
-          "value": "Il seguente codice attende che il thread `t` abbia terminato prima di proseguire."
-        },
-        {
-          "kind": "code",
-          "language": "python",
-          "value": "t.join()"
-        }
-      ],
-      "answer": true
+      "answer": "threading",
+      "blankSize": [
+        15
+      ]
     },
     {
       "type": "filler",
-      "content": [
-        {
-          "kind": "text",
-          "value": "Per ottenere un riferimento al thread attualmente in esecuzione si usa la funzione `threading.________`."
-        }
+      "answer": [
+        "current_thread"
       ],
-      "answer": "current_thread()"
-    },
-    {
-      "type": "multipleChoice",
-      "content": [
-        {
-          "kind": "text",
-          "value": "Qual è l'output più probabile del seguente codice?"
-        },
-        {
-          "kind": "code",
-          "language": "python",
-          "value": "import threading\n\ndef stampa(nome):\n    for _ in range(3):\n        print(nome)\n\nt1 = threading.Thread(target=stampa, args=(\"A\",))\nt2 = threading.Thread(target=stampa, args=(\"B\",))\nt1.start()\nt2.start()"
-        }
+      "blankSize": [
+        15
       ],
-      "options": [
-        "Sempre A, A, A, B, B, B in questo ordine",
-        "Sempre B, B, B, A, A, A in questo ordine",
-        "Un interleaving non prevedibile di A e B",
-        "Il programma va in errore perché due thread non possono stampare contemporaneamente"
-      ],
-      "answer": 2,
-      "skip": true
-    },
-    {
-      "type": "trueFalse",
-      "text": "Il thread principale di un programma Python si chiama MainThread.",
-      "answer": true
+      "text": "Per ottenere il nome del thread attualmente attivo si usa la funzione `threading.`________()."
     },
     {
       "type": "multipleChoice",
@@ -124,134 +102,8 @@
         "\"main\"",
         "\"primary\""
       ],
-      "answer": 0
-    },
-    {
-      "type": "trueFalse",
-      "text": "Nel multi-threading, usare un debugger con breakpoint permette di prevedere con certezza la sequenza di esecuzione dei thread.",
-      "answer": false
-    },
-    {
-      "type": "multipleChoice",
-      "text": "Perché è difficile fare il debug di programmi multi-thread?",
-      "options": [
-        "Perché Python non supporta il debug di thread",
-        "Perché i breakpoint fermano tutti i thread contemporaneamente e alterano il comportamento",
-        "Perché l'ordine di esecuzione dei thread non è deterministico e i breakpoint cambiano i tempi di esecuzione",
-        "Perché il debugger può eseguire solo un file alla volta"
-      ],
-      "answer": 2
-    },
-    {
-      "type": "filler",
-      "text": "In un programma sequenziale i task vengono eseguiti uno ________ all'altro, mentre con il multi-threading possono essere eseguiti in modo ________.",
-      "answer": [
-        "dopo",
-        "concorrente"
-      ]
-    },
-    {
-      "content": [
-        {
-          "kind": "text",
-          "value": "Nell'esecuzione **sequenziale** le attività si susseguono una dopo l'altra: la seconda inizia solo quando la prima è terminata. Nell'esecuzione **concorrente**, più attività sono attive nello stesso intervallo di tempo e si alternano nell'uso delle risorse, senza che l'una debba terminare perché l'altra inizi.\n\nAttenzione: *concorrente* non significa *contemporaneo*. Su un singolo processore i thread non girano mai nello stesso istante: si avvicendano così rapidamente da sembrarlo, ma si tratta sempre di un'alternanza."
-        }
-      ],
-      "questions": [
-        {
-          "type": "trueFalse",
-          "content": [
-            {
-              "kind": "code",
-              "language": "python",
-              "value": "t1.start()\nt2.start()\nt1.join()\nt2.join()"
-            }
-          ],
-          "answer": true
-        },
-        {
-          "type": "trueFalse",
-          "text": "Il MainThread continua ad eseguire codice mentre `t1` è già stato avviato ma non ancora joinato.",
-          "answer": true
-        },
-        {
-          "type": "trueFalse",
-          "text": "Due thread si alternano nell'uso della CPU senza che l'uno aspetti il termine dell'altro per iniziare.",
-          "answer": true
-        },
-        {
-          "type": "trueFalse",
-          "text": "Un thread che stampa e un altro che attende input sono concorrenti se entrambi avviati prima dei `join()`.",
-          "answer": true
-        },
-        {
-          "type": "trueFalse",
-          "content": [
-            {
-              "kind": "code",
-              "language": "python",
-              "value": "task1()\ntask2()"
-            }
-          ],
-          "answer": false
-        },
-        {
-          "type": "trueFalse",
-          "content": [
-            {
-              "kind": "code",
-              "language": "python",
-              "value": "t1.start()\nt1.join()\nt2.start()\nt2.join()"
-            }
-          ],
-          "answer": false
-        },
-        {
-          "type": "trueFalse",
-          "text": "Se due thread sono concorrenti su un singolo processore, vengono eseguiti esattamente nello stesso istante.",
-          "answer": false
-        },
-        {
-          "type": "trueFalse",
-          "text": "In Python due thread dello stesso processo non possono mai essere concorrenti.",
-          "answer": false
-        },
-        {
-          "type": "multipleChoice",
-          "text": "Su un singolo processore, due thread si alternano rapidamente. Come si definisce correttamente questa esecuzione?",
-          "options": [
-            "Sequenziale, perché un solo processore è coinvolto",
-            "Contemporanea, perché i thread girano nello stesso istante",
-            "Concorrente, perché entrambi i thread sono attivi nello stesso intervallo di tempo",
-            "Parallela, perché il processore gestisce più thread"
-          ],
-          "answer": 2
-        },
-        {
-          "type": "filler",
-          "text": "I thread introducono un problema difficile da __________ in quanto ci si deve immaginare che più thread sono in esecuzione contemporaneamente, e quindi ci sono più ____________, ed è impossibile _________ quale sarà la _________. Il problema che si crea viene chiamato ________.",
-          "answer": [
-            "individuare",
-            "linee di esecuzione",
-            "prevedere",
-            "prossima",
-            "race condition"
-          ],
-          "blankSize": [
-            null,
-            15,
-            null,
-            null,
-            15
-          ]
-        }
-      ]
-    },
-    {
-      "type": "open",
-      "text": "Spiega con parole tue la differenza tra un'applicazione CPU bound e una IO bound. Fai un esempio per ciascuna.",
-      "answer": "CPU bound: la velocità è limitata dal processore (es. calcolo di numeri primi, rendering 3D, crittografia). IO bound: la velocità è limitata dai dispositivi di I/O come disco o rete (es. download di file, lettura da database, attesa input utente).",
-      "linesNumber": 4
+      "answer": 0,
+      "skip": true
     },
     {
       "type": "open",
@@ -259,6 +111,63 @@
       "answer": "Si importa `threading`. Si crea un thread con `threading.Thread(target=funzione, args=...)`. Si avvia con `.start()`. Si attende la terminazione con `.join()`.",
       "linesNumber": 4,
       "skip": true
+    },
+    {
+      "type": "trueFalse",
+      "text": "Il MainThread continua ad eseguire codice mentre `t1` è già stato avviato ma non ancora joinato.",
+      "answer": true,
+      "skip": true
+    },
+    {
+      "type": "filler",
+      "text": "Un'applicazione CPU bound è limitata dalla velocità della ________, mentre un'applicazione IO bound è limitata dalla velocità dei dispositivi di ________.",
+      "answer": [
+        "CPU",
+        "input/output"
+      ]
+    },
+    {
+      "type": "multipleChoice",
+      "text": "Quale delle seguenti è una funzione tipicamente IO bound?",
+      "options": [
+        "Invio dati su internet",
+        "Calcolo di una divisione.",
+        "Compressione/decompressione video.",
+        "Lettura dati su Hard Disk."
+      ],
+      "answer": [
+        0,
+        3
+      ],
+      "multi": true
+    },
+    {
+      "type": "open",
+      "text": "Spiega con parole tue la differenza tra operazione CPU bound e IO bound. Fai un esempio per ciascuna.",
+      "answer": "CPU bound: la velocità è limitata dal processore (es. calcolo di numeri primi, rendering 3D, crittografia). IO bound: la velocità è limitata dai dispositivi di I/O come disco o rete (es. download di file, lettura da database, attesa input utente).",
+      "linesNumber": 8
+    },
+    {
+      "type": "open",
+      "text": "Perché usare il multi-threading per task IO bound può migliorare le prestazioni, mentre per task CPU bound il beneficio è limitato (in Python)?",
+      "answer": "Per i task IO bound il thread è spesso in attesa (di rete, disco, ecc.), quindi altri thread possono usare la CPU nel frattempo. Per i task CPU bound, il GIL (Global Interpreter Lock) di Python impedisce l'esecuzione parallela reale di più thread Python sullo stesso processo.",
+      "linesNumber": 4,
+      "skip": true
+    },
+    {
+      "type": "multipleChoice",
+      "text": "Perché usare il multi-threading per task IO bound può migliorare le prestazioni, mentre per task CPU bound il beneficio è limitato?",
+      "options": [
+        "Durante un task IO bound il thread è spesso in attesa di un evento esterno, per cui la CPU è disponibile per altri thread.",
+        "Un task CPU bound occupa costantemente la CPU, limitando il beneficio dell'esecuzione concorrente di altri thread.",
+        "Il multi-threading migliora sempre le prestazioni, indipendentemente dal tipo di task.",
+        "Alternare più thread CPU bound in modo concorrente velocizza i calcoli complessivi."
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "multi": true
     },
     {
       "type": "trueFalse",
@@ -277,11 +186,29 @@
       "skip": true
     },
     {
-      "type": "open",
-      "text": "Perché usare il multi-threading per task IO bound può migliorare le prestazioni, mentre per task CPU bound il beneficio è limitato (in Python)?",
-      "answer": "Per i task IO bound il thread è spesso in attesa (di rete, disco, ecc.), quindi altri thread possono usare la CPU nel frattempo. Per i task CPU bound, il GIL (Global Interpreter Lock) di Python impedisce l'esecuzione parallela reale di più thread Python sullo stesso processo.",
-      "linesNumber": 4,
-      "skip": true
+      "type": "multipleChoice",
+      "options": [
+        "È un esempio di programmazione sequenziale.",
+        "È impossibile eseguire task2 fintanto che task1 non è terminato.",
+        "task1 e task2 utilizzano sicuramente la CPU per il 100% del tempo della loro esecuzione.",
+        "I thread non possono permettere di portare avanti insieme i due task contemporaneamente."
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "content": [
+        {
+          "kind": "code",
+          "language": "python",
+          "value": "task1()\ntask2()"
+        },
+        {
+          "kind": "text",
+          "value": "Il precedente codice:"
+        }
+      ],
+      "multi": true
     },
     {
       "type": "multipleChoice",
@@ -296,12 +223,54 @@
         {
           "kind": "code",
           "language": "python",
-          "value": "import threading\n\ndef chiedi_numero():\n    input(\"Inserisci un numero:\")\n\nt = threading.Thread(target=mia_funzione)\nt.start()"
+          "value": "import threading\ndef chiedi_numero():\n    input(\"Inserisci un numero:\")\nt = threading.Thread(target=chiedi_numero)\nt.start()"
         },
         {
           "kind": "text",
           "value": "Quanti thread ci sono durante l'esecuzione del precedente script?"
         }
+      ]
+    },
+    {
+      "type": "trueFalse",
+      "text": "Nel multi-threading, usare un debugger con breakpoint permette di prevedere con certezza la sequenza di esecuzione dei thread.",
+      "answer": false,
+      "skip": true
+    },
+    {
+      "type": "multipleChoice",
+      "text": "Perché è più difficile fare il debug di programmi multi-thread?",
+      "options": [
+        "Perché Python non supporta il debug di thread",
+        "Perché non basta sapere la linea di esecuzione per sapere quale thread si sta eseguendo.",
+        "Perché la prossima linea di esecuzione potrebbe non essere quella successiva",
+        "Perché ho più linee di esecuzione contemporaneamente"
+      ],
+      "answer": [
+        1,
+        2,
+        3
+      ],
+      "multi": true
+    },
+    {
+      "type": "filler",
+      "text": "I thread introducono un problema difficile da __________ in quanto è necessario immaginarsi più thread in esecuzione contemporaneamente. Questo implica che ci sono più ____________ contemporaneamente, ed è quindi impossibile _________ quale sarà la _________. Il problema introdotto dall'uso dei thread si chiama ________ ________.",
+      "answer": [
+        "individuare",
+        "linee di esecuzione",
+        "prevedere",
+        "prossima",
+        "race",
+        "condition"
+      ],
+      "blankSize": [
+        null,
+        15,
+        null,
+        null,
+        10,
+        null
       ]
     },
     {
@@ -323,7 +292,7 @@
           "options": [
             "Il thread `t2` non viene mai avviato",
             "`stampa_tempo_trascorso` stampa ogni 10 secondi il tempo trascorso dall'avvio della funzione",
-            "Entrambe le funzioni contengono un ciclo infinito `while True`",
+            "Entrambe le funzioni contengono un ciclo infinito",
             "I thread `t1` e `t2` vengono eseguiti in modo concorrente",
             "`time.sleep(10)` mette in pausa il thread principale per 10 secondi",
             "`t2` viene avviato prima di `t1`"
@@ -337,9 +306,31 @@
         {
           "type": "open",
           "text": "Qual è l'errore critico presente nel precedente script e perché?",
-          "linesNumber": 2
+          "linesNumber": 8
         }
       ]
+    },
+    {
+      "type": "multipleChoice",
+      "options": [
+        "10 secondi",
+        "tra 10 e 20 secondi",
+        "20 secondi",
+        "40 secondi"
+      ],
+      "answer": 2,
+      "text": "In un PC single-core, due task CPU-Bound impiegano 10 secondi ciascuno di esecuzione. Eseguendo ciascun task in un thread dedicato, dopo quanto tempo entrambi terminano la loro esecuzione?"
+    },
+    {
+      "type": "multipleChoice",
+      "text": "In un PC single-core, due task IO-Bound impiegano 10 secondi ciascuno di esecuzione. Eseguendo ciascun task in un thread dedicato, dopo quanto tempo entrambi terminano la loro esecuzione?",
+      "options": [
+        "10 secondi",
+        "tra 10 e 20 secondi",
+        "20 secondi",
+        "40 secondi"
+      ],
+      "answer": 0
     }
   ]
 }

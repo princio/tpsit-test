@@ -70,6 +70,8 @@ export type ContentBlock =
 interface BaseQuestion {
   /** Se true, la domanda viene esclusa dal rendering e dal conteggio. */
   skip?: boolean
+  /** Se true, la domanda non viene riposizionata durante lo shuffle. */
+  pin?: boolean
   /** Prompt testuale. Mutualmente esclusivo con {@link content}. */
   text?: string
   /** Prompt strutturato come blocchi (testo + codice + mermaid + immagini).
@@ -152,6 +154,8 @@ export type QuestionType = Question['type']
 /** Separatore visivo tra sezioni/argomenti. Non contiene domande. */
 export interface ConceptSeparator {
   concept: string
+  /** Se true, il separatore non viene riposizionato durante lo shuffle. */
+  pin?: boolean
 }
 
 /** Gruppo di domande con contenuto condiviso mostrato una sola volta prima di tutte le domande. */
@@ -159,6 +163,8 @@ export interface QuestionGroup {
   /** Blocchi di contenuto (testo, codice, ecc.) mostrati una sola volta prima di tutte le domande del gruppo. */
   content?: ContentBlock[]
   questions: Question[]
+  /** Se true, il gruppo non viene riposizionato durante lo shuffle. */
+  pin?: boolean
 }
 
 /** @deprecated Usa {@link ConceptSeparator} per i separatori e {@link QuestionGroup} per i gruppi. */
@@ -269,9 +275,13 @@ export function validateTest(data: unknown): TestData {
     if (isConceptSeparator(item)) {
       if (!item.concept.trim())
         throw new Error(`questions[${i}].concept: deve essere una stringa non vuota.`)
+      if (item.pin != null && typeof item.pin !== 'boolean')
+        throw new Error(`questions[${i}].pin: deve essere boolean.`)
     } else if (isQuestionGroup(item)) {
       if (item.content != null && !Array.isArray(item.content))
         throw new Error(`questions[${i}].content: deve essere un array di blocchi.`)
+      if (item.pin != null && typeof item.pin !== 'boolean')
+        throw new Error(`questions[${i}].pin: deve essere boolean.`)
       item.questions.forEach((q: unknown, j: number) =>
         validateQuestion(q, `questions[${i}].questions[${j}]`),
       )
@@ -300,6 +310,8 @@ function validateQuestion(q: unknown, path: string): void {
     throw new Error(`${path}: "content" deve essere un array di blocchi.`)
   if (obj.skip != null && typeof obj.skip !== 'boolean')
     throw new Error(`${path}: "skip" deve essere boolean.`)
+  if (obj.pin != null && typeof obj.pin !== 'boolean')
+    throw new Error(`${path}: "pin" deve essere boolean.`)
 
   switch (obj.type) {
     case 'trueFalse':

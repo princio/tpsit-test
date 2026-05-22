@@ -393,6 +393,22 @@ function SkipToggle({ data, onChange }) {
   )
 }
 
+function PinToggle({ data, onChange }) {
+  return (
+    <label className={`editor-pin-toggle${data.pin ? ' pinned' : ''}`} title="Fissa la posizione durante lo shuffle">
+      <input
+        type="checkbox"
+        checked={!!data.pin}
+        onChange={e => {
+          const { pin: _p, ...rest } = data
+          onChange(e.target.checked ? { ...rest, pin: true } : rest)
+        }}
+      />
+      Pin
+    </label>
+  )
+}
+
 function TrueFalseEditor({ data, onChange, onRemove }) {
   const content = getContent(data)
   return (
@@ -414,6 +430,7 @@ function TrueFalseEditor({ data, onChange, onRemove }) {
             title="Affermazione falsa"
           >F</button>
         </div>
+        <PinToggle data={data} onChange={onChange} />
         <SkipToggle data={data} onChange={onChange} />
         <button className="btn-icon btn-remove" onClick={onRemove} title="Rimuovi domanda">x</button>
       </div>
@@ -477,6 +494,7 @@ function MultipleChoiceEditor({ data, onChange, onRemove }) {
           <input type="checkbox" checked={multi} onChange={toggleMulti} />
           Risposte multiple
         </label>
+        <PinToggle data={data} onChange={onChange} />
         <SkipToggle data={data} onChange={onChange} />
         <button className="btn-icon btn-remove" onClick={onRemove} title="Rimuovi domanda">x</button>
       </div>
@@ -548,6 +566,7 @@ function FillerEditor({ data, onChange, onRemove }) {
     <div className={`editor-question-type${data.skip ? ' skipped' : ''}`}>
       <div className="editor-type-header">
         <span className="editor-type-badge filler">Completamento</span>
+        <PinToggle data={data} onChange={onChange} />
         <SkipToggle data={data} onChange={onChange} />
         <button className="btn-icon btn-remove" onClick={onRemove} title="Rimuovi domanda">x</button>
       </div>
@@ -609,6 +628,7 @@ function OpenEditor({ data, onChange, onRemove }) {
             }}
           />
         </label>
+        <PinToggle data={data} onChange={onChange} />
         <SkipToggle data={data} onChange={onChange} />
         <button className="btn-icon btn-remove" onClick={onRemove} title="Rimuovi domanda">x</button>
       </div>
@@ -690,6 +710,7 @@ function ConceptSeparatorEditor({ item, onChange, onRemove }) {
         tag="strong"
         className="editor-concept-title"
       />
+      <PinToggle data={item} onChange={onChange} />
       <button className="btn-icon btn-remove" onClick={onRemove} title="Rimuovi separatore">x</button>
     </div>
   )
@@ -718,6 +739,7 @@ function QuestionGroupEditor({ group, onChange, onRemove }) {
     <div className="editor-concept">
       <div className="editor-concept-header">
         <span className="editor-type-badge" style={{ background: '#e8f0fe', color: '#3a5fcc' }}>Gruppo</span>
+        <PinToggle data={group} onChange={onChange} />
         <button className="btn-icon btn-remove" onClick={onRemove} title="Rimuovi gruppo">x</button>
       </div>
       <ContentEditor
