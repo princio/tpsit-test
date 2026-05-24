@@ -8,16 +8,15 @@ import QuestionBlock from '@/components/pages/test-sheet/QuestionBlock'
 import { TestSheetProvider } from '@/components/pages/test-sheet/TestSheetContext'
 
 export default function ExcelExportPage({ test }) {
-  const [pinnedQIdx, setPinnedQIdx] = useState(null)
-  const [hoveredQIdx, setHoveredQIdx] = useState(null)
   const [selectedRowId, setSelectedRowId] = useState(null)
   const [showDiff, setShowDiff] = useState(false)
+  const [hoveredCell, setHoveredCell] = useState(null) // { studentId, qIdx, rect }
 
   const questions = flattenQuestions(test)
   const activeRow = test.rows?.find(r => r.id === selectedRowId)
   const rawGroups = groupCols(buildColumns(questions, activeRow?.answers ?? {}))
   const groups = activeRow ? orderGroupsByRow(rawGroups, activeRow.order) : sortGroupsByType(rawGroups)
-  const cols = groups.flatMap(g => g.cols)
+  const cols = groups.flatMap(g => g.cols.map((c, i) => ({ ...c, isGroupFirst: i === 0, isGroupLast: i === g.cols.length - 1 })))
 
   const session = useSession(test)
   const { students, weights, saveStatus, saveLabel } = session
@@ -25,15 +24,24 @@ export default function ExcelExportPage({ test }) {
 
   const twWeighted = getTotalWeight(groups, weights)
 
-  const visibleQIdx = hoveredQIdx ?? pinnedQIdx
-  const visibleGroup = visibleQIdx !== null ? groups.find(g => g.qIdx === visibleQIdx) : null
-  const visibleQuestion = (() => {
-    if (visibleQIdx === null) return null
-    const q = questions[visibleQIdx]
-    const shuffleMap = activeRow?.answers?.[visibleQIdx]
-    if (!shuffleMap || q.type !== 'multipleChoice' || !Array.isArray(q.options)) return q
+  const hoveredStudent = hoveredCell ? students.find(s => s.id === hoveredCell.studentId) : null
+  const hoveredQuestion = (() => {
+    if (!hoveredCell || !hoveredStudent) return null
+    const q = questions[hoveredCell.qIdx]
+    if (!q) return null
+    const shuffleMap = activeRow?.answers?.[hoveredCell.qIdx]
+    const base = { ...q, _fi: hoveredCell.qIdx }
+    if (!shuffleMap || q.type !== 'multipleChoice' || !Array.isArray(q.options)) return base
     const { displayOptions, displayAnswer } = applyOptionShuffle(q.options, q.answer, shuffleMap)
-    return { ...q, options: displayOptions, answer: displayAnswer }
+    return { ...base, options: displayOptions, answer: displayAnswer, _shuffle: shuffleMap }
+  })()
+  const floatStyle = (() => {
+    if (!hoveredCell) return {}
+    const { rect } = hoveredCell
+    const panelW = 320
+    const top = rect.bottom + 8
+    const left = Math.min(rect.left, window.innerWidth - panelW - 8)
+    return { top, left }
   })()
 
   const hasRowVariants = test.rows?.length > 0
@@ -77,19 +85,7 @@ export default function ExcelExportPage({ test }) {
         </button>
       </div>
 
-      {visibleQuestion && (
-        <div className="excel-q-panel">
-          <div className="excel-q-panel-header">
-            <span className="excel-q-panel-label">{visibleGroup?.qLabel}</span>
-            <button className="excel-q-panel-close" onClick={() => setPinnedQIdx(null)}>✕</button>
-          </div>
-          <TestSheetProvider fontSize={13} gap={4} marginBottom={10} fontFamily='Georgia, "Times New Roman", serif' showAnswers={true}>
-            <QuestionBlock question={visibleQuestion} index={visibleQIdx} />
-          </TestSheetProvider>
-        </div>
-      )}
-
-      <div className="excel-preview-wrap">
+<div className="excel-preview-wrap">
         <table className="excel-preview-table">
           <thead>
             <tr className="excel-row-domain">
@@ -99,11 +95,7 @@ export default function ExcelExportPage({ test }) {
                 <th
                   key={g.qIdx}
                   colSpan={g.cols.length}
-                  className={`excel-group-th${pinnedQIdx === g.qIdx ? ' pinned' : ''}`}
-                  onMouseEnter={() => setHoveredQIdx(g.qIdx)}
-                  onMouseLeave={() => setHoveredQIdx(null)}
-                  onClick={() => setPinnedQIdx(prev => prev === g.qIdx ? null : g.qIdx)}
-                  title="Hover per vedere la domanda · click per fissarla"
+                  className="excel-group-th"
                 >
                   {g.qLabel}{g.cols.length > 1 ? ` ×${g.cols.length}` : ''}
                   {' '}<span className={`excel-type-badge excel-type-${g.cols[0].type}`}>{TYPE_LABELS[g.cols[0].type] ?? g.cols[0].type}</span>
@@ -116,7 +108,7 @@ export default function ExcelExportPage({ test }) {
             <tr className="excel-row-col">
               <th></th>
               {hasRowVariants && <th></th>}
-              {cols.map((c, i) => <th key={i}>{c.colLabel}</th>)}
+              {cols.map((c, i) => <th key={i} className={`${c.isGroupFirst ? 'group-first' : ''} ${c.isGroupLast ? 'group-last' : ''}`}>{c.colLabel}</th>)}
               <th>TOT</th>
               <th>/10</th>
               <th>TOT</th>
@@ -126,7 +118,7 @@ export default function ExcelExportPage({ test }) {
             <tr className="excel-row-expected">
               <td>Atteso</td>
               {hasRowVariants && <td></td>}
-              {cols.map((c, i) => <td key={i}>{c.expected}</td>)}
+              {cols.map((c, i) => <td key={i} className={`${c.isGroupFirst ? 'group-first' : ''} ${c.isGroupLast ? 'group-last' : ''}`}>{c.expected}</td>)}
               <td>{twWeighted.toFixed(1)}</td>
               <td></td>
               <td>{twWeighted.toFixed(1)}</td>
@@ -196,7 +188,12 @@ export default function ExcelExportPage({ test }) {
                     const derived = computeScoreFromAnswer(col, questions[col.qIdx], student.answers)
                     const hasDiff = showDiff && saved != null && saved !== '' && derived != null && Number(saved) !== Number(derived)
                     return (
-                      <td key={col.colLabel} className={`excel-input-cell${hasDiff ? ' diff' : ''}`}>
+                      <td
+                        key={col.colLabel}
+                        className={`excel-input-cell${hasDiff ? ' diff' : ''}${col.isGroupFirst ? ' group-first' : ''}${col.isGroupLast ? ' group-last' : ''}`}
+                        onMouseEnter={e => setHoveredCell({ studentId: student.id, qIdx: col.qIdx, rect: e.currentTarget.getBoundingClientRect() })}
+                        onMouseLeave={() => setHoveredCell(null)}
+                      >
                         <ScoreCell
                           col={col}
                           value={effectiveScores[col.colLabel]}
@@ -220,6 +217,21 @@ export default function ExcelExportPage({ test }) {
           </tbody>
         </table>
       </div>
+
+      {hoveredQuestion && hoveredStudent && (
+        <div className="excel-float-panel" style={floatStyle}>
+          <TestSheetProvider
+            fontSize={13} gap={4} marginBottom={10}
+            fontFamily='Georgia, "Times New Roman", serif'
+            showAnswers={true}
+            correctionMode={true}
+            studentScores={hoveredStudent.scores ?? {}}
+            studentAnswers={hoveredStudent.answers ?? {}}
+          >
+            <QuestionBlock question={hoveredQuestion} index={hoveredCell.qIdx} />
+          </TestSheetProvider>
+        </div>
+      )}
 
       <div className="excel-legend no-print">
         <strong>Input:</strong>

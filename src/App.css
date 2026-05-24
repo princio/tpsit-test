@@ -1282,6 +1282,20 @@ body {
   font-style: italic;
 }
 
+.excel-preview-table .group-first {
+  border-left: 2px solid #9fa8da !important;
+}
+
+.excel-preview-table .group-last {
+  border-right: 2px solid #9fa8da !important;
+}
+
+.excel-group-th,
+.excel-row-weight .excel-weight-cell {
+  border-left: 2px solid #9fa8da !important;
+  border-right: 2px solid #9fa8da !important;
+}
+
 .excel-input-cell {
   min-width: 2.5rem;
   background: #f9f9f9 !important;
@@ -1337,14 +1351,29 @@ body {
   font-size: 13px;
 }
 
-.excel-q-panel .question-block {
+.excel-q-panel .question-block,
+.excel-float-panel .question-block {
   border: none;
   border-radius: 0;
   overflow: visible;
 }
 
-.excel-q-panel .question-number {
+.excel-q-panel .question-number,
+.excel-float-panel .question-number {
   display: none;
+}
+
+.excel-float-panel {
+  position: fixed;
+  z-index: 1000;
+  background: #fff;
+  border: 1px solid #c5cae9;
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  width: 320px;
+  pointer-events: none;
+  font-size: 13px;
 }
 
 .excel-q-panel-header {
