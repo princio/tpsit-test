@@ -50,3 +50,55 @@ Become:
 ```
 
 And finally the space for completion and waiting times calculation.
+
+## Layout
+
+
+
+```
+|    | Durata | Arrivo | Priorità |
+|----|--------|--------|----------|
+| P1 | 3      | 0      | 0        |
+| P2 | 2      | 5      | 1        |
+| P3 | 4      | 7      | 2        |
+
+
+## FCFS:
+
+┌ ─ ─ ─ ┬ ─ ─ ─ ┬ ─ ─ ─ ┬ ─ ─ ─ ┬ ─ ─ ─ ┬ ─ ─ ─ ┬ ─ ─ ─ ┬ ─ ─ ─ ┬ ─ ─ ─ ┬ ─ ─ ─ ┬ ─ ─ ─ ┬ ─ ─ ─ ┐
+                                                                                                 
+│       │       │       │       │       │       │       │       │       │       │       │       │
+                                                                                                 
+└ ─ ─ ─ ┴ ─ ─ ─ ┴ ─ ─ ─ ┴ ─ ─ ─ ┴ ─ ─ ─ ┴ ─ ─ ─ ┴ ─ ─ ─ ┴ ─ ─ ─ ┴ ─ ─ ─ ┴ ─ ─ ─ ┴ ─ ─ ─ ┴ ─ ─ ─ ┘
+
+
+  Waiting time formula            Completion time formula
+                            |                              |
+                            |                              |
+                            |                              |
+                            |                              |
+                            |                              |
+
+
+## SJF:
+
+[repeat]
+
+## SRTF
+
+[repeat]
+
+## Priority
+
+[repeat]
+
+## Round Robin
+
+[repeat]
+
+
+```
+
+All within the same width. Gantt length minimum 25 (nowrap, no scroll).
+
+Max two A4 pages.

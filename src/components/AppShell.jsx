@@ -16,7 +16,6 @@ export default function AppShell({ test, mode, onModeChange, onBackToHome, child
     { key: 'edit', label: 'Modifica' },
     { key: 'print', label: 'Stampa' },
     { key: 'correction', label: 'Correzione' },
-    { key: 'open-correction', label: 'Correzione aperta' },
     { key: 'excel', label: 'Griglia' },
   ]
 

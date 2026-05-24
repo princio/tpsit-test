@@ -82,7 +82,16 @@ function flattenQuestions(questions) {
   return flat
 }
 
-export default function TestSheet({ index, test, fontSize = 13, gap = 8, marginBottom = 10, fontFamily = 'Georgia, "Times New Roman", serif', showAnswers = false, showInstructions = true, showLegend = true, onPagesCount }) {
+export default function TestSheet({
+  index, test,
+  fontSize = 13, gap = 8, marginBottom = 10,
+  fontFamily = 'Georgia, "Times New Roman", serif',
+  showAnswers = false, showInstructions = true, showLegend = true,
+  onPagesCount,
+  // correction props
+  correctionMode = false, studentScores = {}, studentAnswers = {},
+  onScore = null, onAnswer = null,
+}) {
   const measureRef = useRef(null)
   const contentRef = useRef(null)
   const headerRef = useRef(null)
@@ -95,7 +104,7 @@ export default function TestSheet({ index, test, fontSize = 13, gap = 8, marginB
   // Reset pages synchronously when layout params change → forces measure pass
   useLayoutEffect(() => {
     setPages(null)
-  }, [test, fontSize, gap, marginBottom, fontFamily, showInstructions, showLegend])
+  }, [test, fontSize, gap, marginBottom, fontFamily, showInstructions, showLegend, correctionMode])
 
   // Phase 1: Measure individual question heights and do initial pagination
   useLayoutEffect(() => {
@@ -138,7 +147,6 @@ export default function TestSheet({ index, test, fontSize = 13, gap = 8, marginB
   }, [pages])
 
   // Phase 2: After render, verify each page-content doesn't overflow.
-  // If it does, move last question to next page.
   const verifyAndFix = useCallback(() => {
     if (!pagesRef.current || !pages) return
     const contentEls = pagesRef.current.querySelectorAll('.page-content')
@@ -149,8 +157,7 @@ export default function TestSheet({ index, test, fontSize = 13, gap = 8, marginB
     for (let i = 0; i < contentEls.length; i++) {
       const el = contentEls[i]
       if (el.scrollHeight > el.clientHeight + 1) {
-        // Overflow: move last question to next page
-        if (newPages[i].length <= 1) continue // can't move the only question
+        if (newPages[i].length <= 1) continue
         const moved = newPages[i].pop()
         if (i + 1 < newPages.length) {
           newPages[i + 1].unshift(moved)
@@ -174,7 +181,7 @@ export default function TestSheet({ index, test, fontSize = 13, gap = 8, marginB
   const pageStyle = { fontSize: `${fontSize}px`, fontFamily }
   const contentStyle = { height: `calc(297mm - 10mm - ${marginBottom}mm)`, overflow: 'visible' }
 
-  const ctx = { fontSize, gap, marginBottom, fontFamily, showAnswers }
+  const ctx = { fontSize, gap, marginBottom, fontFamily, showAnswers, correctionMode, studentScores, studentAnswers, onScore, onAnswer }
 
   // Measure pass
   if (!pages) {
@@ -214,6 +221,7 @@ export default function TestSheet({ index, test, fontSize = 13, gap = 8, marginB
               <div className="questions-list" style={{ gap: `${gap}px` }}>
                 {pageIndices.map(i => {
                   const entry = flatQuestions[i]
+                  if (!entry) return null
                   return entry.sharedContent
                     ? <ContentRenderer key={i} content={entry.sharedContent} />
                     : entry.conceptLabel != null

@@ -8,5 +8,4 @@ dist
 /generated/prisma
 
 # SQLite databases
-*.db
 *.db-journal

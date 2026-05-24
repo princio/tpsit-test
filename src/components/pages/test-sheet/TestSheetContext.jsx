@@ -6,11 +6,24 @@ const TestSheetContext = createContext({
   marginBottom: 10,
   fontFamily: 'Georgia, "Times New Roman", serif',
   showAnswers: false,
+  correctionMode: false,
+  studentScores: {},
+  studentAnswers: {},
+  onScore: null,   // (colLabel, value) => void
+  onAnswer: null,  // (colLabel, rawValue) => void
 })
 
-export function TestSheetProvider({ fontSize, gap, marginBottom, fontFamily, showAnswers, children }) {
+export function TestSheetProvider({
+  fontSize, gap, marginBottom, fontFamily, showAnswers,
+  correctionMode = false, studentScores = {}, studentAnswers = {},
+  onScore = null, onAnswer = null,
+  children,
+}) {
   return (
-    <TestSheetContext.Provider value={{ fontSize, gap, marginBottom, fontFamily, showAnswers }}>
+    <TestSheetContext.Provider value={{
+      fontSize, gap, marginBottom, fontFamily, showAnswers,
+      correctionMode, studentScores, studentAnswers, onScore, onAnswer,
+    }}>
       {children}
     </TestSheetContext.Provider>
   )

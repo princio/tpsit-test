@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react'
 import TestSheet from '@/components/pages/test-sheet/TestSheet'
+import { flattenQuestions, buildColumns } from '@/components/pages/excel-export/columns.js'
+import { useSession } from '@/components/pages/excel-export/useSession.js'
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function shuffle(arr) {
   const a = [...arr]
@@ -56,12 +60,41 @@ function shuffleTest(test) {
 }
 
 /**
- * Print mode: builds N shuffled copies of `test`, lets the user tweak
- * typography, verify pages, and print. Test selection is owned at app level.
+ * Builds a flat test variant from a row definition.
+ * Each question carries `_fi` (original flat index) for correction colLabel derivation.
+ */
+function buildRowTest(test, row) {
+  const flatQ = flattenQuestions(test)
+  const reordered = row.order.map(fi => {
+    const q = { ...flatQ[fi], _fi: fi }
+    const rowShuffle = row.answers?.[fi]
+    if (!rowShuffle || q.type !== 'multipleChoice' || !Array.isArray(q.options)) return q
+    const newOptions = rowShuffle.map(origIdx => q.options[origIdx])
+    if (q.multi && Array.isArray(q.answer)) {
+      return {
+        ...q, options: newOptions,
+        answer: rowShuffle.map((orig, di) => q.answer.includes(orig) ? di : -1).filter(d => d >= 0),
+      }
+    }
+    const newAnswer = rowShuffle.indexOf(q.answer)
+    return { ...q, options: newOptions, answer: newAnswer >= 0 ? newAnswer : q.answer }
+  })
+  return { ...test, questions: reordered }
+}
+
+// ─── PrintPage ────────────────────────────────────────────────────────────────
+
+/**
+ * Print mode: builds copies of `test`, lets the user tweak typography,
+ * verify pages, and print. When `test.rows` is defined, produces one fixed
+ * copy per row and adds an inline correction mode.
  *
  * @param {{ test: any }} props
  */
 export default function PrintPage({ test }) {
+  const hasRows = Array.isArray(test.rows) && test.rows.length > 0
+
+  // ── Layout state ────────────────────────────────────────────────────────────
   const [copies, setCopies] = useState(1)
   const [variants, setVariants] = useState(null)
   const [pageCounts, setPageCounts] = useState({})
@@ -77,6 +110,18 @@ export default function PrintPage({ test }) {
   const [variantKeys, setVariantKeys] = useState({})
   const [noShuffle, setNoShuffle] = useState(false)
 
+  // ── Correction state (only relevant when hasRows) ────────────────────────
+  const [correctionMode, setCorrectionMode] = useState(false)
+  // copyStudentIds: rowId → student.id in session
+  const [copyStudentIds, setCopyStudentIds] = useState({})
+  // copyStudentNames: rowId → name string (controlled input)
+  const [copyStudentNames, setCopyStudentNames] = useState({})
+  // copyAnswers: rowId → { colLabel: rawValue } — visual state only, not persisted
+  const [copyAnswers, setCopyAnswers] = useState({})
+
+  // ── Shared session (same as griglia) ────────────────────────────────────
+  const { students, updateScore, addStudent } = useSession(test)
+
   // Reset variants whenever the upstream test changes.
   useEffect(() => {
     setVariants(null)
@@ -84,7 +129,18 @@ export default function PrintPage({ test }) {
     setFixAttempts({})
     setVariantKeys({})
     setMaxPages(null)
+    setCopyStudentIds({})
+    setCopyStudentNames({})
+    setCopyAnswers({})
   }, [test])
+
+  // When rows are defined, generate variants immediately on mount
+  useEffect(() => {
+    if (hasRows && !variants) {
+      const v = test.rows.map(row => buildRowTest(test, row))
+      setVariants(v)
+    }
+  }, [hasRows, test]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const fonts = [
     { label: 'Georgia', value: 'Georgia, "Times New Roman", serif' },
@@ -143,6 +199,13 @@ export default function PrintPage({ test }) {
   }
 
   function handleGenerate() {
+    if (hasRows) {
+      // Rows are fixed — just regenerate from row definitions
+      const v = test.rows.map(row => buildRowTest(test, row))
+      setVariants(v)
+      setPageCounts({})
+      return
+    }
     const input = prompt('Numero massimo di pagine per copia (vuoto = nessun limite):')
     const parsed = parseInt(input)
     const limit = isNaN(parsed) || parsed < 1 ? null : parsed
@@ -156,7 +219,7 @@ export default function PrintPage({ test }) {
   }
 
   useEffect(() => {
-    if (!maxPages || !variants) return
+    if (!maxPages || !variants || hasRows) return
     if (noShuffle) return
 
     const ready = variants.every((_, i) => pageCounts[i] != null)
@@ -199,6 +262,44 @@ export default function PrintPage({ test }) {
     document.head.removeChild(style)
   }
 
+  // ── Correction helpers ──────────────────────────────────────────────────────
+
+  function resolveOrCreateStudent(rowId, name) {
+    const trimmed = name.trim()
+    if (!trimmed) return
+    const existing = students.find(s => s.name === trimmed)
+    if (existing) {
+      setCopyStudentIds(prev => ({ ...prev, [rowId]: existing.id }))
+    } else {
+      const id = addStudent(trimmed)
+      setCopyStudentIds(prev => ({ ...prev, [rowId]: id }))
+    }
+  }
+
+  function handleStudentNameChange(rowId, name) {
+    setCopyStudentNames(prev => ({ ...prev, [rowId]: name }))
+  }
+
+  function handleStudentNameBlur(rowId, name) {
+    resolveOrCreateStudent(rowId, name)
+  }
+
+  function handleScore(rowId, studentId, colLabel, value) {
+    if (!studentId) return
+    updateScore(studentId, colLabel, value)
+  }
+
+  function handleAnswer(rowId, colLabel, rawValue) {
+    setCopyAnswers(prev => ({
+      ...prev,
+      [rowId]: { ...(prev[rowId] ?? {}), [colLabel]: rawValue },
+    }))
+  }
+
+  // ── Render ─────────────────────────────────────────────────────────────────
+
+  const displayVariants = variants ?? [test]
+
   return (
     <>
       <div className="toolbar no-print">
@@ -213,21 +314,34 @@ export default function PrintPage({ test }) {
           <label className="toolbar-control" title="Mostra la legenda dei tipi di domanda">
             <input type="checkbox" checked={showLegend} onChange={e => setShowLegend(e.target.checked)} /> Legenda
           </label>
-          <label className="toolbar-control">
-            Copie
-            <input
-              type="number" min="1" max="99" value={copies}
-              onChange={e => setCopies(Math.max(1, parseInt(e.target.value) || 1))}
-              className="toolbar-input"
-            />
-          </label>
-          <label className="toolbar-control" title="Mantieni l'ordine originale delle domande">
-            <input
-              type="checkbox"
-              checked={noShuffle}
-              onChange={e => setNoShuffle(e.target.checked)}
-            /> No shuffle
-          </label>
+          {!hasRows && (
+            <>
+              <label className="toolbar-control">
+                Copie
+                <input
+                  type="number" min="1" max="99" value={copies}
+                  onChange={e => setCopies(Math.max(1, parseInt(e.target.value) || 1))}
+                  className="toolbar-input"
+                />
+              </label>
+              <label className="toolbar-control" title="Mantieni l'ordine originale delle domande">
+                <input
+                  type="checkbox"
+                  checked={noShuffle}
+                  onChange={e => setNoShuffle(e.target.checked)}
+                /> No shuffle
+              </label>
+            </>
+          )}
+          {hasRows && (
+            <button
+              className={`toolbar-btn${correctionMode ? ' toolbar-btn-active' : ''}`}
+              onClick={() => setCorrectionMode(s => !s)}
+              title="Correggi direttamente sulla stampa"
+            >
+              {correctionMode ? '✓ Correzione' : 'Correzione'}
+            </button>
+          )}
         </div>
         <div className="toolbar-divider" />
         <div className="toolbar-group">
@@ -264,14 +378,39 @@ export default function PrintPage({ test }) {
         </div>
       </div>
 
-      {(variants || [test]).map((v, i) => {
+      {displayVariants.map((v, i) => {
+        const rowId = hasRows ? test.rows[i].id : null
+        const studentId = rowId ? copyStudentIds[rowId] : null
+        const student = students.find(s => s.id === studentId)
+
         const prevCount = pageCounts[i - 1] ?? 0
         const needsBlank = i > 0 && prevCount % 2 !== 0
+
         return (
-          <div key={`${i}-${variantKeys[i] || 0}`}>
+          <div key={hasRows ? rowId : `${i}-${variantKeys[i] || 0}`}>
             {needsBlank && <div className="page page-blank" />}
+
+            {correctionMode && rowId && (
+              <div className="corr-student-bar no-print">
+                <span className="corr-student-label">Fila {rowId}</span>
+                <input
+                  className="corr-student-input"
+                  placeholder="Nome studente…"
+                  value={copyStudentNames[rowId] ?? ''}
+                  onChange={e => handleStudentNameChange(rowId, e.target.value)}
+                  onBlur={e => handleStudentNameBlur(rowId, e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && handleStudentNameBlur(rowId, e.target.value)}
+                />
+                {student && (
+                  <span className="corr-student-status">
+                    ✓ {student.name}
+                  </span>
+                )}
+              </div>
+            )}
+
             <TestSheet
-              index={i}
+              index={hasRows ? `Fila ${rowId}` : i}
               test={v}
               fontSize={fontSize}
               gap={gap}
@@ -281,6 +420,11 @@ export default function PrintPage({ test }) {
               showInstructions={showInstructions}
               showLegend={showLegend}
               onPagesCount={n => setPageCounts(c => ({ ...c, [i]: n }))}
+              correctionMode={correctionMode && !!rowId}
+              studentScores={student?.scores ?? {}}
+              studentAnswers={rowId ? (copyAnswers[rowId] ?? {}) : {}}
+              onScore={studentId ? (colLabel, value) => handleScore(rowId, studentId, colLabel, value) : null}
+              onAnswer={rowId ? (colLabel, raw) => handleAnswer(rowId, colLabel, raw) : null}
             />
           </div>
         )

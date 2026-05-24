@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scheduling — Generatore Esercizi</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f2f5;
+      color: #1a1a1a;
+    }
+
+    /* ── CONTROLS ── */
+    #controls {
+      background: #fff;
+      border-bottom: 1px solid #d0d5dd;
+      padding: 12px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: flex-end;
+    }
+
+    .ctrl-group {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .ctrl-group label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: #666;
+    }
+
+    .ctrl-group input,
+    .ctrl-group select {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 5px 9px;
+      font-size: 13px;
+    }
+
+    .ctrl-group input:focus {
+      outline: 2px solid #4f46e5;
+      border-color: transparent;
+    }
+
+    button {
+      padding: 7px 16px;
+      border: none;
+      border-radius: 5px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+
+    button:hover {
+      opacity: .82;
+    }
+
+    #btn-random {
+      background: #0891b2;
+      color: #fff;
+    }
+
+    #btn-solution {
+      background: #7c3aed;
+      color: #fff;
+    }
+
+    #btn-print {
+      background: #059669;
+      color: #fff;
+    }
+
+    #btn-add-row {
+      background: #e5e7eb;
+      color: #374151;
+      padding: 4px 10px;
+      font-size: 12px;
+    }
+
+    #btn-rem-row {
+      background: #fee2e2;
+      color: #b91c1c;
+      padding: 4px 10px;
+      font-size: 12px;
+    }
+
+    .sol-on {
+      background: #5b21b6 !important;
+    }
+
+    /* ── PROCESS EDITOR ── */
+    #process-editor {
+      background: #fff;
+      border-bottom: 1px solid #d0d5dd;
+      padding: 10px 20px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    #proc-table-wrap {
+      overflow-x: auto;
+    }
+
+    table.editor-table {
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    table.editor-table th {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 5px 10px;
+      font-weight: 700;
+      color: #475569;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+
+    table.editor-table td {
+      border: 1px solid #e2e8f0;
+      padding: 3px 5px;
+    }
+
+    table.editor-table td input {
+      width: 55px;
+      border: 1px solid transparent;
+      border-radius: 3px;
+      padding: 3px 5px;
+      font-size: 13px;
+      text-align: center;
+      background: transparent;
+    }
+
+    table.editor-table td input:focus {
+      outline: 2px solid #4f46e5;
+      background: #fff;
+    }
+
+    .row-btns {
+      display: flex;
+      gap: 6px;
+      padding-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    .drag-handle {
+      cursor: grab;
+      color: #aaa;
+      font-size: 15px;
+      padding: 0 6px;
+      user-select: none;
+    }
+
+    .drag-handle:active {
+      cursor: grabbing;
+    }
+
+    tr.proc-row.dragging {
+      opacity: .4;
+    }
+
+    tr.proc-row.drag-over td {
+      background: #ede9fe;
+    }
+
+    #btn-export {
+      background: #0f766e;
+      color: #fff;
+    }
+
+    #btn-import {
+      background: #b45309;
+      color: #fff;
+    }
+
+    /* ── PREVIEW ── */
+    #preview-wrap {
+      background: #5a5f6b;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+
+    /* ── PAGE ── */
+    .page {
+      background: #fff;
+      width: 210mm;
+      min-height: 297mm;
+      padding: 15mm 18mm;
+      overflow: visible;
+      flex-shrink: 0;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, .35);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 10pt;
+      line-height: 1.4;
+    }
+
+    .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 2px solid #111;
+      padding-bottom: 3mm;
+      margin-bottom: 3mm;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .sh-left {
+      font-size: 8pt;
+      color: #555;
+    }
+
+    .sh-title {
+      font-size: 14pt;
+      font-weight: bold;
+    }
+
+    .sh-right {
+      font-size: 8pt;
+      color: #555;
+      text-align: right;
+    }
+
+    .student-box {
+      display: flex;
+      gap: 10mm;
+      margin-bottom: 3mm;
+      font-size: 9pt;
+    }
+
+    .stu-field {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex: 1;
+    }
+
+    .stu-field span {
+      white-space: nowrap;
+      font-weight: 700;
+    }
+
+    .stu-line {
+      flex: 1;
+      border-bottom: 1px solid #888;
+      height: 14px;
+    }
+
+    /* Process table block — keeps header+table together */
+    .proc-block {
+      break-inside: avoid;
+      page-break-inside: avoid;
+      margin-bottom: 3mm;
+    }
+
+    .table-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    table.proc-table {
+      border-collapse: collapse;
+      font-size: 9.5pt;
+      width: 200px;
+    }
+
+    table.proc-table th,
+    table.proc-table td {
+      border: 1px solid #555;
+      padding: 3px 9px;
+      text-align: center;
+    }
+
+    table.proc-table th {
+      background: #e0e0e0;
+      font-weight: 700;
+    }
+
+    table.proc-table td:first-child {
+      font-weight: 700;
+    }
+
+    .proc-note {
+      font-size: 7.5pt;
+      color: #555;
+      margin-top: 1.5mm;
+      font-style: italic;
+    }
+
+    /* Algo section — unbreakable */
+    .algo-section {
+      margin-top: 5px;
+      break-inside: avoid;
+      page-break-inside: avoid;
+      padding-bottom: 25px;
+      border-bottom: 1px solid black;
+      margin-left: 0px;
+      padding-left: 15px;
+      margin-right: 0px;
+      padding-right: 15px;
+    }
+
+    .algo-section:last-child {
+      border-bottom: 0;
+      margin-bottom: 0;
+    }
+
+    .algo-title {
+      font-size: 9.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      margin-left: 0px;
+      padding-bottom: 1mm;
+      margin-bottom: 2mm;
+    }
+
+    /* Gantt */
+    .gantt-wrap {
+      margin-bottom: 2mm;
+    }
+
+    .gantt-cells {
+      display: flex;
+    }
+
+    .gantt-cell {
+      height: 8mm;
+      border: 1px dashed #aaa;
+      border-right: none;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 7.5pt;
+      font-weight: 700;
+      overflow: hidden;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .gantt-cell:last-child {
+      border-right: 1px dashed #aaa;
+    }
+
+    .gantt-idle {
+      background: #f0f0f0;
+    }
+
+    .gantt-labels {
+      position: relative;
+      height: 5mm;
+      font-size: 7pt;
+      overflow: visible;
+    }
+
+    .gantt-tick {
+      position: absolute;
+      top: 0;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+
+    /* Calc boxes */
+    .calc-area {
+      display: flex;
+      gap: 3mm;
+    }
+
+    .calc-box {
+      flex: 1;
+      min-height: 35mm;
+      font-size: 8.5pt;
+    }
+
+    .calc-sep {
+      height: 100%;
+      min-height: 35mm;
+      width: 1px;
+      background-color: #ccc;
+    }
+
+    .calc-box-title {
+      font-size: 7.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      /* letter-spacing: .3px; */
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0mm;
+      margin-bottom: 1mm;
+    }
+
+    /* Solution table inside each box */
+    .sol-table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 8pt;
+    }
+
+    .sol-table td {
+      border: 1px solid #ccc;
+      padding: 2px 7px;
+    }
+
+    .sol-table td:first-child {
+      font-weight: 700;
+      text-align: center;
+      width: 8mm;
+    }
+
+    .sol-table td:last-child {
+      text-align: left;
+    }
+
+    .sol-table .avg-row td {
+      border-top: 2px solid #999;
+      font-weight: 700;
+    }
+
+    /* ── PRINT ── */
+    @page {
+      size: A4 portrait;
+      margin: 15mm 18mm;
+    }
+
+    @media print {
+
+      body,
+      #preview-wrap {
+        background: white !important;
+      }
+
+      #controls,
+      #process-editor {
+        display: none !important;
+      }
+
+      #preview-wrap {
+        padding: 0;
+        gap: 0;
+      }
+
+      .page {
+        box-shadow: none;
+        width: 100%;
+        height: auto;
+        overflow: visible;
+        padding: 0;
+        break-after: page;
+      }
+
+      .page:last-child {
+        break-after: auto;
+      }
+
+      .algo-section {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .proc-block {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- CONTROLS -->
+  <div id="controls">
+    <div class="ctrl-group">
+      <label>RR Quanto 1 (q₁)</label>
+      <input type="number" id="quantum1" value="2" min="1" max="10" style="width:65px">
+    </div>
+    <div class="ctrl-group">
+      <label>RR Quanto 2 (q₂)</label>
+      <input type="number" id="quantum2" value="3" min="1" max="10" style="width:65px">
+    </div>
+    <div class="ctrl-group">
+      <label>Classe / Data</label>
+      <input type="text" id="class-info" value="A.S. 2025/26" style="min-width:170px">
+    </div>
+    <button id="btn-random">⚡ Genera casuale</button>
+    <button id="btn-solution">☐ Mostra soluzione</button>
+    <button id="btn-print">🖨 Stampa</button>
+  </div>
+
+  <!-- PROCESS EDITOR -->
+  <div id="process-editor">
+    <div>
+      <div id="proc-table-wrap"></div>
+      <div class="row-btns">
+        <button id="btn-add-row">+ Processo</button>
+        <button id="btn-rem-row">− Processo</button>
+        <button id="btn-export">⬇ Esporta JSON</button>
+        <button id="btn-import">⬆ Importa JSON</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREVIEW -->
+  <div id="preview-wrap">
+    <div id="sheet-container" style="display:contents"></div>
+  </div>
+
+  <script>
+    // ── STATE ─────────────────────────────────────────────────────────────────────
+
+    let processes = [
+      { name: 'P1', duration: 5, arrival: 0, priority: 3 },
+      { name: 'P2', duration: 3, arrival: 2, priority: 1 },
+      { name: 'P3', duration: 4, arrival: 4, priority: 2 },
+      { name: 'P4', duration: 2, arrival: 6, priority: 4 },
+    ]
+
+    let showSolution = false
+
+    // ── COLORS ────────────────────────────────────────────────────────────────────
+
+    const PROC_COLORS = ['#fde68a', '#86efac', '#93c5fd', '#fca5a5', '#c4b5fd', '#fdba74', '#a5f3fc']
+
+    function procColorMap(procs) {
+      const m = {}
+      procs.forEach((p, i) => { m[p.name] = PROC_COLORS[i % PROC_COLORS.length] })
+      return m
+    }
+
+    // ── SIMULATIONS ───────────────────────────────────────────────────────────────
+
+    function simFCFS(procs) {
+      const sorted = [...procs].sort((a, b) => a.arrival - b.arrival || a.name.localeCompare(b.name))
+      const timeline = [], result = {}
+      let t = 0
+      for (const p of sorted) {
+        while (t < p.arrival) { timeline.push(null); t++ }
+        for (let i = 0; i < p.duration; i++) timeline.push(p.name)
+        t += p.duration
+        result[p.name] = { ct: t - p.arrival, wt: t - p.arrival - p.duration, finish: t }
+      }
+      return { timeline, result }
+    }
+
+    function simSJF(procs) {
+      const done = new Set(), timeline = [], result = {}
+      let t = 0
+      while (done.size < procs.length) {
+        const avail = procs.filter(p => !done.has(p.name) && p.arrival <= t)
+        if (!avail.length) { timeline.push(null); t++; continue }
+        avail.sort((a, b) => a.duration - b.duration || a.arrival - b.arrival || a.name.localeCompare(b.name))
+        const p = avail[0]
+        for (let i = 0; i < p.duration; i++) timeline.push(p.name)
+        t += p.duration; done.add(p.name)
+        result[p.name] = { ct: t - p.arrival, wt: t - p.arrival - p.duration, finish: t }
+      }
+      return { timeline, result }
+    }
+
+    function simSRTF(procs) {
+      const rem = Object.fromEntries(procs.map(p => [p.name, p.duration]))
+      const done = new Set(), timeline = [], result = {}
+      let t = 0, cur = null
+      const maxT = procs.reduce((s, p) => s + p.duration, 0) + Math.max(...procs.map(p => p.arrival)) + 2
+      while (done.size < procs.length && t < maxT) {
+        const avail = procs.filter(p => !done.has(p.name) && p.arrival <= t && rem[p.name] > 0)
+        if (!avail.length) { timeline.push(null); t++; cur = null; continue }
+        avail.sort((a, b) => {
+          if (rem[a.name] !== rem[b.name]) return rem[a.name] - rem[b.name]
+          if (a.name === cur) return -1; if (b.name === cur) return 1
+          return a.arrival - b.arrival || a.name.localeCompare(b.name)
+        })
+        const p = avail[0]; cur = p.name
+        timeline.push(p.name); rem[p.name]--; t++
+        if (rem[p.name] === 0) {
+          done.add(p.name)
+          result[p.name] = { ct: t - p.arrival, wt: t - p.arrival - p.duration, finish: t }
+          if (cur === p.name) cur = null
+        }
+      }
+      return { timeline, result }
+    }
+
+    function simPriority(procs) {
+      const done = new Set(), timeline = [], result = {}
+      let t = 0
+      while (done.size < procs.length) {
+        const avail = procs.filter(p => !done.has(p.name) && p.arrival <= t)
+        if (!avail.length) { timeline.push(null); t++; continue }
+        avail.sort((a, b) => a.priority - b.priority || a.arrival - b.arrival || a.name.localeCompare(b.name))
+        const p = avail[0]
+        for (let i = 0; i < p.duration; i++) timeline.push(p.name)
+        t += p.duration; done.add(p.name)
+        result[p.name] = { ct: t - p.arrival, wt: t - p.arrival - p.duration, finish: t }
+      }
+      return { timeline, result }
+    }
+
+    function simRR(procs, quantum) {
+      const rem = Object.fromEntries(procs.map(p => [p.name, p.duration]))
+      const done = new Set(), timeline = [], result = {}
+      const queue = [], arrived = new Set()
+      let t = 0
+      const byArr = [...procs].sort((a, b) => a.arrival - b.arrival || a.name.localeCompare(b.name))
+      function enqueue(time) {
+        byArr.forEach(p => { if (!arrived.has(p.name) && p.arrival <= time) { queue.push(p.name); arrived.add(p.name) } })
+      }
+      enqueue(0)
+      const maxT = procs.reduce((s, p) => s + p.duration, 0) + Math.max(...procs.map(p => p.arrival)) + 5
+      while (done.size < procs.length && t < maxT) {
+        if (!queue.length) { timeline.push(null); t++; enqueue(t); continue }
+        const name = queue.shift()
+        const p = procs.find(x => x.name === name)
+        const run = Math.min(quantum, rem[name])
+        for (let i = 0; i < run; i++) { timeline.push(name); t++; enqueue(t) }
+        rem[name] -= run
+        if (rem[name] === 0) {
+          done.add(name)
+          result[name] = { ct: t - p.arrival, wt: t - p.arrival - p.duration, finish: t }
+        } else { queue.push(name) }
+      }
+      return { timeline, result }
+    }
+
+    // ── RENDER HELPERS ────────────────────────────────────────────────────────────
+
+    function ganttHtml(timeline, cellCount, cellWidthMm, solution, colorMap) {
+      const cells = Array.from({ length: cellCount }, (_, i) => {
+        const proc = timeline[i] ?? null
+        if (solution && proc)
+          return `<div class="gantt-cell" style="width:${cellWidthMm}mm;background:${colorMap[proc]}">${proc}</div>`
+        if (solution && proc === null && i < timeline.length)
+          return `<div class="gantt-cell gantt-idle" style="width:${cellWidthMm}mm"></div>`
+        return `<div class="gantt-cell" style="width:${cellWidthMm}mm"></div>`
+      }).join('')
+      // Tick row: always present for writing; solution fills context-switch instants only
+      let ticksContent = ''
+      if (solution) {
+        const switches = new Set([0])
+        for (let i = 1; i <= timeline.length; i++) {
+          if (i === timeline.length || timeline[i] !== timeline[i - 1]) switches.add(i)
+        }
+        ticksContent = [...switches].sort((a, b) => a - b)
+          .map(t => `<span class="gantt-tick" style="left:${(cellWidthMm * t).toFixed(2)}mm">${t}</span>`)
+          .join('')
+      }
+      const labelsW = (cellWidthMm * cellCount).toFixed(2)
+      return `<div class="gantt-wrap">
+    <div class="gantt-cells">${cells}</div>
+    <div class="gantt-labels" style="width:${labelsW}mm">${ticksContent}</div>
+  </div>`
+    }
+
+    function solTable(procs, result, field) {
+      const avg = (procs.reduce((s, p) => s + (result[p.name]?.[field] ?? 0), 0) / procs.length).toFixed(1)
+      const rows = procs.map(p => {
+        const r = result[p.name]
+        if (!r) return `<tr><td>${p.name}</td><td>?</td></tr>`
+        const formula = field === 'ct'
+          ? `${r.finish} − ${p.arrival} = <strong>${r.ct}</strong>`
+          : `${r.finish} − ${p.arrival} − ${p.duration} = <strong>${r.wt}</strong>`
+        return `<tr><td>${p.name}</td><td>${formula}</td></tr>`
+      }).join('')
+      return `<table class="sol-table">
+    <tbody>
+      ${rows}
+      <tr class="avg-row"><td>Media</td><td><strong>${avg}</strong></td></tr>
+    </tbody>
+  </table>`
+    }
+
+    function calcHtml(procs, result, solution) {
+      const ctInner = solution ? solTable(procs, result, 'ct') : ''
+      const wtInner = solution ? solTable(procs, result, 'wt') : ''
+      return `
+    <div class="calc-area">
+      <div class="calc-box">
+        <div class="calc-box-title">Tempo di Attesa</div>
+        ${wtInner}
+      </div>
+      <div class="calc-sep">
+      </div>
+      <div class="calc-box">
+        <div class="calc-box-title">Tempo di Completamento</div>
+        ${ctInner}
+      </div>
+    </div>`
+    }
+
+    function algoSection(label, timeline, cellCount, cellW, solution, colorMap, procs, result) {
+      return `
+    <div class="algo-section">
+      <div class="algo-title">${label}</div>
+      ${ganttHtml(timeline, cellCount, cellW, solution, colorMap)}
+      ${calcHtml(procs, result, solution)}
+    </div>`
+    }
+
+    // ── SHEET ─────────────────────────────────────────────────────────────────────
+
+    function renderSheet() {
+      const q1 = +document.getElementById('quantum1').value
+      const q2 = +document.getElementById('quantum2').value
+      const classInfo = document.getElementById('class-info').value
+      const colorMap = procColorMap(processes)
+
+      const sims = {
+        FCFS: simFCFS(processes),
+        SJF: simSJF(processes),
+        SRTF: simSRTF(processes),
+        Priority: simPriority(processes),
+        RR1: simRR(processes, q1),
+        RR2: simRR(processes, q2),
+      }
+
+      const maxLen = Math.max(25, ...Object.values(sims).map(s => s.timeline.length))
+      const cellW = +(174 / maxLen).toFixed(3)
+
+      const procRows = processes.map(p =>
+        `<tr><td>${p.name}</td><td>${p.duration}</td><td>${p.arrival}</td><td>${p.priority}</td></tr>`
+      ).join('')
+
+      const headerHtml = `
+    <div class="sheet-header">
+      <span class="sh-left">TPSIT — Sistemi Operativi</span>
+      <span class="sh-title">Scheduling della CPU</span>
+      <span class="sh-right">${classInfo}</span>
+    </div>
+    <div class="student-box">
+      <div class="stu-field"><span>Cognome e Nome:</span><div class="stu-line"></div></div>
+      <div class="stu-field" style="max-width:36mm"><span>Data:</span><div class="stu-line"></div></div>
+    </div>
+    <div class="proc-block">
+      <div class="table-container">
+        <table class="proc-table">
+          <thead><tr><th></th><th>Durata</th><th>Arrivo</th><th>Priorità</th></tr></thead>
+          <tbody>${procRows}</tbody>
+        </table>
+        <p class="proc-note">Priorità: il numero più basso indica la precedenza maggiore.</p>
+      </div>
+    </div>`
+
+      const sectionHtmls = [
+        ['FCFS — First Come First Served', sims.FCFS],
+        ['SJF — Shortest Job First', sims.SJF],
+        ['SRTF — Shortest Remaining Time First', sims.SRTF],
+        ['Priority', sims.Priority],
+        [`Round Robin — q = ${q1}`, sims.RR1],
+        [`Round Robin — q = ${q2}`, sims.RR2],
+      ].map(([label, sim]) =>
+        algoSection(label, sim.timeline, maxLen, cellW, showSolution, colorMap, processes, sim.result)
+      )
+
+      document.getElementById('sheet-container').innerHTML =
+        `<div class="page">${headerHtml}${sectionHtmls.join('')}</div>`
+    }
+
+    // ── EDITOR TABLE ─────────────────────────────────────────────────────────────
+
+    let dragSrcIdx = null
+
+    function renderEditorTable() {
+      const rows = processes.map((p, i) => `
+    <tr draggable="true" data-idx="${i}" class="proc-row">
+      <td class="drag-handle" title="Trascina per riordinare">⠿</td>
+      <td><input data-i="${i}" data-f="name"     value="${p.name}"     style="width:48px"></td>
+      <td><input data-i="${i}" data-f="duration" value="${p.duration}" type="number" min="1" max="20"></td>
+      <td><input data-i="${i}" data-f="arrival"  value="${p.arrival}"  type="number" min="0" max="50"></td>
+      <td><input data-i="${i}" data-f="priority" value="${p.priority}" type="number" min="0" max="20"></td>
+    </tr>`).join('')
+      const wrap = document.getElementById('proc-table-wrap')
+      wrap.innerHTML = `
+    <table class="editor-table">
+      <thead><tr><th></th><th>Processo</th><th>Durata</th><th>Arrivo</th><th>Priorità</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`
+      wrap.querySelectorAll('input').forEach(inp => {
+        inp.addEventListener('input', () => {
+          const i = +inp.dataset.i, f = inp.dataset.f
+          processes[i][f] = (f === 'name') ? inp.value : +inp.value
+        })
+        inp.addEventListener('change', renderSheet)
+      })
+      wrap.querySelectorAll('tr.proc-row').forEach(row => {
+        row.addEventListener('dragstart', e => {
+          dragSrcIdx = +row.dataset.idx
+          row.classList.add('dragging')
+          e.dataTransfer.effectAllowed = 'move'
+        })
+        row.addEventListener('dragend', () => {
+          row.classList.remove('dragging')
+          wrap.querySelectorAll('tr.proc-row').forEach(r => r.classList.remove('drag-over'))
+        })
+        row.addEventListener('dragover', e => {
+          e.preventDefault()
+          e.dataTransfer.dropEffect = 'move'
+          wrap.querySelectorAll('tr.proc-row').forEach(r => r.classList.remove('drag-over'))
+          row.classList.add('drag-over')
+        })
+        row.addEventListener('drop', e => {
+          e.preventDefault()
+          const destIdx = +row.dataset.idx
+          if (dragSrcIdx !== null && dragSrcIdx !== destIdx) {
+            const [moved] = processes.splice(dragSrcIdx, 1)
+            processes.splice(destIdx, 0, moved)
+            renderEditorTable()
+            renderSheet()
+          }
+        })
+      })
+    }
+
+    // ── EXPORT / IMPORT ───────────────────────────────────────────────────────────
+
+    function exportJSON() {
+      const blob = new Blob([JSON.stringify(processes, null, 2)], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url; a.download = 'processi.json'; a.click()
+      URL.revokeObjectURL(url)
+    }
+
+    function importJSON() {
+      const inp = document.createElement('input')
+      inp.type = 'file'; inp.accept = '.json,application/json'
+      inp.addEventListener('change', () => {
+        const file = inp.files[0]; if (!file) return
+        const reader = new FileReader()
+        reader.onload = e => {
+          try {
+            const data = JSON.parse(e.target.result)
+            if (Array.isArray(data) && data.length > 0 && data.every(p => p.name != null && p.duration != null)) {
+              processes = data
+              renderEditorTable(); renderSheet()
+            } else { alert('Formato JSON non valido.') }
+          } catch { alert('Errore nel parsing del file JSON.') }
+        }
+        reader.readAsText(file)
+      })
+      inp.click()
+    }
+
+    // ── RANDOM ────────────────────────────────────────────────────────────────────
+
+    function rand(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a }
+
+    function generateRandom() {
+      const n = rand(3, 5)
+      processes = []
+      let arr = 0
+      for (let i = 0; i < n; i++) {
+        arr += (i === 0) ? 0 : rand(0, 3)
+        processes.push({ name: `P${i + 1}`, duration: rand(2, 7), arrival: arr, priority: rand(1, n) })
+      }
+      document.getElementById('quantum1').value = rand(2, 3)
+      document.getElementById('quantum2').value = rand(3, 4)
+      renderEditorTable()
+      renderSheet()
+    }
+
+    // ── WIRING ────────────────────────────────────────────────────────────────────
+
+    document.getElementById('quantum1').addEventListener('input', renderSheet)
+    document.getElementById('quantum2').addEventListener('input', renderSheet)
+    document.getElementById('class-info').addEventListener('input', renderSheet)
+    document.getElementById('btn-random').addEventListener('click', generateRandom)
+    document.getElementById('btn-print').addEventListener('click', () => window.print())
+    document.getElementById('btn-solution').addEventListener('click', () => {
+      showSolution = !showSolution
+      const btn = document.getElementById('btn-solution')
+      btn.textContent = showSolution ? '☑ Nascondi soluzione' : '☐ Mostra soluzione'
+      btn.classList.toggle('sol-on', showSolution)
+      renderSheet()
+    })
+    document.getElementById('btn-add-row').addEventListener('click', () => {
+      const n = processes.length + 1
+      processes.push({ name: `P${n}`, duration: 3, arrival: 0, priority: n })
+      renderEditorTable(); renderSheet()
+    })
+    document.getElementById('btn-rem-row').addEventListener('click', () => {
+      if (processes.length > 1) { processes.pop(); renderEditorTable(); renderSheet() }
+    })
+    document.getElementById('btn-export').addEventListener('click', exportJSON)
+    document.getElementById('btn-import').addEventListener('click', importJSON)
+
+    // ── INIT ─────────────────────────────────────────────────────────────────────
+    renderEditorTable()
+    renderSheet()
+  </script>
+</body>
+
+</html>

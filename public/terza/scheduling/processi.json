@@ -1,0 +1,26 @@
+[
+  {
+    "name": "P1",
+    "duration": 7,
+    "arrival": 0,
+    "priority": 5
+  },
+  {
+    "name": "P2",
+    "duration": 4,
+    "arrival": 1,
+    "priority": 2
+  },
+  {
+    "name": "P3",
+    "duration": 2,
+    "arrival": 2,
+    "priority": 3
+  },
+  {
+    "name": "P4",
+    "duration": 3,
+    "arrival": 2,
+    "priority": 2
+  }
+]
