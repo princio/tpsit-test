@@ -35,12 +35,17 @@ export default function ExcelExportPage({ test }) {
     const { displayOptions, displayAnswer } = applyOptionShuffle(q.options, q.answer, shuffleMap)
     return { ...base, options: displayOptions, answer: displayAnswer, _shuffle: shuffleMap }
   })()
+  const markedOptionOrigins = hoveredCell?.optIdx != null ? [hoveredCell.optIdx] : []
+
   const floatStyle = (() => {
     if (!hoveredCell) return {}
     const { rect } = hoveredCell
-    const panelW = 320
-    const top = rect.bottom + 8
+    const panelW = 460
+    const panelMaxH = 350
     const left = Math.min(rect.left, window.innerWidth - panelW - 8)
+    const top = rect.bottom + 8 + panelMaxH > window.innerHeight
+      ? Math.max(8, rect.top - panelMaxH - 8)
+      : rect.bottom + 8
     return { top, left }
   })()
 
@@ -191,7 +196,7 @@ export default function ExcelExportPage({ test }) {
                       <td
                         key={col.colLabel}
                         className={`excel-input-cell${hasDiff ? ' diff' : ''}${col.isGroupFirst ? ' group-first' : ''}${col.isGroupLast ? ' group-last' : ''}`}
-                        onMouseEnter={e => setHoveredCell({ studentId: student.id, qIdx: col.qIdx, rect: e.currentTarget.getBoundingClientRect() })}
+                        onMouseEnter={e => setHoveredCell({ studentId: student.id, qIdx: col.qIdx, optIdx: col.optIdx, rect: e.currentTarget.getBoundingClientRect() })}
                         onMouseLeave={() => setHoveredCell(null)}
                       >
                         <ScoreCell
@@ -221,12 +226,13 @@ export default function ExcelExportPage({ test }) {
       {hoveredQuestion && hoveredStudent && (
         <div className="excel-float-panel" style={floatStyle}>
           <TestSheetProvider
-            fontSize={13} gap={4} marginBottom={10}
+            fontSize={11} gap={3} marginBottom={10}
             fontFamily='Georgia, "Times New Roman", serif'
             showAnswers={true}
             correctionMode={true}
             studentScores={hoveredStudent.scores ?? {}}
             studentAnswers={hoveredStudent.answers ?? {}}
+            markedOptionOrigins={markedOptionOrigins}
           >
             <QuestionBlock question={hoveredQuestion} index={hoveredCell.qIdx} />
           </TestSheetProvider>

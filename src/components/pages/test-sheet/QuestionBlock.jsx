@@ -38,7 +38,7 @@ function LevelCorrection({ value, onChange }) {
  * @param {{ question: Question, index: number }} props
  */
 export default function QuestionBlock({ question, index }) {
-  const { fontSize, showAnswers, correctionMode, studentScores, studentAnswers, onScore, onAnswer } = useTestSheet()
+  const { fontSize, showAnswers, correctionMode, studentScores, studentAnswers, onScore, onAnswer, markedOptionOrigins } = useTestSheet()
   const content = question.content
     ? question.content
     : [{ kind: 'text', value: question.text }]
@@ -64,6 +64,7 @@ export default function QuestionBlock({ question, index }) {
             const colLabel = `${baseLabel}[${origIdx + 1}]`
             const selected = !!studentAnswers[colLabel]
             const isCorrect = Array.isArray(answer) && answer.includes(i)
+            const isPicked = markedOptionOrigins?.includes(origIdx)
             const boxClass =
               (!selected && !isCorrect) ? '' :
               (!selected &&  isCorrect) ? ' mc-box-missed' :
@@ -72,7 +73,7 @@ export default function QuestionBlock({ question, index }) {
             return (
               <span
                 key={i}
-                className="mc-option corr-option"
+                className={`mc-option corr-option${isPicked ? ' marked-option' : ''}`}
                 onClick={() => {
                   const nowSelected = !selected
                   onAnswer?.(colLabel, nowSelected)
@@ -94,10 +95,11 @@ export default function QuestionBlock({ question, index }) {
             const origIdx = question._shuffle ? question._shuffle[i] : i
             const selected = studentAnswers[baseLabel] === origIdx
             const correct = i === answer
+            const isPicked = markedOptionOrigins?.includes(origIdx)
             return (
               <span
                 key={i}
-                className={`mc-option corr-option${selected ? (correct ? ' corr-right' : ' corr-err') : ''}`}
+                className={`mc-option corr-option${selected ? (correct ? ' corr-right' : ' corr-err') : ''}${isPicked ? ' marked-option' : ''}`}
                 onClick={() => scoreAndAnswer(baseLabel, correct ? 1 : 0, origIdx)}
               >
                 <span className="mc-box">{selected ? '✕' : ''}</span>

@@ -1371,9 +1371,17 @@ body {
   border-radius: 8px;
   padding: 0.8rem 1rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  width: 320px;
+  width: 460px;
+  max-height: 350px;
+  overflow-y: auto;
   pointer-events: none;
-  font-size: 13px;
+  font-size: 11px;
+}
+
+.mc-option.marked-option {
+  outline: 2px solid #3f51b5;
+  outline-offset: 1px;
+  border-radius: 3px;
 }
 
 .excel-q-panel-header {
